@@ -38,6 +38,7 @@ import {
   formatDateId,
   formatShortDateId
 } from '../utils/googleCalendar';
+import { getCategoryTheme, CATEGORY_THEMES } from '../utils/categoryColors';
 
 export function MetricsTable({
   metrics = [],
@@ -300,25 +301,10 @@ export function MetricsTable({
     }
   };
 
-  const catColors = {
-    DPK: 'bg-blue-50 text-blue-700 border-blue-200',
-    Kredit: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    Livin: 'bg-sky-50 text-sky-700 border-sky-200',
-    Kopra: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-    Acquiring: 'bg-purple-50 text-purple-700 border-purple-200',
-    GMM: 'bg-amber-50 text-amber-700 border-amber-200',
-    Ekosistem: 'bg-teal-50 text-teal-700 border-teal-200'
-  };
-
-  const catHeaderBannerColors = {
-    DPK: 'bg-[#E6EEF6] text-[#003D79] border-blue-200',
-    Kredit: 'bg-emerald-50/90 text-emerald-900 border-emerald-200',
-    Livin: 'bg-sky-50/90 text-sky-900 border-sky-200',
-    Kopra: 'bg-indigo-50/90 text-indigo-900 border-indigo-200',
-    Acquiring: 'bg-purple-50/90 text-purple-900 border-purple-200',
-    GMM: 'bg-amber-50/90 text-amber-900 border-amber-200',
-    Ekosistem: 'bg-teal-50/90 text-teal-900 border-teal-200'
-  };
+  // Distinct category theme helper
+  const getCatBadge = (cat) => getCategoryTheme(cat).badge;
+  const getCatTag = (cat) => getCategoryTheme(cat).tag;
+  const getCatBanner = (cat) => getCategoryTheme(cat).banner;
 
   // Render Per-Metric Timestand Daily Schedule Table (Directly below the metric!)
   const renderPerMetricTimestandSchedule = (item, displayNumber, unit, chaseInfo) => {
@@ -904,7 +890,7 @@ export function MetricsTable({
                   <div
                     id={`cat-section-mob-${item.category}`}
                     className={`px-3.5 py-2.5 font-extrabold flex items-center justify-between text-xs scroll-mt-4 ${
-                      catHeaderBannerColors[item.category] || 'bg-slate-100 text-[#003D79]'
+                      getCatBanner(item.category)
                     }`}
                   >
                     <div className="flex items-center gap-1.5">
@@ -933,11 +919,11 @@ export function MetricsTable({
                       </span>
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-1">
-                          <span className={`px-1.5 py-0.1 rounded text-[10px] font-bold border ${catColors[item.category] || ''}`}>
+                          <span className={`px-1.5 py-0.1 rounded text-[10px] border ${getCatBadge(item.category)}`}>
                             {item.category}
                           </span>
                           {item.subMetric && item.subMetric !== item.metric && (
-                            <span className="text-[10px] font-bold text-[#003D79] bg-blue-50 px-1.5 py-0.1 rounded">
+                            <span className={`text-[10px] px-1.5 py-0.1 rounded ${getCatTag(item.category)}`}>
                               {item.metric}
                             </span>
                           )}
@@ -1233,7 +1219,7 @@ export function MetricsTable({
                       <tr
                         id={`cat-section-${item.category}`}
                         className={`border-y-2 border-slate-200 font-extrabold scroll-mt-6 ${
-                          catHeaderBannerColors[item.category] || 'bg-slate-100 text-[#003D79]'
+                          getCatBanner(item.category)
                         }`}
                       >
                         <td className="py-2.5 px-3 text-center font-mono text-xs opacity-70">
@@ -1289,8 +1275,8 @@ export function MetricsTable({
                       {/* 2. Category Badge */}
                       <td className="py-3 px-3">
                         <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold border inline-block ${
-                            catColors[item.category] || 'bg-slate-100 text-slate-700 border-slate-200'
+                          className={`px-2 py-0.5 rounded text-[10px] border inline-block ${
+                            getCatBadge(item.category)
                           }`}
                         >
                           {item.category}
@@ -1304,10 +1290,10 @@ export function MetricsTable({
                             <>
                               <div className="flex items-center gap-1.5">
                                 <span
-                                  className={`text-[10px] font-extrabold uppercase tracking-wider px-1.5 py-0.2 rounded ${
+                                  className={`text-[10px] uppercase tracking-wider px-1.5 py-0.2 rounded ${
                                     isSameParentMetricAsPrev
-                                      ? 'bg-slate-100 text-slate-500'
-                                      : 'bg-[#003D79]/10 text-[#003D79]'
+                                      ? 'bg-slate-100 text-slate-500 font-bold'
+                                      : getCatTag(item.category)
                                   }`}
                                 >
                                   {item.metric}

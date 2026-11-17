@@ -659,6 +659,9 @@ export function App() {
           excelHistoryList={excelHistoryList}
           activeSnapshotId={activeSnapshotId}
           onSelectHistorySnapshot={handleSelectHistorySnapshot}
+          isViewerSimMode={isViewerSimMode}
+          masterTotalScore={masterBranchData.totalScore}
+          activeTotalScore={currentBranchData.totalScore}
         />
 
         {/* Main Body */}
@@ -691,6 +694,8 @@ export function App() {
                   isUnderTargetOnly={filterUnderTarget}
                   onOpenSimulator={() => setIsSimulatorOpen(true)}
                   onOpenComparison={() => setIsComparisonModalOpen(true)}
+                  isViewerSimMode={isViewerSimMode}
+                  masterTotalScore={masterBranchData.totalScore}
                 />
               </section>
 
@@ -728,7 +733,7 @@ export function App() {
               </section>
 
               {/* RBAC Role Control & Viewer Simulation / Presentation Bar */}
-              <section>
+              <section id="simulation-manager-section" className="scroll-mt-4">
                 <SimulationManagerBar
                   currentUser={currentUser}
                   isKonseptor={isKonseptor}
@@ -848,6 +853,69 @@ export function App() {
         allDbRows={cachedDbData || dbRowsData}
         metricDefs={metricDefs}
       />
+
+      {/* Sticky Floating Simulation Bar (Always visible on screen while in Simulation Mode) */}
+      {(isViewerSimMode || Object.keys(viewerSimTargets).length > 0 || Object.keys(viewerSimReals).length > 0) && (
+        <aside
+          aria-label="Status Simulasi Berjalan"
+          className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-[#00254D] text-white px-3.5 sm:px-5 py-2.5 rounded-2xl shadow-2xl border-2 border-[#FFB81C] flex items-center gap-2.5 sm:gap-4 max-w-[95vw] sm:max-w-xl animate-in slide-in-from-bottom duration-200"
+        >
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FFB81C] animate-ping shrink-0" />
+            <div className="min-w-0">
+              <span className="text-[10px] text-[#FFE5A3] font-bold uppercase tracking-wider block">
+                Total Skor Simulasi:
+              </span>
+              <div className="flex items-baseline gap-1.5 font-mono">
+                <span className="text-base sm:text-xl font-black text-white">
+                  {currentBranchData.totalScore.toFixed(2).replace('.', ',')}
+                </span>
+                <span className="text-slate-400 text-xs">/100</span>
+                <span
+                  className={`text-[10px] sm:text-xs font-black px-1.5 py-0.2 rounded ${
+                    currentBranchData.totalScore >= masterBranchData.totalScore
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-rose-500 text-white'
+                  }`}
+                >
+                  {currentBranchData.totalScore >= masterBranchData.totalScore ? '+' : ''}
+                  {(currentBranchData.totalScore - masterBranchData.totalScore).toFixed(2).replace('.', ',')} pt
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="h-8 w-px bg-white/20 shrink-0 hidden sm:block" />
+
+          <div className="hidden sm:block text-[11px] text-slate-300 shrink-0">
+            <span>Awal (Konseptor): </span>
+            <strong className="text-white font-mono">{masterBranchData.totalScore.toFixed(2).replace('.', ',')} pt</strong>
+          </div>
+
+          <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+            <button
+              type="button"
+              onClick={() => {
+                const bar = document.getElementById('simulation-manager-section');
+                if (bar) bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setIsViewerSimMode(true);
+              }}
+              className="px-3 py-1.5 rounded-xl bg-[#FFB81C] hover:bg-[#f3aa0d] text-[#00254D] font-black text-xs cursor-pointer shadow-xs transition-colors"
+              title="Buka panel untuk menyimpan skenario simulasi"
+            >
+              Simpan Simulasi
+            </button>
+            <button
+              type="button"
+              onClick={handleResetViewerSimDraft}
+              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white cursor-pointer text-xs font-bold"
+              title="Reset simulasi ke awal"
+            >
+              ✕
+            </button>
+          </div>
+        </aside>
+      )}
 
     </div>
   );

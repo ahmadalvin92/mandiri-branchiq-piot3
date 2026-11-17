@@ -15,9 +15,13 @@ export function ExecutiveSummary({
   rankingInfo,
   onShowUnderTargetOnly,
   isUnderTargetOnly,
-  onOpenComparison
+  onOpenComparison,
+  isViewerSimMode = false,
+  masterTotalScore = null
 }) {
   const categoriesList = Object.values(categorySummary || {});
+  const isSimulated = isViewerSimMode || (masterTotalScore !== null && Math.abs(totalScore - masterTotalScore) > 0.005);
+  const scoreDelta = masterTotalScore !== null ? Number((totalScore - masterTotalScore).toFixed(2)) : 0;
   
   const strongestCategory = [...categoriesList]
     .filter(c => c.actualScore > 0)
@@ -48,21 +52,42 @@ export function ExecutiveSummary({
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
       
       {/* 1. Total Skor BranchIQ with Radial Gauge & Regional Rank */}
-      <div className="bg-white rounded-xl border border-slate-200/90 p-3 sm:p-5 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden group">
+      <div className={`rounded-xl border p-3 sm:p-5 shadow-xs hover:shadow-md transition-shadow relative overflow-hidden group ${
+        isSimulated
+          ? 'bg-linear-to-br from-amber-50/90 via-white to-blue-50/40 border-[#FFB81C] ring-2 ring-[#FFB81C]/30'
+          : 'bg-white border-slate-200/90'
+      }`}>
         <div className="absolute top-0 right-0 w-20 sm:w-28 h-20 sm:h-28 bg-[#FFB81C]/10 rounded-bl-full pointer-events-none"></div>
         
         <div className="flex items-start justify-between gap-2">
           <div className="min-w-0">
-            <div className="flex items-center gap-1 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
+            <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
               <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FFB81C] shrink-0" />
-              <span className="truncate">Total Skor</span>
+              <span className="truncate">{isSimulated ? 'Total Skor Simulasi' : 'Total Skor'}</span>
+              {isSimulated && (
+                <span className="px-1.5 py-0.2 rounded-full bg-[#FFB81C] text-[#00254D] font-black text-[9px] uppercase tracking-normal">
+                  Simulasi
+                </span>
+              )}
             </div>
             <div className="mt-1.5 sm:mt-2.5 flex items-baseline gap-1">
               <span className="text-2xl sm:text-4xl font-extrabold text-[#003D79] tracking-tight">
                 {totalScore.toFixed(2).replace('.', ',')}
               </span>
               <span className="text-[11px] sm:text-sm font-semibold text-slate-400">/100</span>
+              {isSimulated && scoreDelta !== 0 && (
+                <span className={`ml-1 text-[11px] sm:text-xs font-black font-mono px-1.5 py-0.5 rounded ${
+                  scoreDelta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                }`}>
+                  {scoreDelta > 0 ? '+' : ''}{scoreDelta.toFixed(2).replace('.', ',')}
+                </span>
+              )}
             </div>
+            {isSimulated && masterTotalScore !== null && (
+              <div className="mt-1 text-[10px] text-slate-500 font-sans">
+                Awal Konseptor: <strong className="font-mono text-slate-800">{masterTotalScore.toFixed(2).replace('.', ',')} pt</strong>
+              </div>
+            )}
             <div className="mt-1 flex flex-wrap items-center gap-1">
               <button
                 onClick={onOpenComparison}

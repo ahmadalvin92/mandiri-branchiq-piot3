@@ -21,13 +21,13 @@ import { formatBankingNumber, metricKnowledge } from '../utils/knowledgeBase';
 import { CATEGORY_MULTIPLIERS } from '../utils/excelParser';
 
 const CAT_COLORS = {
-  DPK: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', accent: '#3B82F6' },
-  Kredit: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', accent: '#10B981' },
-  Livin: { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200', accent: '#0EA5E9' },
-  Kopra: { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200', accent: '#6366F1' },
-  Acquiring: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', accent: '#8B5CF6' },
-  GMM: { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', accent: '#F59E0B' },
-  Ekosistem: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200', accent: '#14B8A6' }
+  DPK: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', accent: '#003D79' },
+  Kredit: { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', accent: '#059669' },
+  Livin: { bg: 'bg-amber-50', text: 'text-amber-900', border: 'border-amber-300', accent: '#D97706' },
+  Kopra: { bg: 'bg-indigo-50', text: 'text-indigo-700', border: 'border-indigo-200', accent: '#4F46E5' },
+  Acquiring: { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', accent: '#9333EA' },
+  GMM: { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', accent: '#E11D48' },
+  Ekosistem: { bg: 'bg-teal-50', text: 'text-teal-700', border: 'border-teal-200', accent: '#0D9488' }
 };
 
 const CATEGORY_ORDER = ['DPK', 'Kredit', 'Livin', 'Kopra', 'Acquiring', 'GMM', 'Ekosistem'];

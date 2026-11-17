@@ -12,7 +12,8 @@ import {
   Trophy,
   LogOut,
   Users,
-  History
+  History,
+  Sparkles
 } from 'lucide-react';
 import { getRoleLabel, isSuperadmin } from '../utils/dbService';
 
@@ -37,8 +38,13 @@ export function Header({
   onToggleCMSPage,
   excelHistoryList = [],
   activeSnapshotId = '',
-  onSelectHistorySnapshot
+  onSelectHistorySnapshot,
+  isViewerSimMode = false,
+  masterTotalScore = 85.53,
+  activeTotalScore = 85.53
 }) {
+  const isSimulated = isViewerSimMode || Math.abs(activeTotalScore - masterTotalScore) > 0.005;
+  const scoreDelta = Number((activeTotalScore - masterTotalScore).toFixed(2));
   // Sort branches for the dropdown by rank if available, else by name
   const sortedBranches = React.useMemo(() => {
     return [...branches].sort((a, b) => {
@@ -57,7 +63,14 @@ export function Header({
             <span className="inline-block w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#FFB81C] shrink-0"></span>
             <span className="truncate font-bold sm:font-medium">MANDIRI MELESAT — REGION V / JAKARTA 3</span>
             <span className="hidden md:inline text-white/50">•</span>
-            <span className="hidden md:inline text-[#FFE5A3] font-semibold">Score Board BranchIQ 164 Cabang</span>
+            {isSimulated ? (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.2 rounded-full bg-[#FFB81C] text-[#00254D] font-black text-[10px] sm:text-[11px] shadow-xs animate-pulse">
+                <Sparkles className="w-3 h-3 text-[#00254D]" />
+                <span>TOTAL SKOR SIMULASI: {activeTotalScore.toFixed(2).replace('.', ',')} ({scoreDelta >= 0 ? '+' : ''}{scoreDelta.toFixed(2).replace('.', ',')} pt) • Master: {masterTotalScore.toFixed(2).replace('.', ',')}</span>
+              </span>
+            ) : (
+              <span className="hidden md:inline text-[#FFE5A3] font-semibold">Score Board BranchIQ 164 Cabang</span>
+            )}
           </div>
           <div className="flex items-center gap-2 sm:gap-3 text-white/90 shrink-0">
             {currentUser && (
@@ -204,6 +217,23 @@ export function Header({
                 <Trophy className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white" />
                 <span>Rank #{rankingInfo?.totalRank || 43}</span>
               </button>
+
+              {/* Total Skor Simulasi Badge in Header Row */}
+              {isSimulated && (
+                <div
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-amber-50 border-2 border-[#FFB81C] text-[11px] sm:text-xs font-extrabold text-[#00254D] shadow-2xs cursor-default"
+                  title={`Skor Hasil Simulasi: ${activeTotalScore} (Master: ${masterTotalScore})`}
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-600 shrink-0 animate-spin-slow" />
+                  <span className="hidden sm:inline text-slate-600 font-bold">Skor Simulasi:</span>
+                  <strong className="font-mono text-[#003D79] text-xs sm:text-sm">{activeTotalScore.toFixed(2).replace('.', ',')}</strong>
+                  <span className={`text-[10px] sm:text-[11px] font-mono font-black px-1 rounded ${
+                    scoreDelta >= 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                  }`}>
+                    {scoreDelta >= 0 ? '+' : ''}{scoreDelta.toFixed(2).replace('.', ',')}
+                  </span>
+                </div>
+              )}
 
               {/* What-If Simulator Toggle */}
               <button

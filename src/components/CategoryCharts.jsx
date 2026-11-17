@@ -23,6 +23,7 @@ import {
 
 import { CAT_ORDER } from '../utils/excelParser';
 import { formatBankingNumber, getMetricKnowledge } from '../utils/knowledgeBase';
+import { getCategoryTheme } from '../utils/categoryColors';
 
 export function CategoryCharts({
   categorySummary,
@@ -381,22 +382,25 @@ export function CategoryCharts({
               const searchMatchCount = matchCountByCat[c.category] || 0;
               const isHighlightedBySearch = searchQuery.trim() !== '' && searchMatchCount > 0;
 
+              const theme = getCategoryTheme(c.category);
+
               return (
                 <div
                   key={c.category}
                   onClick={() => handleCategoryCardClick(c.category)}
-                  className={`rounded-xl border p-2.5 sm:p-3.5 transition-all cursor-pointer ${
+                  className={`rounded-xl border-2 p-2.5 sm:p-3.5 transition-all cursor-pointer ${
                     isSelected || isHighlightedBySearch
-                      ? 'bg-blue-50/70 border-[#003D79] ring-2 ring-[#003D79]/20 shadow-xs'
+                      ? `bg-blue-50/70 border-[#003D79] ring-2 ring-[#003D79]/20 shadow-xs`
                       : searchQuery.trim() !== '' && searchMatchCount === 0
                         ? 'bg-slate-50/50 border-slate-200 opacity-50'
-                        : 'bg-white hover:bg-slate-50/80 border-slate-200 hover:border-[#003D79]/50 shadow-2xs'
+                        : `bg-white hover:bg-slate-50/80 ${theme.cardBorder || 'border-slate-200'} shadow-2xs`
                   }`}
+                  style={{ borderLeftWidth: '5px', borderLeftColor: theme.accentHex }}
                 >
                   {/* Top Row: Category Name + Rank Badge on Left, Actual / Max Score on Right */}
                   <div className="flex items-baseline justify-between gap-1">
-                    <div className="flex items-center gap-1 min-w-0">
-                      <span className="font-extrabold text-xs sm:text-sm text-slate-900 truncate">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className={`px-1.5 py-0.2 rounded text-[10px] ${theme.badge}`}>
                         {c.category}
                       </span>
                       {rank && (
@@ -421,14 +425,12 @@ export function CategoryCharts({
                   {/* Progress Track */}
                   <div className="h-2 sm:h-2.5 bg-slate-200/80 rounded-full overflow-hidden my-1.5 sm:my-2.5 flex">
                     <div
-                      className={`h-full transition-all duration-500 ${
-                        isFull ? 'bg-emerald-600' : 'bg-[#1F4E79]'
-                      }`}
-                      style={{ width: `${pct.toFixed(1)}%` }}
+                      className="h-full transition-all duration-500 rounded-full"
+                      style={{ width: `${pct.toFixed(1)}%`, backgroundColor: theme.accentHex }}
                     />
                     {!isFull && (
                       <div
-                        className="h-full bg-amber-400/80"
+                        className="h-full bg-slate-200/60"
                         style={{ width: `${Math.max(0, 100 - pct).toFixed(1)}%` }}
                       />
                     )}
