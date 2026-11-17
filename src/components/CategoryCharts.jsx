@@ -15,7 +15,8 @@ import {
   Filter,
   Search,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  RotateCcw
 } from 'lucide-react';
 
 import { CAT_ORDER } from '../utils/excelParser';
@@ -47,10 +48,12 @@ export function CategoryCharts({
   const maxLost = Math.max(...categories.map(c => c.gapScore || 0), 0.01);
 
   // Chart data formatted for horizontal bar chart with direct visible label text
+  // Ensure gapScore has a tiny epsilon (0.0001) for full categories so Recharts renders the right-side LabelList cleanly!
   const chartData = categories.map(c => ({
     name: c.category,
     actualScore: c.actualScore,
-    gapScore: c.gapScore,
+    gapScore: c.gapScore > 0.005 ? c.gapScore : 0.0001,
+    rawGapScore: c.gapScore,
     maxScore: c.maxScore,
     achievementPct: c.achievementPct,
     rank: rankingInfo?.categoryScores?.[c.category]?.rank,
@@ -88,10 +91,10 @@ export function CategoryCharts({
                 {data.achievementPct}%
               </strong>
             </p>
-            {data.gapScore > 0 ? (
+            {data.rawGapScore > 0.005 ? (
               <p className="flex justify-between gap-4 pt-1 border-t border-slate-600 text-amber-300 font-semibold">
                 <span>Poin Bocor (Gap):</span>
-                <span className="font-mono">-{data.gapScore.toFixed(2).replace('.', ',')} poin</span>
+                <span className="font-mono">-{data.rawGapScore.toFixed(2).replace('.', ',')} poin</span>
               </p>
             ) : (
               <p className="pt-1 border-t border-slate-600 text-emerald-400 font-semibold">
@@ -105,13 +108,30 @@ export function CategoryCharts({
     return null;
   };
 
+  // Accurate direct scroll to the category section in MetricsTable after React state update
+  const scrollToCategoryInTable = (catName) => {
+    setTimeout(() => {
+      const desktopTarget = document.getElementById(`cat-section-${catName}`);
+      const mobileTarget = document.getElementById(`cat-section-mob-${catName}`);
+      const fallbackTable = document.getElementById('scorecard-table-section');
+
+      const targetEl =
+        (desktopTarget && desktopTarget.offsetParent !== null ? desktopTarget : null) ||
+        (mobileTarget && mobileTarget.offsetParent !== null ? mobileTarget : null) ||
+        desktopTarget ||
+        mobileTarget ||
+        fallbackTable;
+
+      if (targetEl) {
+        const y = targetEl.getBoundingClientRect().top + window.scrollY - 24;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }, 90);
+  };
+
   const handleCategoryCardClick = (catName) => {
-    const nextCat = selectedCategory === catName ? 'all' : catName;
-    onSelectCategory(nextCat);
-    const sectionEl = document.getElementById(`cat-section-${catName}`);
-    if (sectionEl) {
-      sectionEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    onSelectCategory(catName);
+    scrollToCategoryInTable(catName);
   };
 
   return (
@@ -145,6 +165,7 @@ export function CategoryCharts({
           </div>
 
           <button
+            type="button"
             onClick={onToggleFilterUnderTarget}
             className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all border cursor-pointer shrink-0 ${
               filterUnderTarget
@@ -163,20 +184,21 @@ export function CategoryCharts({
         
         {/* RIGHT COLUMN on Desktop / FIRST on Mobile (7 cols): "Skor per kategori" 7 Cards + 3 Summary Boxes */}
         <div className="lg:col-span-7 order-1 lg:order-2 space-y-3 sm:space-y-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-2">
             <h3 className="text-xs sm:text-sm font-extrabold text-[#003D79] flex items-center gap-2">
               <span>Skor per Kategori</span>
               <span className="text-[11px] font-normal text-slate-500">
-                (klik untuk filter ke tabel)
+                (klik kartu untuk langsung menuju kategori di tabel)
               </span>
             </h3>
             {selectedCategory !== 'all' && (
               <button
                 type="button"
                 onClick={() => onSelectCategory('all')}
-                className="text-xs font-bold text-[#003D79] hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#003D79] border border-blue-200 text-xs font-extrabold cursor-pointer"
               >
-                Reset Filter ({selectedCategory})
+                <RotateCcw className="w-3 h-3" />
+                <span>Tampilkan Semua Kategori</span>
               </button>
             )}
           </div>
@@ -258,11 +280,12 @@ export function CategoryCharts({
             })}
           </div>
 
-          {/* 3 Summary Stat Boxes Below Category Cards (3 columns even on mobile!) */}
+          {/* 3 Summary Stat Boxes Below Category Cards */}
           <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-1">
             <div
               onClick={() => {
                 if (!filterUnderTarget) onToggleFilterUnderTarget();
+                scrollToCategoryInTable(selectedCategory === 'all' ? 'DPK' : selectedCategory);
               }}
               className="bg-[#F8FAFC] hover:bg-rose-50/50 border border-slate-200 hover:border-rose-300 rounded-xl p-2.5 sm:p-3.5 cursor-pointer transition-colors"
             >
@@ -292,7 +315,10 @@ export function CategoryCharts({
             </div>
 
             <div
-              onClick={onToggleFilterUnderTarget}
+              onClick={() => {
+                onToggleFilterUnderTarget();
+                scrollToCategoryInTable(selectedCategory === 'all' ? 'DPK' : selectedCategory);
+              }}
               className="bg-[#F8FAFC] hover:bg-amber-50/50 border border-slate-200 hover:border-amber-300 rounded-xl p-2.5 sm:p-3.5 cursor-pointer transition-colors"
             >
               <p className="text-[10px] sm:text-xs font-semibold text-slate-500 leading-tight">
@@ -319,7 +345,7 @@ export function CategoryCharts({
                 Poin Hilang per Kategori
               </h3>
               <span className="text-[10px] sm:text-[11px] font-semibold text-slate-500">
-                Urutan Bocor Terbesar
+                Klik untuk lompat ke tabel
               </span>
             </div>
 
@@ -365,17 +391,17 @@ export function CategoryCharts({
             </div>
           </div>
 
-          {/* Card 2: Horizontal Bar Chart with Direct Text Labels */}
-          <div className="bg-[#F8FAFC] rounded-xl border border-slate-200/90 p-3 sm:p-3.5">
+          {/* Card 2: Horizontal Bar Chart with Direct Text Labels (Full Height so all 7 categories fit cleanly) */}
+          <div className="bg-[#F8FAFC] rounded-xl border border-slate-200/90 p-3.5">
             <p className="text-xs font-extrabold text-[#003D79] mb-1 px-1">
               Grafik Skor Aktual vs Poin Bocor
             </p>
-            <div className="h-52 sm:h-56 w-full">
+            <div className="h-68 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={chartData}
                   layout="vertical"
-                  margin={{ top: 4, right: 98, left: 4, bottom: 4 }}
+                  margin={{ top: 6, right: 112, left: 4, bottom: 8 }}
                   barGap={2}
                 >
                   <XAxis
@@ -387,13 +413,13 @@ export function CategoryCharts({
                     type="category"
                     dataKey="name"
                     tick={{ fontSize: 11, fill: '#00254D', fontWeight: 700 }}
-                    width={65}
+                    width={68}
                   />
                   <Tooltip content={<CustomTooltip />} />
                   <Legend
                     verticalAlign="top"
                     align="left"
-                    wrapperStyle={{ paddingBottom: '6px', fontSize: '10px' }}
+                    wrapperStyle={{ paddingBottom: '8px', fontSize: '10px' }}
                     formatter={(value) => (
                       <span className="font-semibold text-slate-700">
                         {value === 'actualScore' ? 'Skor Aktual' : 'Poin Bocor (Gap)'}
@@ -406,7 +432,7 @@ export function CategoryCharts({
                     stackId="score"
                     fill="#003D79"
                     radius={[0, 0, 0, 0]}
-                    barSize={15}
+                    barSize={16}
                   >
                     {chartData.map((entry, index) => (
                       <Cell
@@ -421,13 +447,13 @@ export function CategoryCharts({
                     stackId="score"
                     fill="#FFB81C"
                     radius={[0, 4, 4, 0]}
-                    barSize={15}
+                    barSize={16}
                     opacity={0.9}
                   >
                     <LabelList
                       dataKey="directLabel"
                       position="right"
-                      style={{ fontSize: '9.5px', fontWeight: 800, fill: '#0F172A', fontFamily: 'monospace' }}
+                      style={{ fontSize: '10px', fontWeight: 800, fill: '#0F172A', fontFamily: 'monospace' }}
                     />
                   </Bar>
                 </BarChart>
@@ -443,6 +469,7 @@ export function CategoryCharts({
       <div className="pt-3 border-t border-slate-100 flex items-center gap-1.5 overflow-x-auto pb-1">
         <span className="text-[11px] font-semibold text-slate-400 mr-1 shrink-0">Filter:</span>
         <button
+          type="button"
           onClick={() => onSelectCategory('all')}
           className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all cursor-pointer shrink-0 ${
             selectedCategory === 'all'
@@ -460,8 +487,9 @@ export function CategoryCharts({
 
           return (
             <button
+              type="button"
               key={c.category}
-              onClick={() => onSelectCategory(c.category)}
+              onClick={() => handleCategoryCardClick(c.category)}
               className={`px-2.5 sm:px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-bold transition-all flex items-center gap-1 border cursor-pointer shrink-0 ${
                 isSelected
                   ? 'bg-[#003D79] text-white border-[#003D79] shadow-xs'
