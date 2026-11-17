@@ -1,0 +1,8694 @@
+[
+  {
+    "code": "13325",
+    "name": "Cibinong Mayor Oking",
+    "head": "TRIASRI WIDYA WAHYUNINGSIH",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 93.16,
+    "totalRaw": 93.15899999999999,
+    "totalRank": 1,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.23,
+        "rawScore": 28.23,
+        "rank": 12
+      },
+      "Kredit": {
+        "score": 16.06,
+        "rawScore": 16.064,
+        "rank": 28
+      },
+      "Livin": {
+        "score": 14.46,
+        "rawScore": 14.46,
+        "rank": 8
+      },
+      "Kopra": {
+        "score": 10,
+        "rawScore": 10,
+        "rank": 1
+      },
+      "Acquiring": {
+        "score": 14.8,
+        "rawScore": 14.805,
+        "rank": 7
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 1
+      },
+      "Ekosistem": {
+        "score": 4.6,
+        "rawScore": 4.6,
+        "rank": 138
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 34,
+    "gradeRank": 1,
+    "totalInGrade": 57
+  },
+  {
+    "code": "13315",
+    "name": "Bogor Pasar Anyar",
+    "head": "ANISAK RAHAYUK RAHMAWATI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 92.79,
+    "totalRaw": 92.791,
+    "totalRank": 2,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.2,
+        "rawScore": 28.2,
+        "rank": 13
+      },
+      "Kredit": {
+        "score": 15.3,
+        "rawScore": 15.301,
+        "rank": 42
+      },
+      "Livin": {
+        "score": 14.76,
+        "rawScore": 14.76,
+        "rank": 1
+      },
+      "Kopra": {
+        "score": 10,
+        "rawScore": 10,
+        "rank": 2
+      },
+      "Acquiring": {
+        "score": 14.73,
+        "rawScore": 14.73,
+        "rank": 11
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 2
+      },
+      "Ekosistem": {
+        "score": 4.8,
+        "rawScore": 4.8,
+        "rank": 131
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 34,
+    "gradeRank": 1,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13383",
+    "name": "Dramaga",
+    "head": "TRI HUTOMO",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 92.58,
+    "totalRaw": 92.57650000000001,
+    "totalRank": 3,
+    "categoryScores": {
+      "DPK": {
+        "score": 29.91,
+        "rawScore": 29.91,
+        "rank": 1
+      },
+      "Kredit": {
+        "score": 16.91,
+        "rawScore": 16.914,
+        "rank": 9
+      },
+      "Livin": {
+        "score": 14.28,
+        "rawScore": 14.28,
+        "rank": 13
+      },
+      "Kopra": {
+        "score": 9.54,
+        "rawScore": 9.54,
+        "rank": 29
+      },
+      "Acquiring": {
+        "score": 11.93,
+        "rawScore": 11.9325,
+        "rank": 97
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 3
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 1
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 34,
+    "gradeRank": 2,
+    "totalInGrade": 43
+  },
+  {
+    "code": "7000",
+    "name": "Jakarta Wisma Danantara Indonesia (dh Jakarta Plaza Mandiri)",
+    "head": "ROYANI HERAWATI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 92.01,
+    "totalRaw": 92.006,
+    "totalRank": 4,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.74,
+        "rawScore": 28.74,
+        "rank": 4
+      },
+      "Kredit": {
+        "score": 16.05,
+        "rawScore": 16.051,
+        "rank": 29
+      },
+      "Livin": {
+        "score": 13.21,
+        "rawScore": 13.215,
+        "rank": 34
+      },
+      "Kopra": {
+        "score": 9,
+        "rawScore": 9,
+        "rank": 108
+      },
+      "Acquiring": {
+        "score": 15,
+        "rawScore": 15,
+        "rank": 1
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 4
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 2
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 14,
+    "gradeRank": 1,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13380",
+    "name": "Bogor Cisarua",
+    "head": "TEGUH ARIF WICAKSANA",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 91.39,
+    "totalRaw": 91.38900000000001,
+    "totalRank": 5,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.18,
+        "rawScore": 27.18,
+        "rank": 46
+      },
+      "Kredit": {
+        "score": 16.11,
+        "rawScore": 16.109,
+        "rank": 27
+      },
+      "Livin": {
+        "score": 13.95,
+        "rawScore": 13.95,
+        "rank": 21
+      },
+      "Kopra": {
+        "score": 9.45,
+        "rawScore": 9.45,
+        "rank": 45
+      },
+      "Acquiring": {
+        "score": 14.7,
+        "rawScore": 14.7,
+        "rank": 12
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 5
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 3
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 34,
+    "gradeRank": 2,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12710",
+    "name": "Jakarta ITC Fatmawati",
+    "head": "AGENG RURI WIDAGDO",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 90.91,
+    "totalRaw": 90.91,
+    "totalRank": 6,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.73,
+        "rawScore": 28.725,
+        "rank": 5
+      },
+      "Kredit": {
+        "score": 16.37,
+        "rawScore": 16.37,
+        "rank": 16
+      },
+      "Livin": {
+        "score": 11.52,
+        "rawScore": 11.52,
+        "rank": 65
+      },
+      "Kopra": {
+        "score": 9.34,
+        "rawScore": 9.34,
+        "rank": 57
+      },
+      "Acquiring": {
+        "score": 14.96,
+        "rawScore": 14.955,
+        "rank": 3
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 6
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 4
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 19,
+    "gradeRank": 3,
+    "totalInGrade": 57
+  },
+  {
+    "code": "13386",
+    "name": "Bogor Ciomas",
+    "head": "STEFANUS DIDIT YUNIARTO",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 90.89,
+    "totalRaw": 90.886,
+    "totalRank": 7,
+    "categoryScores": {
+      "DPK": {
+        "score": 29.43,
+        "rawScore": 29.43,
+        "rank": 2
+      },
+      "Kredit": {
+        "score": 16.15,
+        "rawScore": 16.151,
+        "rank": 23
+      },
+      "Livin": {
+        "score": 14.5,
+        "rawScore": 14.505,
+        "rank": 7
+      },
+      "Kopra": {
+        "score": 10,
+        "rawScore": 10,
+        "rank": 3
+      },
+      "Acquiring": {
+        "score": 10.8,
+        "rawScore": 10.8,
+        "rank": 133
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 7
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 5
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 34,
+    "gradeRank": 3,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13382",
+    "name": "Bogor Bojong Gede",
+    "head": "ITA PUSPITASARI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 90.26,
+    "totalRaw": 90.2605,
+    "totalRank": 8,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.69,
+        "rawScore": 27.69,
+        "rank": 34
+      },
+      "Kredit": {
+        "score": 17.77,
+        "rawScore": 17.773,
+        "rank": 3
+      },
+      "Livin": {
+        "score": 14.46,
+        "rawScore": 14.46,
+        "rank": 9
+      },
+      "Kopra": {
+        "score": 8.54,
+        "rawScore": 8.54,
+        "rank": 146
+      },
+      "Acquiring": {
+        "score": 11.8,
+        "rawScore": 11.7975,
+        "rank": 101
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 8
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 6
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 34,
+    "gradeRank": 4,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13319",
+    "name": "Bogor Sentul City",
+    "head": "FAJAR ADITYO ISMANTORO",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 89.87,
+    "totalRaw": 89.8735,
+    "totalRank": 9,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.2,
+        "rawScore": 28.2,
+        "rank": 14
+      },
+      "Kredit": {
+        "score": 15.25,
+        "rawScore": 15.251,
+        "rank": 44
+      },
+      "Livin": {
+        "score": 12.83,
+        "rawScore": 12.825,
+        "rank": 39
+      },
+      "Kopra": {
+        "score": 9.48,
+        "rawScore": 9.48,
+        "rank": 41
+      },
+      "Acquiring": {
+        "score": 14.17,
+        "rawScore": 14.1675,
+        "rank": 37
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 9
+      },
+      "Ekosistem": {
+        "score": 4.95,
+        "rawScore": 4.95,
+        "rank": 123
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 34,
+    "gradeRank": 4,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10226",
+    "name": "Jakarta Kuningan City",
+    "head": "NANDA NOVANDA",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 89.03,
+    "totalRaw": 89.031,
+    "totalRank": 10,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.7,
+        "rawScore": 27.705,
+        "rank": 32
+      },
+      "Kredit": {
+        "score": 16.11,
+        "rawScore": 16.111,
+        "rank": 26
+      },
+      "Livin": {
+        "score": 11.51,
+        "rawScore": 11.505,
+        "rank": 67
+      },
+      "Kopra": {
+        "score": 9.49,
+        "rawScore": 9.49,
+        "rank": 40
+      },
+      "Acquiring": {
+        "score": 14.22,
+        "rawScore": 14.22,
+        "rank": 32
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 10
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 7
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 21,
+    "gradeRank": 5,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13310",
+    "name": "Bogor Tajur",
+    "head": "ISDHORRA DEWI NURBUATI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 88.97,
+    "totalRaw": 88.9715,
+    "totalRank": 11,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.72,
+        "rawScore": 27.72,
+        "rank": 31
+      },
+      "Kredit": {
+        "score": 14.6,
+        "rawScore": 14.599,
+        "rank": 67
+      },
+      "Livin": {
+        "score": 13.91,
+        "rawScore": 13.905,
+        "rank": 22
+      },
+      "Kopra": {
+        "score": 8.71,
+        "rawScore": 8.715,
+        "rank": 135
+      },
+      "Acquiring": {
+        "score": 14.03,
+        "rawScore": 14.0325,
+        "rank": 44
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 11
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 8
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 34,
+    "gradeRank": 5,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12415",
+    "name": "Jakarta Rasuna Episentrum",
+    "head": "ARINTA BERLIANTY",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 88.94,
+    "totalRaw": 88.9405,
+    "totalRank": 12,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.73,
+        "rawScore": 27.735,
+        "rank": 30
+      },
+      "Kredit": {
+        "score": 18.16,
+        "rawScore": 18.163,
+        "rank": 2
+      },
+      "Livin": {
+        "score": 11.04,
+        "rawScore": 11.04,
+        "rank": 84
+      },
+      "Kopra": {
+        "score": 9.44,
+        "rawScore": 9.44,
+        "rank": 47
+      },
+      "Acquiring": {
+        "score": 12.56,
+        "rawScore": 12.5625,
+        "rank": 76
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 12
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 9
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 26,
+    "gradeRank": 6,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13379",
+    "name": "Bogor Cigombong",
+    "head": "MELIANY",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 88.92,
+    "totalRaw": 88.919,
+    "totalRank": 13,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.57,
+        "rawScore": 25.575,
+        "rank": 94
+      },
+      "Kredit": {
+        "score": 17.4,
+        "rawScore": 17.399,
+        "rank": 5
+      },
+      "Livin": {
+        "score": 14.55,
+        "rawScore": 14.55,
+        "rank": 4
+      },
+      "Kopra": {
+        "score": 9.43,
+        "rawScore": 9.425,
+        "rank": 48
+      },
+      "Acquiring": {
+        "score": 11.97,
+        "rawScore": 11.97,
+        "rank": 95
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 13
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 10
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 34,
+    "gradeRank": 7,
+    "totalInGrade": 43
+  },
+  {
+    "code": "15716",
+    "name": "Depok Kartini",
+    "head": "SINTYA ROSELINDA",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 88.91,
+    "totalRaw": 88.90650000000001,
+    "totalRank": 14,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.73,
+        "rawScore": 26.73,
+        "rank": 59
+      },
+      "Kredit": {
+        "score": 15.88,
+        "rawScore": 15.884,
+        "rank": 31
+      },
+      "Livin": {
+        "score": 14.32,
+        "rawScore": 14.325,
+        "rank": 12
+      },
+      "Kopra": {
+        "score": 9.53,
+        "rawScore": 9.525,
+        "rank": 31
+      },
+      "Acquiring": {
+        "score": 13.34,
+        "rawScore": 13.3425,
+        "rank": 51
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 14
+      },
+      "Ekosistem": {
+        "score": 4.1,
+        "rawScore": 4.1,
+        "rank": 154
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 19,
+    "gradeRank": 6,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15706",
+    "name": "Depok I",
+    "head": "NOVIANTI KURNIASARI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 88.82,
+    "totalRaw": 88.8185,
+    "totalRank": 15,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.64,
+        "rawScore": 26.64,
+        "rank": 61
+      },
+      "Kredit": {
+        "score": 14.35,
+        "rawScore": 14.346,
+        "rank": 73
+      },
+      "Livin": {
+        "score": 13.35,
+        "rawScore": 13.35,
+        "rank": 31
+      },
+      "Kopra": {
+        "score": 9.69,
+        "rawScore": 9.685,
+        "rank": 18
+      },
+      "Acquiring": {
+        "score": 14.8,
+        "rawScore": 14.7975,
+        "rank": 9
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 15
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 11
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 19,
+    "gradeRank": 1,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13397",
+    "name": "Bogor Klapanunggal",
+    "head": "DERRI ARIBOWO",
+    "grade": "B.4.2",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 88.32,
+    "totalRaw": 88.32000000000001,
+    "totalRank": 16,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.54,
+        "rawScore": 24.54,
+        "rank": 126
+      },
+      "Kredit": {
+        "score": 16.16,
+        "rawScore": 16.16,
+        "rank": 22
+      },
+      "Livin": {
+        "score": 13.79,
+        "rawScore": 13.785,
+        "rank": 24
+      },
+      "Kopra": {
+        "score": 9.42,
+        "rawScore": 9.42,
+        "rank": 49
+      },
+      "Acquiring": {
+        "score": 14.42,
+        "rawScore": 14.415,
+        "rank": 23
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 16
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 12
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 34,
+    "gradeRank": 1,
+    "totalInGrade": 2
+  },
+  {
+    "code": "13393",
+    "name": "Bogor Yasmin (dh Bogor Semplak)",
+    "head": "PUSPASARI DWI ARIYANI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 88.28,
+    "totalRaw": 88.283,
+    "totalRank": 17,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.65,
+        "rawScore": 28.65,
+        "rank": 6
+      },
+      "Kredit": {
+        "score": 14.92,
+        "rawScore": 14.923,
+        "rank": 57
+      },
+      "Livin": {
+        "score": 13.98,
+        "rawScore": 13.98,
+        "rank": 20
+      },
+      "Kopra": {
+        "score": 9.18,
+        "rawScore": 9.18,
+        "rank": 85
+      },
+      "Acquiring": {
+        "score": 11.55,
+        "rawScore": 11.55,
+        "rank": 114
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 17
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 13
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 34,
+    "gradeRank": 8,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12417",
+    "name": "Jakarta Kalibata",
+    "head": "RINI HELYANTI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 88.22,
+    "totalRaw": 88.219,
+    "totalRank": 18,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.11,
+        "rawScore": 28.11,
+        "rank": 18
+      },
+      "Kredit": {
+        "score": 16.75,
+        "rawScore": 16.749,
+        "rank": 14
+      },
+      "Livin": {
+        "score": 10.92,
+        "rawScore": 10.92,
+        "rank": 88
+      },
+      "Kopra": {
+        "score": 8.38,
+        "rawScore": 8.385,
+        "rank": 153
+      },
+      "Acquiring": {
+        "score": 14.05,
+        "rawScore": 14.055,
+        "rank": 43
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 18
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 14
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 26,
+    "gradeRank": 2,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13302",
+    "name": "Bogor Suryakencana",
+    "head": "RIFKI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 88,
+    "totalRaw": 87.998,
+    "totalRank": 19,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.64,
+        "rawScore": 26.64,
+        "rank": 62
+      },
+      "Kredit": {
+        "score": 15.51,
+        "rawScore": 15.513,
+        "rank": 37
+      },
+      "Livin": {
+        "score": 11.85,
+        "rawScore": 11.85,
+        "rank": 53
+      },
+      "Kopra": {
+        "score": 9,
+        "rawScore": 8.995,
+        "rank": 110
+      },
+      "Acquiring": {
+        "score": 15,
+        "rawScore": 15,
+        "rank": 2
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 19
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 15
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 34,
+    "gradeRank": 7,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12716",
+    "name": "Jakarta Margasatwa",
+    "head": "ANDRIYANSYAHMI MAHENDRA",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 87.95,
+    "totalRaw": 87.94650000000001,
+    "totalRank": 20,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.16,
+        "rawScore": 26.16,
+        "rank": 79
+      },
+      "Kredit": {
+        "score": 18.64,
+        "rawScore": 18.639,
+        "rank": 1
+      },
+      "Livin": {
+        "score": 12.81,
+        "rawScore": 12.81,
+        "rank": 40
+      },
+      "Kopra": {
+        "score": 9.47,
+        "rawScore": 9.47,
+        "rank": 42
+      },
+      "Acquiring": {
+        "score": 10.87,
+        "rawScore": 10.8675,
+        "rank": 131
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 20
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 16
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 19,
+    "gradeRank": 9,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13375",
+    "name": "Bogor Gunung Sindur",
+    "head": "RARAS DEWI PRIMA EKASARI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 87.82,
+    "totalRaw": 87.81599999999999,
+    "totalRank": 21,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.46,
+        "rawScore": 27.465,
+        "rank": 41
+      },
+      "Kredit": {
+        "score": 17.16,
+        "rawScore": 17.156,
+        "rank": 7
+      },
+      "Livin": {
+        "score": 13.65,
+        "rawScore": 13.65,
+        "rank": 25
+      },
+      "Kopra": {
+        "score": 10,
+        "rawScore": 10,
+        "rank": 4
+      },
+      "Acquiring": {
+        "score": 10.84,
+        "rawScore": 10.845,
+        "rank": 132
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 21
+      },
+      "Ekosistem": {
+        "score": 3.7,
+        "rawScore": 3.7,
+        "rank": 158
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 34,
+    "gradeRank": 10,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12706",
+    "name": "Jakata Cipete IBI (dh Jakarta Cipete)",
+    "head": "DEYANDA ANNISA RIZKA",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 87.74,
+    "totalRaw": 87.74499999999999,
+    "totalRank": 22,
+    "categoryScores": {
+      "DPK": {
+        "score": 29.1,
+        "rawScore": 29.1,
+        "rank": 3
+      },
+      "Kredit": {
+        "score": 13.35,
+        "rawScore": 13.355,
+        "rank": 110
+      },
+      "Livin": {
+        "score": 11.01,
+        "rawScore": 11.01,
+        "rank": 85
+      },
+      "Kopra": {
+        "score": 9.58,
+        "rawScore": 9.58,
+        "rank": 22
+      },
+      "Acquiring": {
+        "score": 14.7,
+        "rawScore": 14.7,
+        "rank": 13
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 22
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 17
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 19,
+    "gradeRank": 8,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12603",
+    "name": "Jakarta Kemang Raya",
+    "head": "YUNIAR HANITA HAKIM",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 87.65,
+    "totalRaw": 87.6535,
+    "totalRank": 23,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.15,
+        "rawScore": 28.155,
+        "rank": 16
+      },
+      "Kredit": {
+        "score": 15.17,
+        "rawScore": 15.166,
+        "rank": 51
+      },
+      "Livin": {
+        "score": 10.67,
+        "rawScore": 10.665,
+        "rank": 94
+      },
+      "Kopra": {
+        "score": 9.11,
+        "rawScore": 9.11,
+        "rank": 94
+      },
+      "Acquiring": {
+        "score": 14.56,
+        "rawScore": 14.5575,
+        "rank": 20
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 23
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 18
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 16,
+    "gradeRank": 3,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10106",
+    "name": "Jakarta Lebak Bulus",
+    "head": "INDAH JUARIAH",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 87.54,
+    "totalRaw": 87.5395,
+    "totalRank": 24,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.4,
+        "rawScore": 27.405,
+        "rank": 43
+      },
+      "Kredit": {
+        "score": 14.08,
+        "rawScore": 14.082,
+        "rank": 83
+      },
+      "Livin": {
+        "score": 11.6,
+        "rawScore": 11.595,
+        "rank": 63
+      },
+      "Kopra": {
+        "score": 9.84,
+        "rawScore": 9.84,
+        "rank": 10
+      },
+      "Acquiring": {
+        "score": 14.62,
+        "rawScore": 14.6175,
+        "rank": 16
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 24
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 19
+      }
+    },
+    "areaRank": 1,
+    "totalInArea": 15,
+    "gradeRank": 9,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15717",
+    "name": "Cinere",
+    "head": "HENNY FUZIATIE BURHAN",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 87.52,
+    "totalRaw": 87.51650000000001,
+    "totalRank": 25,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.02,
+        "rawScore": 27.015,
+        "rank": 51
+      },
+      "Kredit": {
+        "score": 13.39,
+        "rawScore": 13.389,
+        "rank": 107
+      },
+      "Livin": {
+        "score": 13.61,
+        "rawScore": 13.605,
+        "rank": 26
+      },
+      "Kopra": {
+        "score": 8.94,
+        "rawScore": 8.935,
+        "rank": 118
+      },
+      "Acquiring": {
+        "score": 14.57,
+        "rawScore": 14.5725,
+        "rank": 18
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 25
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 20
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 19,
+    "gradeRank": 4,
+    "totalInGrade": 31
+  },
+  {
+    "code": "7007",
+    "name": "Jakarta Mampang",
+    "head": "GUSTI AYU PUTU DEWI ARTATI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 87.46,
+    "totalRaw": 87.4635,
+    "totalRank": 26,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.49,
+        "rawScore": 27.495,
+        "rank": 39
+      },
+      "Kredit": {
+        "score": 14.12,
+        "rawScore": 14.121,
+        "rank": 81
+      },
+      "Livin": {
+        "score": 13.83,
+        "rawScore": 13.83,
+        "rank": 23
+      },
+      "Kopra": {
+        "score": 9.14,
+        "rawScore": 9.14,
+        "rank": 89
+      },
+      "Acquiring": {
+        "score": 12.88,
+        "rawScore": 12.8775,
+        "rank": 67
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 26
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 21
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 14,
+    "gradeRank": 5,
+    "totalInGrade": 31
+  },
+  {
+    "code": "7019",
+    "name": "Jakarta Graha Pulo (dh Jakarta Graha Mampang)",
+    "head": "R A  RETNO PRAMUDYASTUTI",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 87.16,
+    "totalRaw": 87.15899999999999,
+    "totalRank": 27,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.74,
+        "rawScore": 25.74,
+        "rank": 90
+      },
+      "Kredit": {
+        "score": 15.28,
+        "rawScore": 15.279,
+        "rank": 43
+      },
+      "Livin": {
+        "score": 13.28,
+        "rawScore": 13.275,
+        "rank": 33
+      },
+      "Kopra": {
+        "score": 8.79,
+        "rawScore": 8.795,
+        "rank": 129
+      },
+      "Acquiring": {
+        "score": 14.07,
+        "rawScore": 14.07,
+        "rank": 42
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 27
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 22
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 14,
+    "gradeRank": 11,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10124",
+    "name": "Jakarta Gandaria City",
+    "head": "DICKY AGFA WIARTHA",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 87.14,
+    "totalRaw": 87.143,
+    "totalRank": 28,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.9,
+        "rawScore": 27.9,
+        "rank": 22
+      },
+      "Kredit": {
+        "score": 13.37,
+        "rawScore": 13.373,
+        "rank": 108
+      },
+      "Livin": {
+        "score": 11.98,
+        "rawScore": 11.985,
+        "rank": 48
+      },
+      "Kopra": {
+        "score": 9.62,
+        "rawScore": 9.62,
+        "rank": 20
+      },
+      "Acquiring": {
+        "score": 14.27,
+        "rawScore": 14.265,
+        "rank": 31
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 28
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 23
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 15,
+    "gradeRank": 12,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12428",
+    "name": "Jakarta Kota Kasablanka",
+    "head": "WINDA WULANJANI",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 87.12,
+    "totalRaw": 87.116,
+    "totalRank": 29,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.82,
+        "rawScore": 27.825,
+        "rank": 24
+      },
+      "Kredit": {
+        "score": 16.12,
+        "rawScore": 16.116,
+        "rank": 25
+      },
+      "Livin": {
+        "score": 11.52,
+        "rawScore": 11.52,
+        "rank": 66
+      },
+      "Kopra": {
+        "score": 9.36,
+        "rawScore": 9.36,
+        "rank": 52
+      },
+      "Acquiring": {
+        "score": 12.79,
+        "rawScore": 12.795,
+        "rank": 69
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 29
+      },
+      "Ekosistem": {
+        "score": 4.5,
+        "rawScore": 4.5,
+        "rank": 143
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 26,
+    "gradeRank": 13,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12675",
+    "name": "Jakarta Jagakarsa",
+    "head": "BAYU ARIWIBOWO",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 87.1,
+    "totalRaw": 87.103,
+    "totalRank": 30,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.56,
+        "rawScore": 28.56,
+        "rank": 7
+      },
+      "Kredit": {
+        "score": 16.86,
+        "rawScore": 16.858,
+        "rank": 11
+      },
+      "Livin": {
+        "score": 11.46,
+        "rawScore": 11.46,
+        "rank": 69
+      },
+      "Kopra": {
+        "score": 9.8,
+        "rawScore": 9.8,
+        "rank": 12
+      },
+      "Acquiring": {
+        "score": 10.43,
+        "rawScore": 10.425,
+        "rank": 142
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 30
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 24
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 16,
+    "gradeRank": 14,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13384",
+    "name": "Leuwiliang",
+    "head": "ANTHI DWI PUTRIANI ANUGRAH",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 86.78,
+    "totalRaw": 86.78,
+    "totalRank": 31,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.8,
+        "rawScore": 25.8,
+        "rank": 88
+      },
+      "Kredit": {
+        "score": 15.21,
+        "rawScore": 15.205,
+        "rank": 49
+      },
+      "Livin": {
+        "score": 14.59,
+        "rawScore": 14.595,
+        "rank": 3
+      },
+      "Kopra": {
+        "score": 8.96,
+        "rawScore": 8.955,
+        "rank": 116
+      },
+      "Acquiring": {
+        "score": 12.68,
+        "rawScore": 12.675,
+        "rank": 72
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 31
+      },
+      "Ekosistem": {
+        "score": 4.55,
+        "rawScore": 4.55,
+        "rank": 141
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 34,
+    "gradeRank": 15,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13322",
+    "name": "Cibubur Kota Wisata",
+    "head": "M. TAUFIQI AKBAR",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 86.57,
+    "totalRaw": 86.568,
+    "totalRank": 32,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.34,
+        "rawScore": 26.34,
+        "rank": 73
+      },
+      "Kredit": {
+        "score": 15.74,
+        "rawScore": 15.743,
+        "rank": 34
+      },
+      "Livin": {
+        "score": 10.29,
+        "rawScore": 10.29,
+        "rank": 109
+      },
+      "Kopra": {
+        "score": 9.54,
+        "rawScore": 9.54,
+        "rank": 30
+      },
+      "Acquiring": {
+        "score": 14.65,
+        "rawScore": 14.655,
+        "rank": 15
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 32
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 25
+      }
+    },
+    "areaRank": 15,
+    "totalInArea": 34,
+    "gradeRank": 10,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15708",
+    "name": "Depok ITC",
+    "head": "WAHYU YULIASTUTI WIDORINI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 86.55,
+    "totalRaw": 86.55199999999999,
+    "totalRank": 33,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.87,
+        "rawScore": 23.865,
+        "rank": 136
+      },
+      "Kredit": {
+        "score": 14.48,
+        "rawScore": 14.482,
+        "rank": 70
+      },
+      "Livin": {
+        "score": 14.04,
+        "rawScore": 14.04,
+        "rank": 19
+      },
+      "Kopra": {
+        "score": 9.36,
+        "rawScore": 9.36,
+        "rank": 53
+      },
+      "Acquiring": {
+        "score": 14.8,
+        "rawScore": 14.805,
+        "rank": 8
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 33
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 26
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 19,
+    "gradeRank": 16,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10122",
+    "name": "Jakarta Bintaro Veteran",
+    "head": "KARINA FADHILA",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 86.52,
+    "totalRaw": 86.5195,
+    "totalRank": 34,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.53,
+        "rawScore": 28.53,
+        "rank": 10
+      },
+      "Kredit": {
+        "score": 13.37,
+        "rawScore": 13.367,
+        "rank": 109
+      },
+      "Livin": {
+        "score": 12.68,
+        "rawScore": 12.675,
+        "rank": 41
+      },
+      "Kopra": {
+        "score": 9.88,
+        "rawScore": 9.88,
+        "rank": 7
+      },
+      "Acquiring": {
+        "score": 12.07,
+        "rawScore": 12.0675,
+        "rank": 94
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 34
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 27
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 15,
+    "gradeRank": 11,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10116",
+    "name": "Jakarta Kebayoran Lama",
+    "head": "ASTUTI DWI LESTARI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 86.5,
+    "totalRaw": 86.4975,
+    "totalRank": 35,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.15,
+        "rawScore": 27.15,
+        "rank": 49
+      },
+      "Kredit": {
+        "score": 14.38,
+        "rawScore": 14.385,
+        "rank": 71
+      },
+      "Livin": {
+        "score": 12.59,
+        "rawScore": 12.585,
+        "rank": 45
+      },
+      "Kopra": {
+        "score": 8.07,
+        "rawScore": 8.075,
+        "rank": 158
+      },
+      "Acquiring": {
+        "score": 14.3,
+        "rawScore": 14.3025,
+        "rank": 28
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 35
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 28
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 15,
+    "gradeRank": 6,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12409",
+    "name": "Jakarta Tebet Barat",
+    "head": "SARA HASIANA SIREGAR",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 86.45,
+    "totalRaw": 86.44800000000001,
+    "totalRank": 36,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.2,
+        "rawScore": 28.2,
+        "rank": 15
+      },
+      "Kredit": {
+        "score": 15.78,
+        "rawScore": 15.783,
+        "rank": 33
+      },
+      "Livin": {
+        "score": 10.56,
+        "rawScore": 10.56,
+        "rank": 99
+      },
+      "Kopra": {
+        "score": 9.5,
+        "rawScore": 9.5,
+        "rank": 34
+      },
+      "Acquiring": {
+        "score": 12.4,
+        "rawScore": 12.405,
+        "rank": 81
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 36
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 29
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 26,
+    "gradeRank": 12,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12713",
+    "name": "Jakarta Cilandak KKO",
+    "head": "MURTI WIJAYANTI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 86.16,
+    "totalRaw": 86.1565,
+    "totalRank": 37,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.93,
+        "rawScore": 26.925,
+        "rank": 54
+      },
+      "Kredit": {
+        "score": 16.13,
+        "rawScore": 16.129,
+        "rank": 24
+      },
+      "Livin": {
+        "score": 12.62,
+        "rawScore": 12.615,
+        "rank": 44
+      },
+      "Kopra": {
+        "score": 9.36,
+        "rawScore": 9.36,
+        "rank": 54
+      },
+      "Acquiring": {
+        "score": 11.38,
+        "rawScore": 11.3775,
+        "rank": 122
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 37
+      },
+      "Ekosistem": {
+        "score": 4.75,
+        "rawScore": 4.75,
+        "rank": 133
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 19,
+    "gradeRank": 13,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12406",
+    "name": "Jakarta Lapangan Ros",
+    "head": "SELVYA RAHMAYATI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 85.97,
+    "totalRaw": 85.9705,
+    "totalRank": 38,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.94,
+        "rawScore": 26.94,
+        "rank": 53
+      },
+      "Kredit": {
+        "score": 16.76,
+        "rawScore": 16.763,
+        "rank": 13
+      },
+      "Livin": {
+        "score": 10.63,
+        "rawScore": 10.635,
+        "rank": 96
+      },
+      "Kopra": {
+        "score": 8.66,
+        "rawScore": 8.665,
+        "rank": 136
+      },
+      "Acquiring": {
+        "score": 12.97,
+        "rawScore": 12.9675,
+        "rank": 64
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 38
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 30
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 26,
+    "gradeRank": 14,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15718",
+    "name": "Depok Bukit Cinere Gandul (dh Cinere PLN Gandul)",
+    "head": "SRI WULAN RAHMAWATI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 85.78,
+    "totalRaw": 85.7765,
+    "totalRank": 39,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.93,
+        "rawScore": 25.935,
+        "rank": 84
+      },
+      "Kredit": {
+        "score": 16.29,
+        "rawScore": 16.289,
+        "rank": 19
+      },
+      "Livin": {
+        "score": 10.88,
+        "rawScore": 10.875,
+        "rank": 89
+      },
+      "Kopra": {
+        "score": 9.54,
+        "rawScore": 9.545,
+        "rank": 28
+      },
+      "Acquiring": {
+        "score": 13.13,
+        "rawScore": 13.1325,
+        "rank": 60
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 39
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 31
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 19,
+    "gradeRank": 17,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13307",
+    "name": "Cibinong City Center (dh Cibinong)",
+    "head": "DEWI NURHATI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 85.72,
+    "totalRaw": 85.723,
+    "totalRank": 40,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.22,
+        "rawScore": 26.22,
+        "rank": 78
+      },
+      "Kredit": {
+        "score": 13.73,
+        "rawScore": 13.728,
+        "rank": 96
+      },
+      "Livin": {
+        "score": 14.1,
+        "rawScore": 14.1,
+        "rank": 17
+      },
+      "Kopra": {
+        "score": 8.96,
+        "rawScore": 8.955,
+        "rank": 117
+      },
+      "Acquiring": {
+        "score": 12.72,
+        "rawScore": 12.72,
+        "rank": 71
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 40
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 32
+      }
+    },
+    "areaRank": 16,
+    "totalInArea": 34,
+    "gradeRank": 7,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10126",
+    "name": "Jakarta Palma Tower",
+    "head": "ARIE ENDANG SUMIAHWATI",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 85.65,
+    "totalRaw": 85.64650000000002,
+    "totalRank": 41,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.26,
+        "rawScore": 28.26,
+        "rank": 11
+      },
+      "Kredit": {
+        "score": 14.66,
+        "rawScore": 14.664,
+        "rank": 64
+      },
+      "Livin": {
+        "score": 10.04,
+        "rawScore": 10.035,
+        "rank": 120
+      },
+      "Kopra": {
+        "score": 9.34,
+        "rawScore": 9.34,
+        "rank": 58
+      },
+      "Acquiring": {
+        "score": 14.2,
+        "rawScore": 14.1975,
+        "rank": 33
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 41
+      },
+      "Ekosistem": {
+        "score": 4.15,
+        "rawScore": 4.15,
+        "rank": 153
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 15,
+    "gradeRank": 15,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15713",
+    "name": "Depok Universitas Indonesia",
+    "head": "ALEXANDER EKO KURNIAWAN",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 85.64,
+    "totalRaw": 85.63799999999999,
+    "totalRank": 42,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.23,
+        "rawScore": 26.235,
+        "rank": 76
+      },
+      "Kredit": {
+        "score": 15.31,
+        "rawScore": 15.313,
+        "rank": 41
+      },
+      "Livin": {
+        "score": 14.55,
+        "rawScore": 14.55,
+        "rank": 5
+      },
+      "Kopra": {
+        "score": 8.79,
+        "rawScore": 8.785,
+        "rank": 130
+      },
+      "Acquiring": {
+        "score": 10.75,
+        "rawScore": 10.755,
+        "rank": 134
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 42
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 33
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 19,
+    "gradeRank": 16,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10125",
+    "name": "Jakarta Pondok Indah Office 3",
+    "head": "MICHAEL DANNIEL",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 85.53,
+    "totalRaw": 85.533,
+    "totalRank": 43,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.4,
+        "rawScore": 26.4,
+        "rank": 68
+      },
+      "Kredit": {
+        "score": 17.27,
+        "rawScore": 17.268,
+        "rank": 6
+      },
+      "Livin": {
+        "score": 11.07,
+        "rawScore": 11.07,
+        "rank": 82
+      },
+      "Kopra": {
+        "score": 9.5,
+        "rawScore": 9.5,
+        "rank": 35
+      },
+      "Acquiring": {
+        "score": 11.29,
+        "rawScore": 11.295,
+        "rank": 126
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 43
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 34
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 15,
+    "gradeRank": 17,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15707",
+    "name": "Sawangan Sari Plaza (dh Depok Bukit Sawangan)",
+    "head": "QORY OCTAVIANI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 85.43,
+    "totalRaw": 85.428,
+    "totalRank": 44,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.32,
+        "rawScore": 25.32,
+        "rank": 102
+      },
+      "Kredit": {
+        "score": 13.87,
+        "rawScore": 13.873,
+        "rank": 90
+      },
+      "Livin": {
+        "score": 14.28,
+        "rawScore": 14.28,
+        "rank": 14
+      },
+      "Kopra": {
+        "score": 9.57,
+        "rawScore": 9.565,
+        "rank": 23
+      },
+      "Acquiring": {
+        "score": 12.39,
+        "rawScore": 12.39,
+        "rank": 82
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 44
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 35
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 19,
+    "gradeRank": 18,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12720",
+    "name": "Jakarta Universitas Pancasila",
+    "head": "RAVIKA WULANSUCI WIRNASAPUTRI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 85.31,
+    "totalRaw": 85.3065,
+    "totalRank": 45,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.48,
+        "rawScore": 27.48,
+        "rank": 40
+      },
+      "Kredit": {
+        "score": 15.66,
+        "rawScore": 15.664,
+        "rank": 35
+      },
+      "Livin": {
+        "score": 11.43,
+        "rawScore": 11.43,
+        "rank": 70
+      },
+      "Kopra": {
+        "score": 9.22,
+        "rawScore": 9.22,
+        "rank": 79
+      },
+      "Acquiring": {
+        "score": 11.51,
+        "rawScore": 11.5125,
+        "rank": 116
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 45
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 36
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 19,
+    "gradeRank": 19,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10110",
+    "name": "Jakarta Pondok Pinang Center",
+    "head": "NIKEN UTAMI WULANDARI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 85.31,
+    "totalRaw": 85.306,
+    "totalRank": 46,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.63,
+        "rawScore": 26.625,
+        "rank": 63
+      },
+      "Kredit": {
+        "score": 15.22,
+        "rawScore": 15.216,
+        "rank": 47
+      },
+      "Livin": {
+        "score": 12.06,
+        "rawScore": 12.06,
+        "rank": 47
+      },
+      "Kopra": {
+        "score": 8.66,
+        "rawScore": 8.655,
+        "rank": 137
+      },
+      "Acquiring": {
+        "score": 12.75,
+        "rawScore": 12.75,
+        "rank": 70
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 46
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 37
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 15,
+    "gradeRank": 20,
+    "totalInGrade": 57
+  },
+  {
+    "code": "13376",
+    "name": "Bogor Gunung Putri",
+    "head": "YESSI ANGGRAINI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 85.2,
+    "totalRaw": 85.2,
+    "totalRank": 47,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.18,
+        "rawScore": 27.18,
+        "rank": 47
+      },
+      "Kredit": {
+        "score": 13.16,
+        "rawScore": 13.155,
+        "rank": 118
+      },
+      "Livin": {
+        "score": 14.64,
+        "rawScore": 14.64,
+        "rank": 2
+      },
+      "Kopra": {
+        "score": 9.85,
+        "rawScore": 9.85,
+        "rank": 9
+      },
+      "Acquiring": {
+        "score": 10.72,
+        "rawScore": 10.725,
+        "rank": 135
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 47
+      },
+      "Ekosistem": {
+        "score": 4.65,
+        "rawScore": 4.65,
+        "rank": 137
+      }
+    },
+    "areaRank": 17,
+    "totalInArea": 34,
+    "gradeRank": 21,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10100",
+    "name": "Jakarta Pondok Indah",
+    "head": "TRIANA WAHYUNINGSIH",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 85.19,
+    "totalRaw": 85.187,
+    "totalRank": 48,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.86,
+        "rawScore": 25.86,
+        "rank": 85
+      },
+      "Kredit": {
+        "score": 12.37,
+        "rawScore": 12.367,
+        "rank": 137
+      },
+      "Livin": {
+        "score": 12.95,
+        "rawScore": 12.945,
+        "rank": 38
+      },
+      "Kopra": {
+        "score": 9.24,
+        "rawScore": 9.24,
+        "rank": 76
+      },
+      "Acquiring": {
+        "score": 14.78,
+        "rawScore": 14.775,
+        "rank": 10
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 48
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 38
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 15,
+    "gradeRank": 2,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12418",
+    "name": "Jakarta Pasar Minggu",
+    "head": "NURHAYATI NINGSIH",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 85.03,
+    "totalRaw": 85.0275,
+    "totalRank": 49,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.16,
+        "rawScore": 25.155,
+        "rank": 107
+      },
+      "Kredit": {
+        "score": 16.43,
+        "rawScore": 16.43,
+        "rank": 15
+      },
+      "Livin": {
+        "score": 10.29,
+        "rawScore": 10.29,
+        "rank": 110
+      },
+      "Kopra": {
+        "score": 9.78,
+        "rawScore": 9.78,
+        "rank": 14
+      },
+      "Acquiring": {
+        "score": 14.12,
+        "rawScore": 14.1225,
+        "rank": 39
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 49
+      },
+      "Ekosistem": {
+        "score": 4.25,
+        "rawScore": 4.25,
+        "rank": 150
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 26,
+    "gradeRank": 8,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12403",
+    "name": "Jakarta Kuningan",
+    "head": "RR. FARIDA YAQUARTI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 84.99,
+    "totalRaw": 84.9885,
+    "totalRank": 50,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.56,
+        "rawScore": 25.56,
+        "rank": 95
+      },
+      "Kredit": {
+        "score": 16.35,
+        "rawScore": 16.346,
+        "rank": 17
+      },
+      "Livin": {
+        "score": 13.52,
+        "rawScore": 13.515,
+        "rank": 28
+      },
+      "Kopra": {
+        "score": 9.18,
+        "rawScore": 9.18,
+        "rank": 86
+      },
+      "Acquiring": {
+        "score": 11.14,
+        "rawScore": 11.1375,
+        "rank": 129
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 50
+      },
+      "Ekosistem": {
+        "score": 4.25,
+        "rawScore": 4.25,
+        "rank": 151
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 26,
+    "gradeRank": 3,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10107",
+    "name": "Jakarta Aminta Plaza",
+    "head": "ARIE SATYA HAPSARI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 84.88,
+    "totalRaw": 84.8795,
+    "totalRank": 51,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.71,
+        "rawScore": 26.715,
+        "rank": 60
+      },
+      "Kredit": {
+        "score": 13.71,
+        "rawScore": 13.712,
+        "rank": 97
+      },
+      "Livin": {
+        "score": 11.93,
+        "rawScore": 11.925,
+        "rank": 50
+      },
+      "Kopra": {
+        "score": 9.23,
+        "rawScore": 9.23,
+        "rank": 78
+      },
+      "Acquiring": {
+        "score": 13.3,
+        "rawScore": 13.2975,
+        "rank": 53
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 51
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 39
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 15,
+    "gradeRank": 9,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10123",
+    "name": "Jakarta Petukangan",
+    "head": "HARRY GUNAWAN",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 84.86,
+    "totalRaw": 84.8635,
+    "totalRank": 52,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.84,
+        "rawScore": 27.84,
+        "rank": 23
+      },
+      "Kredit": {
+        "score": 11.95,
+        "rawScore": 11.946,
+        "rank": 141
+      },
+      "Livin": {
+        "score": 14.1,
+        "rawScore": 14.1,
+        "rank": 18
+      },
+      "Kopra": {
+        "score": 9.46,
+        "rawScore": 9.46,
+        "rank": 44
+      },
+      "Acquiring": {
+        "score": 14.02,
+        "rawScore": 14.0175,
+        "rank": 45
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 52
+      },
+      "Ekosistem": {
+        "score": 2.5,
+        "rawScore": 2.5,
+        "rank": 164
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 15,
+    "gradeRank": 18,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10121",
+    "name": "Jakarta Gedung Lemigas",
+    "head": "ZAKI MUNAZAT",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 84.8,
+    "totalRaw": 84.79549999999999,
+    "totalRank": 53,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.78,
+        "rawScore": 27.78,
+        "rank": 27
+      },
+      "Kredit": {
+        "score": 15.82,
+        "rawScore": 15.823,
+        "rank": 32
+      },
+      "Livin": {
+        "score": 11.18,
+        "rawScore": 11.175,
+        "rank": 78
+      },
+      "Kopra": {
+        "score": 8.61,
+        "rawScore": 8.61,
+        "rank": 141
+      },
+      "Acquiring": {
+        "score": 11.41,
+        "rawScore": 11.4075,
+        "rank": 121
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 53
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 40
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 15,
+    "gradeRank": 22,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15705",
+    "name": "Depok Cisalak",
+    "head": "JENY DWI MASTIKOWATI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 84.74,
+    "totalRaw": 84.73949999999999,
+    "totalRank": 54,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.32,
+        "rawScore": 25.32,
+        "rank": 103
+      },
+      "Kredit": {
+        "score": 13.1,
+        "rawScore": 13.102,
+        "rank": 120
+      },
+      "Livin": {
+        "score": 13.39,
+        "rawScore": 13.395,
+        "rank": 30
+      },
+      "Kopra": {
+        "score": 8.23,
+        "rawScore": 8.23,
+        "rank": 157
+      },
+      "Acquiring": {
+        "score": 14.69,
+        "rawScore": 14.6925,
+        "rank": 14
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 54
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 41
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 19,
+    "gradeRank": 23,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12611",
+    "name": "Jakarta Kemang Plaza",
+    "head": "DEISY INDARTY WERDIASTUTI S",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 84.67,
+    "totalRaw": 84.67399999999999,
+    "totalRank": 55,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.3,
+        "rawScore": 27.3,
+        "rank": 45
+      },
+      "Kredit": {
+        "score": 12.89,
+        "rawScore": 12.894,
+        "rank": 125
+      },
+      "Livin": {
+        "score": 10.95,
+        "rawScore": 10.95,
+        "rank": 86
+      },
+      "Kopra": {
+        "score": 9.34,
+        "rawScore": 9.34,
+        "rank": 59
+      },
+      "Acquiring": {
+        "score": 14.19,
+        "rawScore": 14.19,
+        "rank": 34
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 55
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 42
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 16,
+    "gradeRank": 10,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13320",
+    "name": "Citeureup",
+    "head": "RIZKI SYAHBANI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 84.65,
+    "totalRaw": 84.647,
+    "totalRank": 56,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.74,
+        "rawScore": 25.74,
+        "rank": 91
+      },
+      "Kredit": {
+        "score": 13.53,
+        "rawScore": 13.532,
+        "rank": 105
+      },
+      "Livin": {
+        "score": 14.23,
+        "rawScore": 14.235,
+        "rank": 16
+      },
+      "Kopra": {
+        "score": 9.27,
+        "rawScore": 9.275,
+        "rank": 69
+      },
+      "Acquiring": {
+        "score": 11.87,
+        "rawScore": 11.865,
+        "rank": 99
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 56
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 43
+      }
+    },
+    "areaRank": 18,
+    "totalInArea": 34,
+    "gradeRank": 24,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15704",
+    "name": "Depok Kelapa Dua",
+    "head": "SUKMA DEWI HAPSARI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 84.64,
+    "totalRaw": 84.63649999999998,
+    "totalRank": 57,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.78,
+        "rawScore": 24.78,
+        "rank": 121
+      },
+      "Kredit": {
+        "score": 13.62,
+        "rawScore": 13.624,
+        "rank": 102
+      },
+      "Livin": {
+        "score": 14.55,
+        "rawScore": 14.55,
+        "rank": 6
+      },
+      "Kopra": {
+        "score": 9.25,
+        "rawScore": 9.255,
+        "rank": 73
+      },
+      "Acquiring": {
+        "score": 12.43,
+        "rawScore": 12.4275,
+        "rank": 80
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 57
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 44
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 19,
+    "gradeRank": 11,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12411",
+    "name": "Jakarta Pasar Rumput",
+    "head": "NURUL FITRI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 84.58,
+    "totalRaw": 84.584,
+    "totalRank": 58,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.4,
+        "rawScore": 26.4,
+        "rank": 69
+      },
+      "Kredit": {
+        "score": 13.25,
+        "rawScore": 13.254,
+        "rank": 115
+      },
+      "Livin": {
+        "score": 11.71,
+        "rawScore": 11.715,
+        "rank": 57
+      },
+      "Kopra": {
+        "score": 8.65,
+        "rawScore": 8.65,
+        "rank": 138
+      },
+      "Acquiring": {
+        "score": 14.56,
+        "rawScore": 14.565,
+        "rank": 19
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 58
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 45
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 26,
+    "gradeRank": 25,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10105",
+    "name": "Jakarta Mal Pondok Indah",
+    "head": "NENET KUSDIATI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 84.53,
+    "totalRaw": 84.5325,
+    "totalRank": 59,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.13,
+        "rawScore": 28.125,
+        "rank": 17
+      },
+      "Kredit": {
+        "score": 12.87,
+        "rawScore": 12.875,
+        "rank": 127
+      },
+      "Livin": {
+        "score": 11.07,
+        "rawScore": 11.07,
+        "rank": 83
+      },
+      "Kopra": {
+        "score": 9.42,
+        "rawScore": 9.42,
+        "rank": 50
+      },
+      "Acquiring": {
+        "score": 13.04,
+        "rawScore": 13.0425,
+        "rank": 62
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 59
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 46
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 15,
+    "gradeRank": 4,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12426",
+    "name": "Jakarta Multivision Tower",
+    "head": "RAHMANDHIKA SETYAATMAJA KUFFAL",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 84.32,
+    "totalRaw": 84.3185,
+    "totalRank": 60,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.63,
+        "rawScore": 27.63,
+        "rank": 35
+      },
+      "Kredit": {
+        "score": 16.22,
+        "rawScore": 16.216,
+        "rank": 21
+      },
+      "Livin": {
+        "score": 9.04,
+        "rawScore": 9.045,
+        "rank": 151
+      },
+      "Kopra": {
+        "score": 8.29,
+        "rawScore": 8.295,
+        "rank": 156
+      },
+      "Acquiring": {
+        "score": 13.13,
+        "rawScore": 13.1325,
+        "rank": 61
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 60
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 47
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 26,
+    "gradeRank": 19,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12721",
+    "name": "Jakarta Gedung Talavera",
+    "head": "RIANA ADHIKA",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 84.27,
+    "totalRaw": 84.265,
+    "totalRank": 61,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.25,
+        "rawScore": 26.25,
+        "rank": 74
+      },
+      "Kredit": {
+        "score": 14.23,
+        "rawScore": 14.23,
+        "rank": 78
+      },
+      "Livin": {
+        "score": 11.82,
+        "rawScore": 11.82,
+        "rank": 54
+      },
+      "Kopra": {
+        "score": 9.29,
+        "rawScore": 9.29,
+        "rank": 65
+      },
+      "Acquiring": {
+        "score": 12.68,
+        "rawScore": 12.675,
+        "rank": 73
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 61
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 48
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 19,
+    "gradeRank": 26,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10400",
+    "name": "Jakarta Bursa Efek",
+    "head": "GILANG PETRAGANI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 84.26,
+    "totalRaw": 84.262,
+    "totalRank": 62,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.75,
+        "rawScore": 27.75,
+        "rank": 28
+      },
+      "Kredit": {
+        "score": 14.57,
+        "rawScore": 14.572,
+        "rank": 68
+      },
+      "Livin": {
+        "score": 11.8,
+        "rawScore": 11.805,
+        "rank": 55
+      },
+      "Kopra": {
+        "score": 8.57,
+        "rawScore": 8.57,
+        "rank": 145
+      },
+      "Acquiring": {
+        "score": 11.56,
+        "rawScore": 11.565,
+        "rank": 112
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 62
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 49
+      }
+    },
+    "areaRank": 2,
+    "totalInArea": 21,
+    "gradeRank": 5,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13324",
+    "name": "Bogor Nirwana Residence",
+    "head": "TEGUH OCTORA TRINANDA",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 84.12,
+    "totalRaw": 84.116,
+    "totalRank": 63,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.39,
+        "rawScore": 26.385,
+        "rank": 71
+      },
+      "Kredit": {
+        "score": 13.31,
+        "rawScore": 13.306,
+        "rank": 113
+      },
+      "Livin": {
+        "score": 11.63,
+        "rawScore": 11.625,
+        "rank": 61
+      },
+      "Kopra": {
+        "score": 9.59,
+        "rawScore": 9.585,
+        "rank": 21
+      },
+      "Acquiring": {
+        "score": 13.21,
+        "rawScore": 13.215,
+        "rank": 58
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 63
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 50
+      }
+    },
+    "areaRank": 19,
+    "totalInArea": 34,
+    "gradeRank": 20,
+    "totalInGrade": 43
+  },
+  {
+    "code": "15700",
+    "name": "Depok",
+    "head": "PUTRI MEGA WIJAYANTI",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 83.87,
+    "totalRaw": 83.8655,
+    "totalRank": 64,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.5,
+        "rawScore": 25.5,
+        "rank": 97
+      },
+      "Kredit": {
+        "score": 12.65,
+        "rawScore": 12.653,
+        "rank": 130
+      },
+      "Livin": {
+        "score": 11.93,
+        "rawScore": 11.925,
+        "rank": 51
+      },
+      "Kopra": {
+        "score": 9.5,
+        "rawScore": 9.5,
+        "rank": 36
+      },
+      "Acquiring": {
+        "score": 14.29,
+        "rawScore": 14.2875,
+        "rank": 29
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 64
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 51
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 19,
+    "gradeRank": 6,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13317",
+    "name": "Bogor Sholeh Iskandar",
+    "head": "LESTARI KURNIATI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 83.86,
+    "totalRaw": 83.85999999999999,
+    "totalRank": 65,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.08,
+        "rawScore": 25.08,
+        "rank": 114
+      },
+      "Kredit": {
+        "score": 13.14,
+        "rawScore": 13.14,
+        "rank": 119
+      },
+      "Livin": {
+        "score": 13.06,
+        "rawScore": 13.065,
+        "rank": 36
+      },
+      "Kopra": {
+        "score": 9.64,
+        "rawScore": 9.645,
+        "rank": 19
+      },
+      "Acquiring": {
+        "score": 12.93,
+        "rawScore": 12.93,
+        "rank": 65
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 65
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 52
+      }
+    },
+    "areaRank": 20,
+    "totalInArea": 34,
+    "gradeRank": 27,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12606",
+    "name": "Jakarta Melawai",
+    "head": "FERY RIZKI PRASETYA",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 83.75,
+    "totalRaw": 83.7525,
+    "totalRank": 66,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.32,
+        "rawScore": 25.32,
+        "rank": 104
+      },
+      "Kredit": {
+        "score": 14.74,
+        "rawScore": 14.745,
+        "rank": 61
+      },
+      "Livin": {
+        "score": 10.17,
+        "rawScore": 10.17,
+        "rank": 113
+      },
+      "Kopra": {
+        "score": 9.04,
+        "rawScore": 9.035,
+        "rank": 106
+      },
+      "Acquiring": {
+        "score": 14.48,
+        "rawScore": 14.4825,
+        "rank": 22
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 66
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 53
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 16,
+    "gradeRank": 7,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13326",
+    "name": "Bogor ATC Parung",
+    "head": "RD DADE KUSUMA",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 83.69,
+    "totalRaw": 83.6935,
+    "totalRank": 67,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.54,
+        "rawScore": 24.54,
+        "rank": 127
+      },
+      "Kredit": {
+        "score": 12.64,
+        "rawScore": 12.641,
+        "rank": 132
+      },
+      "Livin": {
+        "score": 14.28,
+        "rawScore": 14.28,
+        "rank": 15
+      },
+      "Kopra": {
+        "score": 9.36,
+        "rawScore": 9.355,
+        "rank": 56
+      },
+      "Acquiring": {
+        "score": 14.08,
+        "rawScore": 14.0775,
+        "rank": 41
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 67
+      },
+      "Ekosistem": {
+        "score": 3.8,
+        "rawScore": 3.8,
+        "rank": 156
+      }
+    },
+    "areaRank": 21,
+    "totalInArea": 34,
+    "gradeRank": 21,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13381",
+    "name": "Jonggol",
+    "head": "KHORI ARIYANI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 83.61,
+    "totalRaw": 83.6075,
+    "totalRank": 68,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.08,
+        "rawScore": 25.08,
+        "rank": 115
+      },
+      "Kredit": {
+        "score": 11.93,
+        "rawScore": 11.93,
+        "rank": 142
+      },
+      "Livin": {
+        "score": 14.46,
+        "rawScore": 14.46,
+        "rank": 10
+      },
+      "Kopra": {
+        "score": 9.8,
+        "rawScore": 9.8,
+        "rank": 13
+      },
+      "Acquiring": {
+        "score": 12.34,
+        "rawScore": 12.3375,
+        "rank": 84
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 68
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 54
+      }
+    },
+    "areaRank": 22,
+    "totalInArea": 34,
+    "gradeRank": 22,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12404",
+    "name": "Jakarta Tebet Supomo",
+    "head": "FITRATI NOVIYANTI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 83.57,
+    "totalRaw": 83.571,
+    "totalRank": 69,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.75,
+        "rawScore": 27.75,
+        "rank": 29
+      },
+      "Kredit": {
+        "score": 14.81,
+        "rawScore": 14.806,
+        "rank": 59
+      },
+      "Livin": {
+        "score": 9.92,
+        "rawScore": 9.915,
+        "rank": 128
+      },
+      "Kopra": {
+        "score": 8.59,
+        "rawScore": 8.59,
+        "rank": 142
+      },
+      "Acquiring": {
+        "score": 12.51,
+        "rawScore": 12.51,
+        "rank": 78
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 69
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 55
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 26,
+    "gradeRank": 12,
+    "totalInGrade": 31
+  },
+  {
+    "code": "7009",
+    "name": "Jakarta Gatot Subroto",
+    "head": "KARTIKA DELSY MARDIANI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 83.48,
+    "totalRaw": 83.47500000000001,
+    "totalRank": 70,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.48,
+        "rawScore": 26.475,
+        "rank": 66
+      },
+      "Kredit": {
+        "score": 14.15,
+        "rawScore": 14.155,
+        "rank": 80
+      },
+      "Livin": {
+        "score": 9.39,
+        "rawScore": 9.39,
+        "rank": 143
+      },
+      "Kopra": {
+        "score": 9.27,
+        "rawScore": 9.265,
+        "rank": 71
+      },
+      "Acquiring": {
+        "score": 14.19,
+        "rawScore": 14.19,
+        "rank": 35
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 70
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 56
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 14,
+    "gradeRank": 13,
+    "totalInGrade": 31
+  },
+  {
+    "code": "15777",
+    "name": "Depok Citayam",
+    "head": "JOHANNES ANTONIUS MANURUNG",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 83.19,
+    "totalRaw": 83.185,
+    "totalRank": 71,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.39,
+        "rawScore": 27.39,
+        "rank": 44
+      },
+      "Kredit": {
+        "score": 15.41,
+        "rawScore": 15.415,
+        "rank": 38
+      },
+      "Livin": {
+        "score": 10.34,
+        "rawScore": 10.335,
+        "rank": 105
+      },
+      "Kopra": {
+        "score": 10,
+        "rawScore": 10,
+        "rank": 5
+      },
+      "Acquiring": {
+        "score": 10.1,
+        "rawScore": 10.095,
+        "rank": 147
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 71
+      },
+      "Ekosistem": {
+        "score": 4.95,
+        "rawScore": 4.95,
+        "rank": 124
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 19,
+    "gradeRank": 23,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10119",
+    "name": "Jakarta Bintaro Jaya",
+    "head": "DINNY ERLINDA",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 83.17,
+    "totalRaw": 83.166,
+    "totalRank": 72,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.2,
+        "rawScore": 25.2,
+        "rank": 105
+      },
+      "Kredit": {
+        "score": 14.91,
+        "rawScore": 14.906,
+        "rank": 58
+      },
+      "Livin": {
+        "score": 11.64,
+        "rawScore": 11.64,
+        "rank": 60
+      },
+      "Kopra": {
+        "score": 9.19,
+        "rawScore": 9.19,
+        "rank": 83
+      },
+      "Acquiring": {
+        "score": 12.33,
+        "rawScore": 12.33,
+        "rank": 85
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 72
+      },
+      "Ekosistem": {
+        "score": 4.9,
+        "rawScore": 4.9,
+        "rank": 125
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 15,
+    "gradeRank": 8,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12700",
+    "name": "Jakarta Fatmawati",
+    "head": "AGUNG PRAWIRA UTAMA",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 83.15,
+    "totalRaw": 83.15150000000001,
+    "totalRank": 73,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.84,
+        "rawScore": 25.845,
+        "rank": 86
+      },
+      "Kredit": {
+        "score": 14.96,
+        "rawScore": 14.959,
+        "rank": 56
+      },
+      "Livin": {
+        "score": 11.65,
+        "rawScore": 11.655,
+        "rank": 59
+      },
+      "Kopra": {
+        "score": 8.62,
+        "rawScore": 8.615,
+        "rank": 140
+      },
+      "Acquiring": {
+        "score": 13.63,
+        "rawScore": 13.6275,
+        "rank": 48
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 73
+      },
+      "Ekosistem": {
+        "score": 3.45,
+        "rawScore": 3.45,
+        "rank": 160
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 19,
+    "gradeRank": 9,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12709",
+    "name": "Jakarta South Quarter (dh Jakarta Simatupang)",
+    "head": "DEWI MAULINA WIDIYANINGSIH",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 82.93,
+    "totalRaw": 82.9275,
+    "totalRank": 74,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.93,
+        "rawScore": 27.93,
+        "rank": 21
+      },
+      "Kredit": {
+        "score": 14.18,
+        "rawScore": 14.18,
+        "rank": 79
+      },
+      "Livin": {
+        "score": 10.39,
+        "rawScore": 10.395,
+        "rank": 103
+      },
+      "Kopra": {
+        "score": 9.21,
+        "rawScore": 9.215,
+        "rank": 80
+      },
+      "Acquiring": {
+        "score": 11.71,
+        "rawScore": 11.7075,
+        "rank": 105
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 74
+      },
+      "Ekosistem": {
+        "score": 4.5,
+        "rawScore": 4.5,
+        "rank": 144
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 19,
+    "gradeRank": 28,
+    "totalInGrade": 57
+  },
+  {
+    "code": "7011",
+    "name": "Jakarta BKPM",
+    "head": "CHRISTOPHER",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 82.92,
+    "totalRaw": 82.916,
+    "totalRank": 75,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.02,
+        "rawScore": 26.025,
+        "rank": 80
+      },
+      "Kredit": {
+        "score": 14.3,
+        "rawScore": 14.296,
+        "rank": 75
+      },
+      "Livin": {
+        "score": 8.7,
+        "rawScore": 8.7,
+        "rank": 160
+      },
+      "Kopra": {
+        "score": 9.49,
+        "rawScore": 9.495,
+        "rank": 38
+      },
+      "Acquiring": {
+        "score": 14.4,
+        "rawScore": 14.4,
+        "rank": 25
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 75
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 57
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 14,
+    "gradeRank": 24,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10111",
+    "name": "Jakarta Arteri Pondok Indah",
+    "head": "ROSILA",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 82.91,
+    "totalRaw": 82.9095,
+    "totalRank": 76,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.71,
+        "rawScore": 24.705,
+        "rank": 123
+      },
+      "Kredit": {
+        "score": 12.84,
+        "rawScore": 12.842,
+        "rank": 129
+      },
+      "Livin": {
+        "score": 12.65,
+        "rawScore": 12.645,
+        "rank": 42
+      },
+      "Kopra": {
+        "score": 9.45,
+        "rawScore": 9.45,
+        "rank": 46
+      },
+      "Acquiring": {
+        "score": 13.27,
+        "rawScore": 13.2675,
+        "rank": 55
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 76
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 58
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 15,
+    "gradeRank": 29,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12432",
+    "name": "Jakarta Menara Cyber 2",
+    "head": "STEVI MELVA ROSA SIANTURI",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 82.83,
+    "totalRaw": 82.83200000000001,
+    "totalRank": 77,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.42,
+        "rawScore": 27.42,
+        "rank": 42
+      },
+      "Kredit": {
+        "score": 17.64,
+        "rawScore": 17.637,
+        "rank": 4
+      },
+      "Livin": {
+        "score": 9.87,
+        "rawScore": 9.87,
+        "rank": 130
+      },
+      "Kopra": {
+        "score": 8.52,
+        "rawScore": 8.515,
+        "rank": 148
+      },
+      "Acquiring": {
+        "score": 9.39,
+        "rawScore": 9.39,
+        "rank": 157
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 77
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 59
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 26,
+    "gradeRank": 25,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13300",
+    "name": "Bogor Juanda",
+    "head": "ALDIN MUHAMMAD",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 82.75,
+    "totalRaw": 82.7535,
+    "totalRank": 78,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.45,
+        "rawScore": 23.445,
+        "rank": 140
+      },
+      "Kredit": {
+        "score": 13.59,
+        "rawScore": 13.591,
+        "rank": 103
+      },
+      "Livin": {
+        "score": 12.63,
+        "rawScore": 12.63,
+        "rank": 43
+      },
+      "Kopra": {
+        "score": 8.94,
+        "rawScore": 8.935,
+        "rank": 119
+      },
+      "Acquiring": {
+        "score": 14.15,
+        "rawScore": 14.1525,
+        "rank": 38
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 78
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 60
+      }
+    },
+    "areaRank": 23,
+    "totalInArea": 34,
+    "gradeRank": 10,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10200",
+    "name": "Jakarta Sudirman",
+    "head": "BESTRINA INDRASWARI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 82.75,
+    "totalRaw": 82.753,
+    "totalRank": 79,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.58,
+        "rawScore": 22.575,
+        "rank": 152
+      },
+      "Kredit": {
+        "score": 14.26,
+        "rawScore": 14.258,
+        "rank": 77
+      },
+      "Livin": {
+        "score": 13.35,
+        "rawScore": 13.35,
+        "rank": 32
+      },
+      "Kopra": {
+        "score": 7.75,
+        "rawScore": 7.75,
+        "rank": 162
+      },
+      "Acquiring": {
+        "score": 14.82,
+        "rawScore": 14.82,
+        "rank": 5
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 79
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 61
+      }
+    },
+    "areaRank": 3,
+    "totalInArea": 21,
+    "gradeRank": 11,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13318",
+    "name": "Bogor Kampus IPB Darmaga",
+    "head": "ADIT PRASETYO",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 82.72,
+    "totalRaw": 82.715,
+    "totalRank": 80,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.14,
+        "rawScore": 25.14,
+        "rank": 110
+      },
+      "Kredit": {
+        "score": 16.89,
+        "rawScore": 16.885,
+        "rank": 10
+      },
+      "Livin": {
+        "score": 10.84,
+        "rawScore": 10.845,
+        "rank": 90
+      },
+      "Kopra": {
+        "score": 8.97,
+        "rawScore": 8.975,
+        "rank": 114
+      },
+      "Acquiring": {
+        "score": 11.37,
+        "rawScore": 11.37,
+        "rank": 123
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 80
+      },
+      "Ekosistem": {
+        "score": 4.5,
+        "rawScore": 4.5,
+        "rank": 145
+      }
+    },
+    "areaRank": 24,
+    "totalInArea": 34,
+    "gradeRank": 30,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15786",
+    "name": "Depok Cinangka",
+    "head": "SRI SUPRIATI",
+    "grade": "B.4.2",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 82.47,
+    "totalRaw": 82.465,
+    "totalRank": 81,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.26,
+        "rawScore": 22.26,
+        "rank": 155
+      },
+      "Kredit": {
+        "score": 16.84,
+        "rawScore": 16.84,
+        "rank": 12
+      },
+      "Livin": {
+        "score": 9.69,
+        "rawScore": 9.69,
+        "rank": 136
+      },
+      "Kopra": {
+        "score": 9.56,
+        "rawScore": 9.56,
+        "rank": 24
+      },
+      "Acquiring": {
+        "score": 14.12,
+        "rawScore": 14.115,
+        "rank": 40
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 81
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 62
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 19,
+    "gradeRank": 2,
+    "totalInGrade": 2
+  },
+  {
+    "code": "15703",
+    "name": "Depok Tengah",
+    "head": "IRA PUSPITA YUNIANA",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 82.44,
+    "totalRaw": 82.4415,
+    "totalRank": 82,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.24,
+        "rawScore": 23.235,
+        "rank": 144
+      },
+      "Kredit": {
+        "score": 13.93,
+        "rawScore": 13.929,
+        "rank": 89
+      },
+      "Livin": {
+        "score": 11.78,
+        "rawScore": 11.775,
+        "rank": 56
+      },
+      "Kopra": {
+        "score": 9.09,
+        "rawScore": 9.095,
+        "rank": 98
+      },
+      "Acquiring": {
+        "score": 14.41,
+        "rawScore": 14.4075,
+        "rank": 24
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 82
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 63
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 19,
+    "gradeRank": 31,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10115",
+    "name": "Jakarta Mal Pondok Indah 2",
+    "head": "IMACULATA ARIMBI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "101",
+    "areaName": "Area Pondok Indah",
+    "totalScore": 82.35,
+    "totalRaw": 82.3505,
+    "totalRank": 83,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.02,
+        "rawScore": 28.02,
+        "rank": 19
+      },
+      "Kredit": {
+        "score": 12.65,
+        "rawScore": 12.653,
+        "rank": 131
+      },
+      "Livin": {
+        "score": 10.66,
+        "rawScore": 10.665,
+        "rank": 95
+      },
+      "Kopra": {
+        "score": 9.05,
+        "rawScore": 9.05,
+        "rank": 102
+      },
+      "Acquiring": {
+        "score": 12.11,
+        "rawScore": 12.1125,
+        "rank": 93
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 83
+      },
+      "Ekosistem": {
+        "score": 4.85,
+        "rawScore": 4.85,
+        "rank": 128
+      }
+    },
+    "areaRank": 15,
+    "totalInArea": 15,
+    "gradeRank": 14,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12424",
+    "name": "Jakarta Wisma IKPT",
+    "head": "TIRZA KARTIKA ANDARINI",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 82.24,
+    "totalRaw": 82.236,
+    "totalRank": 84,
+    "categoryScores": {
+      "DPK": {
+        "score": 28,
+        "rawScore": 28.005,
+        "rank": 20
+      },
+      "Kredit": {
+        "score": 15.54,
+        "rawScore": 15.541,
+        "rank": 36
+      },
+      "Livin": {
+        "score": 9.59,
+        "rawScore": 9.585,
+        "rank": 138
+      },
+      "Kopra": {
+        "score": 9.25,
+        "rawScore": 9.25,
+        "rank": 75
+      },
+      "Acquiring": {
+        "score": 9.86,
+        "rawScore": 9.855,
+        "rank": 150
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 84
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 64
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 26,
+    "gradeRank": 32,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12719",
+    "name": "Jakarta Gedung Aneka Tambang",
+    "head": "EFIN",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 82.09,
+    "totalRaw": 82.08749999999999,
+    "totalRank": 85,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.56,
+        "rawScore": 28.56,
+        "rank": 8
+      },
+      "Kredit": {
+        "score": 12.16,
+        "rawScore": 12.165,
+        "rank": 139
+      },
+      "Livin": {
+        "score": 11.38,
+        "rawScore": 11.385,
+        "rank": 72
+      },
+      "Kopra": {
+        "score": 8.53,
+        "rawScore": 8.525,
+        "rank": 147
+      },
+      "Acquiring": {
+        "score": 11.45,
+        "rawScore": 11.4525,
+        "rank": 120
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 85
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 65
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 19,
+    "gradeRank": 12,
+    "totalInGrade": 31
+  },
+  {
+    "code": "15789",
+    "name": "Depok Meruyung (dh Depok Galeria Sawangan)",
+    "head": "IMELDA BUTAR BUTAR",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 82.04,
+    "totalRaw": 82.0445,
+    "totalRank": 86,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.6,
+        "rawScore": 27.6,
+        "rank": 37
+      },
+      "Kredit": {
+        "score": 15.22,
+        "rawScore": 15.222,
+        "rank": 46
+      },
+      "Livin": {
+        "score": 10.43,
+        "rawScore": 10.425,
+        "rank": 102
+      },
+      "Kopra": {
+        "score": 8.94,
+        "rawScore": 8.935,
+        "rank": 120
+      },
+      "Acquiring": {
+        "score": 9.86,
+        "rawScore": 9.8625,
+        "rank": 149
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 86
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 66
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 19,
+    "gradeRank": 26,
+    "totalInGrade": 43
+  },
+  {
+    "code": "7021",
+    "name": "Jakarta Oakwood",
+    "head": "REZA IRSAN UTAMA",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 81.97,
+    "totalRaw": 81.96549999999999,
+    "totalRank": 87,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.06,
+        "rawScore": 24.06,
+        "rank": 132
+      },
+      "Kredit": {
+        "score": 14.71,
+        "rawScore": 14.708,
+        "rank": 63
+      },
+      "Livin": {
+        "score": 9.73,
+        "rawScore": 9.735,
+        "rank": 134
+      },
+      "Kopra": {
+        "score": 9.78,
+        "rawScore": 9.78,
+        "rank": 15
+      },
+      "Acquiring": {
+        "score": 14.33,
+        "rawScore": 14.3325,
+        "rank": 27
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 87
+      },
+      "Ekosistem": {
+        "score": 4.35,
+        "rawScore": 4.35,
+        "rank": 147
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 14,
+    "gradeRank": 27,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10222",
+    "name": "Jakarta Mayapada Tower (dh Jkt Plaza Dua Mutiara)",
+    "head": "MAS ARIEF FADILLAH DIRDJA",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 81.95,
+    "totalRaw": 81.95349999999999,
+    "totalRank": 88,
+    "categoryScores": {
+      "DPK": {
+        "score": 26,
+        "rawScore": 25.995,
+        "rank": 82
+      },
+      "Kredit": {
+        "score": 13.78,
+        "rawScore": 13.781,
+        "rank": 93
+      },
+      "Livin": {
+        "score": 9.35,
+        "rawScore": 9.345,
+        "rank": 145
+      },
+      "Kopra": {
+        "score": 9.34,
+        "rawScore": 9.335,
+        "rank": 61
+      },
+      "Acquiring": {
+        "score": 13.75,
+        "rawScore": 13.7475,
+        "rank": 47
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 88
+      },
+      "Ekosistem": {
+        "score": 4.75,
+        "rawScore": 4.75,
+        "rank": 134
+      }
+    },
+    "areaRank": 4,
+    "totalInArea": 21,
+    "gradeRank": 33,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15788",
+    "name": "Depok Pekapuran",
+    "head": "DERY BAGJA SUKMA PUTRA",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 81.95,
+    "totalRaw": 81.9505,
+    "totalRank": 89,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.55,
+        "rawScore": 26.55,
+        "rank": 64
+      },
+      "Kredit": {
+        "score": 15.94,
+        "rawScore": 15.943,
+        "rank": 30
+      },
+      "Livin": {
+        "score": 10.39,
+        "rawScore": 10.395,
+        "rank": 104
+      },
+      "Kopra": {
+        "score": 10,
+        "rawScore": 10,
+        "rank": 6
+      },
+      "Acquiring": {
+        "score": 10.31,
+        "rawScore": 10.3125,
+        "rank": 144
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 89
+      },
+      "Ekosistem": {
+        "score": 3.75,
+        "rawScore": 3.75,
+        "rank": 157
+      }
+    },
+    "areaRank": 15,
+    "totalInArea": 19,
+    "gradeRank": 28,
+    "totalInGrade": 43
+  },
+  {
+    "code": "15714",
+    "name": "Depok Margo City (dh Depok Pondok Cina)",
+    "head": "ARIZ FAZLI PUTRA",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 81.87,
+    "totalRaw": 81.87199999999999,
+    "totalRank": 90,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.75,
+        "rawScore": 24.75,
+        "rank": 122
+      },
+      "Kredit": {
+        "score": 11.72,
+        "rawScore": 11.722,
+        "rank": 148
+      },
+      "Livin": {
+        "score": 11.91,
+        "rawScore": 11.91,
+        "rank": 52
+      },
+      "Kopra": {
+        "score": 9.21,
+        "rawScore": 9.21,
+        "rank": 81
+      },
+      "Acquiring": {
+        "score": 14.28,
+        "rawScore": 14.28,
+        "rank": 30
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 90
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 67
+      }
+    },
+    "areaRank": 16,
+    "totalInArea": 19,
+    "gradeRank": 34,
+    "totalInGrade": 57
+  },
+  {
+    "code": "7008",
+    "name": "Jakarta Graha Mitra ( dh Jakarta Wisma Argo Manunggal)",
+    "head": "LEONY CIPTA ANDRYA",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 81.75,
+    "totalRaw": 81.75200000000001,
+    "totalRank": 91,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.16,
+        "rawScore": 27.165,
+        "rank": 48
+      },
+      "Kredit": {
+        "score": 13.63,
+        "rawScore": 13.627,
+        "rank": 101
+      },
+      "Livin": {
+        "score": 11.57,
+        "rawScore": 11.565,
+        "rank": 64
+      },
+      "Kopra": {
+        "score": 9.12,
+        "rawScore": 9.12,
+        "rank": 92
+      },
+      "Acquiring": {
+        "score": 10.27,
+        "rawScore": 10.275,
+        "rank": 145
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 91
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 68
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 14,
+    "gradeRank": 13,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10207",
+    "name": "Jakarta Tendean",
+    "head": "HERNANI ENDAH SETYOWATI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 81.61,
+    "totalRaw": 81.61,
+    "totalRank": 92,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.11,
+        "rawScore": 27.105,
+        "rank": 50
+      },
+      "Kredit": {
+        "score": 13.82,
+        "rawScore": 13.815,
+        "rank": 91
+      },
+      "Livin": {
+        "score": 10.23,
+        "rawScore": 10.23,
+        "rank": 112
+      },
+      "Kopra": {
+        "score": 9.28,
+        "rawScore": 9.28,
+        "rank": 67
+      },
+      "Acquiring": {
+        "score": 11.58,
+        "rawScore": 11.58,
+        "rank": 111
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 92
+      },
+      "Ekosistem": {
+        "score": 4.6,
+        "rawScore": 4.6,
+        "rank": 139
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 21,
+    "gradeRank": 35,
+    "totalInGrade": 57
+  },
+  {
+    "code": "13321",
+    "name": "Cileungsi",
+    "head": "YENI ARYANI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 81.61,
+    "totalRaw": 81.6055,
+    "totalRank": 93,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.11,
+        "rawScore": 25.11,
+        "rank": 111
+      },
+      "Kredit": {
+        "score": 11.27,
+        "rawScore": 11.268,
+        "rank": 153
+      },
+      "Livin": {
+        "score": 14.37,
+        "rawScore": 14.37,
+        "rank": 11
+      },
+      "Kopra": {
+        "score": 9.25,
+        "rawScore": 9.255,
+        "rank": 74
+      },
+      "Acquiring": {
+        "score": 11.6,
+        "rawScore": 11.6025,
+        "rank": 110
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 93
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 69
+      }
+    },
+    "areaRank": 25,
+    "totalInArea": 34,
+    "gradeRank": 36,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12425",
+    "name": "Jakarta Gedung Sucofindo",
+    "head": "DHARU WINARDONO",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 81.6,
+    "totalRaw": 81.598,
+    "totalRank": 94,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.42,
+        "rawScore": 24.42,
+        "rank": 131
+      },
+      "Kredit": {
+        "score": 16.93,
+        "rawScore": 16.928,
+        "rank": 8
+      },
+      "Livin": {
+        "score": 10.95,
+        "rawScore": 10.95,
+        "rank": 87
+      },
+      "Kopra": {
+        "score": 9.52,
+        "rawScore": 9.52,
+        "rank": 32
+      },
+      "Acquiring": {
+        "score": 9.78,
+        "rawScore": 9.78,
+        "rank": 152
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 94
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 70
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 26,
+    "gradeRank": 29,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12620",
+    "name": "Jakarta Mayestik",
+    "head": "KRISTI HAYUNINGTIYAS",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 81.58,
+    "totalRaw": 81.58449999999999,
+    "totalRank": 95,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.53,
+        "rawScore": 25.53,
+        "rank": 96
+      },
+      "Kredit": {
+        "score": 11.72,
+        "rawScore": 11.722,
+        "rank": 149
+      },
+      "Livin": {
+        "score": 10.13,
+        "rawScore": 10.125,
+        "rank": 117
+      },
+      "Kopra": {
+        "score": 9.28,
+        "rawScore": 9.275,
+        "rank": 70
+      },
+      "Acquiring": {
+        "score": 14.93,
+        "rawScore": 14.9325,
+        "rank": 4
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 95
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 71
+      }
+    },
+    "areaRank": 5,
+    "totalInArea": 16,
+    "gradeRank": 37,
+    "totalInGrade": 57
+  },
+  {
+    "code": "15709",
+    "name": "Depok Timur",
+    "head": "TAMARA HANUM KRISNA WIRDANI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 81.48,
+    "totalRaw": 81.47800000000001,
+    "totalRank": 96,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.23,
+        "rawScore": 23.235,
+        "rank": 145
+      },
+      "Kredit": {
+        "score": 14.09,
+        "rawScore": 14.088,
+        "rank": 82
+      },
+      "Livin": {
+        "score": 12.4,
+        "rawScore": 12.405,
+        "rank": 46
+      },
+      "Kopra": {
+        "score": 9.81,
+        "rawScore": 9.81,
+        "rank": 11
+      },
+      "Acquiring": {
+        "score": 11.94,
+        "rawScore": 11.94,
+        "rank": 96
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 96
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 72
+      }
+    },
+    "areaRank": 17,
+    "totalInArea": 19,
+    "gradeRank": 38,
+    "totalInGrade": 57
+  },
+  {
+    "code": "7017",
+    "name": "Jakarta Sopo Del Tower (dh Jakarta Mega Kuningan)",
+    "head": "ALBETTY SWATRIANA",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 81.35,
+    "totalRaw": 81.34700000000001,
+    "totalRank": 97,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.18,
+        "rawScore": 25.185,
+        "rank": 106
+      },
+      "Kredit": {
+        "score": 12.99,
+        "rawScore": 12.992,
+        "rank": 123
+      },
+      "Livin": {
+        "score": 11.12,
+        "rawScore": 11.115,
+        "rank": 80
+      },
+      "Kopra": {
+        "score": 8.87,
+        "rawScore": 8.87,
+        "rank": 127
+      },
+      "Acquiring": {
+        "score": 13.18,
+        "rawScore": 13.185,
+        "rank": 59
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 97
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 73
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 14,
+    "gradeRank": 14,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12715",
+    "name": "Jakarta Gedung Arkadia",
+    "head": "IKA PRASASTI JANUAR",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 81.33,
+    "totalRaw": 81.334,
+    "totalRank": 98,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.83,
+        "rawScore": 25.83,
+        "rank": 87
+      },
+      "Kredit": {
+        "score": 14.98,
+        "rawScore": 14.979,
+        "rank": 55
+      },
+      "Livin": {
+        "score": 9.96,
+        "rawScore": 9.96,
+        "rank": 124
+      },
+      "Kopra": {
+        "score": 9.04,
+        "rawScore": 9.045,
+        "rank": 103
+      },
+      "Acquiring": {
+        "score": 11.52,
+        "rawScore": 11.52,
+        "rank": 115
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 98
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 74
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 19,
+    "gradeRank": 30,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12408",
+    "name": "Jakarta Saharjo",
+    "head": "SUNJI SIREGAR",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 81.31,
+    "totalRaw": 81.311,
+    "totalRank": 99,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.24,
+        "rawScore": 26.235,
+        "rank": 77
+      },
+      "Kredit": {
+        "score": 14.01,
+        "rawScore": 14.011,
+        "rank": 87
+      },
+      "Livin": {
+        "score": 10.62,
+        "rawScore": 10.62,
+        "rank": 97
+      },
+      "Kopra": {
+        "score": 9.11,
+        "rawScore": 9.105,
+        "rank": 95
+      },
+      "Acquiring": {
+        "score": 11.34,
+        "rawScore": 11.34,
+        "rank": 124
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 99
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 75
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 26,
+    "gradeRank": 15,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12718",
+    "name": "Jakarta Ampera Raya (dh Jkt Grha Matra)",
+    "head": "NURSAMAN",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 81.29,
+    "totalRaw": 81.28500000000001,
+    "totalRank": 100,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.73,
+        "rawScore": 23.73,
+        "rank": 138
+      },
+      "Kredit": {
+        "score": 13.33,
+        "rawScore": 13.33,
+        "rank": 111
+      },
+      "Livin": {
+        "score": 10.79,
+        "rawScore": 10.785,
+        "rank": 92
+      },
+      "Kopra": {
+        "score": 8.92,
+        "rawScore": 8.92,
+        "rank": 122
+      },
+      "Acquiring": {
+        "score": 14.82,
+        "rawScore": 14.82,
+        "rank": 6
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 100
+      },
+      "Ekosistem": {
+        "score": 4.7,
+        "rawScore": 4.7,
+        "rank": 135
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 19,
+    "gradeRank": 31,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12412",
+    "name": "Jakarta Tebet Timur",
+    "head": "DYAN EKAWATIE",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 81.28,
+    "totalRaw": 81.27749999999999,
+    "totalRank": 101,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.25,
+        "rawScore": 26.25,
+        "rank": 75
+      },
+      "Kredit": {
+        "score": 12.3,
+        "rawScore": 12.305,
+        "rank": 138
+      },
+      "Livin": {
+        "score": 11.97,
+        "rawScore": 11.97,
+        "rank": 49
+      },
+      "Kopra": {
+        "score": 9.06,
+        "rawScore": 9.06,
+        "rank": 99
+      },
+      "Acquiring": {
+        "score": 11.69,
+        "rawScore": 11.6925,
+        "rank": 106
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 101
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 76
+      }
+    },
+    "areaRank": 15,
+    "totalInArea": 26,
+    "gradeRank": 39,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10204",
+    "name": "Jakarta Puncak Emas",
+    "head": "BINTANG SARI KLEMENTINA S",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 81.18,
+    "totalRaw": 81.1805,
+    "totalRank": 102,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.86,
+        "rawScore": 26.865,
+        "rank": 56
+      },
+      "Kredit": {
+        "score": 12,
+        "rawScore": 12.003,
+        "rank": 140
+      },
+      "Livin": {
+        "score": 10.01,
+        "rawScore": 10.005,
+        "rank": 122
+      },
+      "Kopra": {
+        "score": 9.05,
+        "rawScore": 9.055,
+        "rank": 101
+      },
+      "Acquiring": {
+        "score": 13.25,
+        "rawScore": 13.2525,
+        "rank": 56
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 102
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 77
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 21,
+    "gradeRank": 15,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12414",
+    "name": "Jakarta Trinity Tower (dh Jakarta Menara Palma)",
+    "head": "ELSA DESTYA PUTRI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 81.02,
+    "totalRaw": 81.023,
+    "totalRank": 103,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.57,
+        "rawScore": 27.57,
+        "rank": 38
+      },
+      "Kredit": {
+        "score": 12.41,
+        "rawScore": 12.408,
+        "rank": 136
+      },
+      "Livin": {
+        "score": 8.79,
+        "rawScore": 8.79,
+        "rank": 159
+      },
+      "Kopra": {
+        "score": 9.56,
+        "rawScore": 9.56,
+        "rank": 25
+      },
+      "Acquiring": {
+        "score": 13.39,
+        "rawScore": 13.395,
+        "rank": 49
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 103
+      },
+      "Ekosistem": {
+        "score": 4.3,
+        "rawScore": 4.3,
+        "rank": 148
+      }
+    },
+    "areaRank": 16,
+    "totalInArea": 26,
+    "gradeRank": 16,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10230",
+    "name": "Jakarta Satrio Tower",
+    "head": "PATRICIA AGUSTINE",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 81.01,
+    "totalRaw": 81.0055,
+    "totalRank": 104,
+    "categoryScores": {
+      "DPK": {
+        "score": 28.55,
+        "rawScore": 28.545,
+        "rank": 9
+      },
+      "Kredit": {
+        "score": 11.2,
+        "rawScore": 11.203,
+        "rank": 155
+      },
+      "Livin": {
+        "score": 9.82,
+        "rawScore": 9.825,
+        "rank": 132
+      },
+      "Kopra": {
+        "score": 9.88,
+        "rawScore": 9.88,
+        "rank": 8
+      },
+      "Acquiring": {
+        "score": 12.35,
+        "rawScore": 12.3525,
+        "rank": 83
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 104
+      },
+      "Ekosistem": {
+        "score": 4.2,
+        "rawScore": 4.2,
+        "rank": 152
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 21,
+    "gradeRank": 32,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12714",
+    "name": "Jakarta Jatipadang",
+    "head": "A.INDRA SITEPU",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 80.99,
+    "totalRaw": 80.9915,
+    "totalRank": 105,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.88,
+        "rawScore": 26.88,
+        "rank": 55
+      },
+      "Kredit": {
+        "score": 10.74,
+        "rawScore": 10.744,
+        "rank": 159
+      },
+      "Livin": {
+        "score": 13.59,
+        "rawScore": 13.59,
+        "rank": 27
+      },
+      "Kopra": {
+        "score": 7.9,
+        "rawScore": 7.905,
+        "rank": 161
+      },
+      "Acquiring": {
+        "score": 11.87,
+        "rawScore": 11.8725,
+        "rank": 98
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 105
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 78
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 19,
+    "gradeRank": 17,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13391",
+    "name": "Bogor Kemang (dh Bogor Parung)",
+    "head": "UPIK SETYANINGRUM",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 80.93,
+    "totalRaw": 80.9345,
+    "totalRank": 106,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.8,
+        "rawScore": 25.8,
+        "rank": 89
+      },
+      "Kredit": {
+        "score": 14.57,
+        "rawScore": 14.572,
+        "rank": 69
+      },
+      "Livin": {
+        "score": 10.11,
+        "rawScore": 10.11,
+        "rank": 119
+      },
+      "Kopra": {
+        "score": 9.73,
+        "rawScore": 9.725,
+        "rank": 17
+      },
+      "Acquiring": {
+        "score": 12.28,
+        "rawScore": 12.2775,
+        "rank": 89
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 106
+      },
+      "Ekosistem": {
+        "score": 3.45,
+        "rawScore": 3.45,
+        "rank": 161
+      }
+    },
+    "areaRank": 26,
+    "totalInArea": 34,
+    "gradeRank": 33,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12605",
+    "name": "Jakarta Panglima Polim",
+    "head": "SEFTY FATYA NUR",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 80.88,
+    "totalRaw": 80.8835,
+    "totalRank": 107,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.02,
+        "rawScore": 26.025,
+        "rank": 81
+      },
+      "Kredit": {
+        "score": 11.64,
+        "rawScore": 11.636,
+        "rank": 151
+      },
+      "Livin": {
+        "score": 11.1,
+        "rawScore": 11.1,
+        "rank": 81
+      },
+      "Kopra": {
+        "score": 8.75,
+        "rawScore": 8.75,
+        "rank": 133
+      },
+      "Acquiring": {
+        "score": 13.37,
+        "rawScore": 13.3725,
+        "rank": 50
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 107
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 79
+      }
+    },
+    "areaRank": 6,
+    "totalInArea": 16,
+    "gradeRank": 40,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10228",
+    "name": "Jakarta SCBD (dh Jakarta Kresna SCBD)",
+    "head": "MELISSA",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 80.8,
+    "totalRaw": 80.801,
+    "totalRank": 108,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.88,
+        "rawScore": 23.88,
+        "rank": 135
+      },
+      "Kredit": {
+        "score": 14.72,
+        "rawScore": 14.716,
+        "rank": 62
+      },
+      "Livin": {
+        "score": 8.67,
+        "rawScore": 8.67,
+        "rank": 161
+      },
+      "Kopra": {
+        "score": 9.36,
+        "rawScore": 9.36,
+        "rank": 55
+      },
+      "Acquiring": {
+        "score": 14.18,
+        "rawScore": 14.175,
+        "rank": 36
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 108
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 80
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 21,
+    "gradeRank": 34,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12607",
+    "name": "Jakarta Kementerian Pekerjaan Umum (dh Jakarta Kementerian PUPR)",
+    "head": "REZA SAFRIANTO",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 80.75,
+    "totalRaw": 80.74900000000001,
+    "totalRank": 109,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.63,
+        "rawScore": 27.63,
+        "rank": 36
+      },
+      "Kredit": {
+        "score": 13.21,
+        "rawScore": 13.209,
+        "rank": 116
+      },
+      "Livin": {
+        "score": 11.51,
+        "rawScore": 11.505,
+        "rank": 68
+      },
+      "Kopra": {
+        "score": 9.06,
+        "rawScore": 9.06,
+        "rank": 100
+      },
+      "Acquiring": {
+        "score": 9.5,
+        "rawScore": 9.495,
+        "rank": 155
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 109
+      },
+      "Ekosistem": {
+        "score": 4.85,
+        "rawScore": 4.85,
+        "rank": 129
+      }
+    },
+    "areaRank": 7,
+    "totalInArea": 16,
+    "gradeRank": 18,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12701",
+    "name": "Jakarta Ragunan",
+    "head": "EKA NOVIYANTY",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 80.57,
+    "totalRaw": 80.57,
+    "totalRank": 110,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.96,
+        "rawScore": 25.965,
+        "rank": 83
+      },
+      "Kredit": {
+        "score": 15.25,
+        "rawScore": 15.245,
+        "rank": 45
+      },
+      "Livin": {
+        "score": 11.37,
+        "rawScore": 11.37,
+        "rank": 73
+      },
+      "Kopra": {
+        "score": 8.58,
+        "rawScore": 8.585,
+        "rank": 143
+      },
+      "Acquiring": {
+        "score": 9.4,
+        "rawScore": 9.405,
+        "rank": 156
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 110
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 81
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 19,
+    "gradeRank": 16,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12431",
+    "name": "Jakarta Kementerian Kesehatan",
+    "head": "FIRMANSYAH",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 80.53,
+    "totalRaw": 80.525,
+    "totalRank": 111,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.36,
+        "rawScore": 26.355,
+        "rank": 72
+      },
+      "Kredit": {
+        "score": 14.05,
+        "rawScore": 14.05,
+        "rank": 86
+      },
+      "Livin": {
+        "score": 11.18,
+        "rawScore": 11.175,
+        "rank": 79
+      },
+      "Kopra": {
+        "score": 8.48,
+        "rawScore": 8.485,
+        "rank": 150
+      },
+      "Acquiring": {
+        "score": 10.56,
+        "rawScore": 10.56,
+        "rank": 137
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 111
+      },
+      "Ekosistem": {
+        "score": 4.9,
+        "rawScore": 4.9,
+        "rank": 126
+      }
+    },
+    "areaRank": 17,
+    "totalInArea": 26,
+    "gradeRank": 35,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12619",
+    "name": "Jakarta Gandaria (dh Jkt Arteri Pondok Indah)",
+    "head": "FEBRIANTI KELLY",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 80.53,
+    "totalRaw": 80.525,
+    "totalRank": 112,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.34,
+        "rawScore": 23.34,
+        "rank": 141
+      },
+      "Kredit": {
+        "score": 13.67,
+        "rawScore": 13.67,
+        "rank": 99
+      },
+      "Livin": {
+        "score": 10.71,
+        "rawScore": 10.71,
+        "rank": 93
+      },
+      "Kopra": {
+        "score": 9.52,
+        "rawScore": 9.515,
+        "rank": 33
+      },
+      "Acquiring": {
+        "score": 13.29,
+        "rawScore": 13.29,
+        "rank": 54
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 112
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 82
+      }
+    },
+    "areaRank": 8,
+    "totalInArea": 16,
+    "gradeRank": 41,
+    "totalInGrade": 57
+  },
+  {
+    "code": "13313",
+    "name": "Bogor Pajajaran",
+    "head": "VINNY DEWI ARTIANTHY A",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 80.32,
+    "totalRaw": 80.31550000000001,
+    "totalRank": 113,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.98,
+        "rawScore": 22.98,
+        "rank": 149
+      },
+      "Kredit": {
+        "score": 13.31,
+        "rawScore": 13.308,
+        "rank": 112
+      },
+      "Livin": {
+        "score": 10.34,
+        "rawScore": 10.335,
+        "rank": 106
+      },
+      "Kopra": {
+        "score": 9.11,
+        "rawScore": 9.105,
+        "rank": 96
+      },
+      "Acquiring": {
+        "score": 14.59,
+        "rawScore": 14.5875,
+        "rank": 17
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 113
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 83
+      }
+    },
+    "areaRank": 27,
+    "totalInArea": 34,
+    "gradeRank": 42,
+    "totalInGrade": 57
+  },
+  {
+    "code": "7018",
+    "name": "Jakarta Warung Buncit Raya",
+    "head": "DEWI NOVITA",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 80.31,
+    "totalRaw": 80.3055,
+    "totalRank": 114,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.32,
+        "rawScore": 23.325,
+        "rank": 142
+      },
+      "Kredit": {
+        "score": 15.34,
+        "rawScore": 15.343,
+        "rank": 40
+      },
+      "Livin": {
+        "score": 11.36,
+        "rawScore": 11.355,
+        "rank": 74
+      },
+      "Kopra": {
+        "score": 8.59,
+        "rawScore": 8.585,
+        "rank": 144
+      },
+      "Acquiring": {
+        "score": 11.8,
+        "rawScore": 11.7975,
+        "rank": 102
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 114
+      },
+      "Ekosistem": {
+        "score": 4.9,
+        "rawScore": 4.9,
+        "rank": 127
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 14,
+    "gradeRank": 17,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12433",
+    "name": "Jakarta Plaza BP Jamsostek (dh Jakarta Gedung Jamsostek)",
+    "head": "ISNAENI SUBEKTI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 80.24,
+    "totalRaw": 80.242,
+    "totalRank": 115,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.7,
+        "rawScore": 25.695,
+        "rank": 93
+      },
+      "Kredit": {
+        "score": 13.77,
+        "rawScore": 13.772,
+        "rank": 94
+      },
+      "Livin": {
+        "score": 9.93,
+        "rawScore": 9.93,
+        "rank": 127
+      },
+      "Kopra": {
+        "score": 9.28,
+        "rawScore": 9.28,
+        "rank": 68
+      },
+      "Acquiring": {
+        "score": 11.56,
+        "rawScore": 11.565,
+        "rank": 113
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 115
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 84
+      }
+    },
+    "areaRank": 18,
+    "totalInArea": 26,
+    "gradeRank": 19,
+    "totalInGrade": 31
+  },
+  {
+    "code": "7005",
+    "name": "Jakarta Telkom Landmark Tower (dh Jakarta Grha Citra Caraka)",
+    "head": "MEYRINA HUTAMI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 80.17,
+    "totalRaw": 80.175,
+    "totalRank": 116,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.81,
+        "rawScore": 27.81,
+        "rank": 26
+      },
+      "Kredit": {
+        "score": 12.57,
+        "rawScore": 12.57,
+        "rank": 133
+      },
+      "Livin": {
+        "score": 11.61,
+        "rawScore": 11.61,
+        "rank": 62
+      },
+      "Kopra": {
+        "score": 8.48,
+        "rawScore": 8.48,
+        "rank": 152
+      },
+      "Acquiring": {
+        "score": 9.71,
+        "rawScore": 9.705,
+        "rank": 153
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 116
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 85
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 14,
+    "gradeRank": 18,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12410",
+    "name": "Jakarta Wisma Tugu",
+    "head": "LAILA AMINATUL FATHONAH",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 80.17,
+    "totalRaw": 80.1695,
+    "totalRank": 117,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.14,
+        "rawScore": 23.145,
+        "rank": 146
+      },
+      "Kredit": {
+        "score": 13.3,
+        "rawScore": 13.297,
+        "rank": 114
+      },
+      "Livin": {
+        "score": 10.52,
+        "rawScore": 10.515,
+        "rank": 100
+      },
+      "Kopra": {
+        "score": 9.3,
+        "rawScore": 9.3,
+        "rank": 63
+      },
+      "Acquiring": {
+        "score": 13.91,
+        "rawScore": 13.9125,
+        "rank": 46
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 117
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 86
+      }
+    },
+    "areaRank": 19,
+    "totalInArea": 26,
+    "gradeRank": 43,
+    "totalInGrade": 57
+  },
+  {
+    "code": "7002",
+    "name": "Jakarta Gedung Bidakara",
+    "head": "SITTI RAISSA ALIDHINNA",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 80.08,
+    "totalRaw": 80.0845,
+    "totalRank": 118,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.79,
+        "rawScore": 26.79,
+        "rank": 57
+      },
+      "Kredit": {
+        "score": 14.76,
+        "rawScore": 14.757,
+        "rank": 60
+      },
+      "Livin": {
+        "score": 10.14,
+        "rawScore": 10.14,
+        "rank": 115
+      },
+      "Kopra": {
+        "score": 9.04,
+        "rawScore": 9.045,
+        "rank": 104
+      },
+      "Acquiring": {
+        "score": 9.35,
+        "rawScore": 9.3525,
+        "rank": 158
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 118
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 87
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 14,
+    "gradeRank": 19,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13395",
+    "name": "Bogor Metland Cileungsi",
+    "head": "DECEKA RANDY RAHARDJA",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 80.08,
+    "totalRaw": 80.07549999999999,
+    "totalRank": 119,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.4,
+        "rawScore": 26.4,
+        "rank": 70
+      },
+      "Kredit": {
+        "score": 13.05,
+        "rawScore": 13.048,
+        "rank": 121
+      },
+      "Livin": {
+        "score": 9.42,
+        "rawScore": 9.42,
+        "rank": 142
+      },
+      "Kopra": {
+        "score": 9.74,
+        "rawScore": 9.74,
+        "rank": 16
+      },
+      "Acquiring": {
+        "score": 11.47,
+        "rawScore": 11.4675,
+        "rank": 119
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 119
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 88
+      }
+    },
+    "areaRank": 28,
+    "totalInArea": 34,
+    "gradeRank": 36,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13308",
+    "name": "Bogor Warung Jambu",
+    "head": "HAPERANIM DAMANIK",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 80.03,
+    "totalRaw": 80.03,
+    "totalRank": 120,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.42,
+        "rawScore": 26.415,
+        "rank": 67
+      },
+      "Kredit": {
+        "score": 11.02,
+        "rawScore": 11.02,
+        "rank": 158
+      },
+      "Livin": {
+        "score": 11.43,
+        "rawScore": 11.43,
+        "rank": 71
+      },
+      "Kopra": {
+        "score": 9.39,
+        "rawScore": 9.39,
+        "rank": 51
+      },
+      "Acquiring": {
+        "score": 11.78,
+        "rawScore": 11.775,
+        "rank": 103
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 120
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 89
+      }
+    },
+    "areaRank": 29,
+    "totalInArea": 34,
+    "gradeRank": 44,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12708",
+    "name": "Jakarta Cilandak Barat (dh Jkt Pondok Labu)",
+    "head": "AYU PRATIWI REZKI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 80.02,
+    "totalRaw": 80.0225,
+    "totalRank": 121,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.47,
+        "rawScore": 22.47,
+        "rank": 154
+      },
+      "Kredit": {
+        "score": 14.35,
+        "rawScore": 14.345,
+        "rank": 74
+      },
+      "Livin": {
+        "score": 13.41,
+        "rawScore": 13.41,
+        "rank": 29
+      },
+      "Kopra": {
+        "score": 9.29,
+        "rawScore": 9.29,
+        "rank": 66
+      },
+      "Acquiring": {
+        "score": 10.51,
+        "rawScore": 10.5075,
+        "rank": 139
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 121
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 90
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 19,
+    "gradeRank": 45,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10211",
+    "name": "Jakarta Pakubuwono",
+    "head": "NIDYA DEWI KUMALASARI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 79.9,
+    "totalRaw": 79.896,
+    "totalRank": 122,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.9,
+        "rawScore": 24.9,
+        "rank": 120
+      },
+      "Kredit": {
+        "score": 12.86,
+        "rawScore": 12.861,
+        "rank": 128
+      },
+      "Livin": {
+        "score": 9.77,
+        "rawScore": 9.765,
+        "rank": 133
+      },
+      "Kopra": {
+        "score": 9.14,
+        "rawScore": 9.14,
+        "rank": 90
+      },
+      "Acquiring": {
+        "score": 13.23,
+        "rawScore": 13.23,
+        "rank": 57
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 122
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 91
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 21,
+    "gradeRank": 46,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12609",
+    "name": "Jakarta Wolter Monginsidi",
+    "head": "WULAN SARI DEWI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 79.68,
+    "totalRaw": 79.68099999999998,
+    "totalRank": 123,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.95,
+        "rawScore": 23.955,
+        "rank": 134
+      },
+      "Kredit": {
+        "score": 11.92,
+        "rawScore": 11.921,
+        "rank": 143
+      },
+      "Livin": {
+        "score": 10.61,
+        "rawScore": 10.605,
+        "rank": 98
+      },
+      "Kopra": {
+        "score": 8.88,
+        "rawScore": 8.88,
+        "rank": 124
+      },
+      "Acquiring": {
+        "score": 14.52,
+        "rawScore": 14.52,
+        "rank": 21
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 123
+      },
+      "Ekosistem": {
+        "score": 4.8,
+        "rawScore": 4.8,
+        "rank": 132
+      }
+    },
+    "areaRank": 9,
+    "totalInArea": 16,
+    "gradeRank": 20,
+    "totalInGrade": 31
+  },
+  {
+    "code": "15715",
+    "name": "Depok Jatijajar",
+    "head": "DORIS YANIZAR",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 79.51,
+    "totalRaw": 79.509,
+    "totalRank": 124,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.07,
+        "rawScore": 23.07,
+        "rank": 148
+      },
+      "Kredit": {
+        "score": 11.72,
+        "rawScore": 11.724,
+        "rank": 147
+      },
+      "Livin": {
+        "score": 13.08,
+        "rawScore": 13.08,
+        "rank": 35
+      },
+      "Kopra": {
+        "score": 9.2,
+        "rawScore": 9.2,
+        "rank": 82
+      },
+      "Acquiring": {
+        "score": 12.43,
+        "rawScore": 12.435,
+        "rank": 79
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 124
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 92
+      }
+    },
+    "areaRank": 18,
+    "totalInArea": 19,
+    "gradeRank": 47,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12600",
+    "name": "Jakarta Falatehan",
+    "head": "GUGI ANUGRAH",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 79.45,
+    "totalRaw": 79.45049999999999,
+    "totalRank": 125,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.96,
+        "rawScore": 24.96,
+        "rank": 119
+      },
+      "Kredit": {
+        "score": 12.89,
+        "rawScore": 12.888,
+        "rank": 126
+      },
+      "Livin": {
+        "score": 10.52,
+        "rawScore": 10.515,
+        "rank": 101
+      },
+      "Kopra": {
+        "score": 8.9,
+        "rawScore": 8.9,
+        "rank": 123
+      },
+      "Acquiring": {
+        "score": 12.19,
+        "rawScore": 12.1875,
+        "rank": 90
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 125
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 93
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 16,
+    "gradeRank": 20,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10221",
+    "name": "Jakarta Permata Senayan (dh Jakarta Permata Hijau)",
+    "head": "TRIANA HAPSARI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 79.38,
+    "totalRaw": 79.37599999999999,
+    "totalRank": 126,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.43,
+        "rawScore": 24.435,
+        "rank": 130
+      },
+      "Kredit": {
+        "score": 11.79,
+        "rawScore": 11.786,
+        "rank": 146
+      },
+      "Livin": {
+        "score": 11.21,
+        "rawScore": 11.205,
+        "rank": 77
+      },
+      "Kopra": {
+        "score": 9.13,
+        "rawScore": 9.125,
+        "rank": 91
+      },
+      "Acquiring": {
+        "score": 12.83,
+        "rawScore": 12.825,
+        "rank": 68
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 126
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 94
+      }
+    },
+    "areaRank": 10,
+    "totalInArea": 21,
+    "gradeRank": 21,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12723",
+    "name": "Jakarta PHE Tower",
+    "head": "TETI ANGGRAINI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 79.35,
+    "totalRaw": 79.3485,
+    "totalRank": 127,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.47,
+        "rawScore": 25.47,
+        "rank": 98
+      },
+      "Kredit": {
+        "score": 13,
+        "rawScore": 12.996,
+        "rank": 122
+      },
+      "Livin": {
+        "score": 9.87,
+        "rawScore": 9.87,
+        "rank": 131
+      },
+      "Kopra": {
+        "score": 9.5,
+        "rawScore": 9.5,
+        "rank": 37
+      },
+      "Acquiring": {
+        "score": 11.51,
+        "rawScore": 11.5125,
+        "rank": 117
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 127
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 95
+      }
+    },
+    "areaRank": 15,
+    "totalInArea": 19,
+    "gradeRank": 21,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12775",
+    "name": "Jakarta Lenteng Agung (dh Lenteng Agung)",
+    "head": "VALDY PRASETYO BIRI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 79.31,
+    "totalRaw": 79.30699999999999,
+    "totalRank": 128,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.84,
+        "rawScore": 23.835,
+        "rank": 137
+      },
+      "Kredit": {
+        "score": 14.38,
+        "rawScore": 14.377,
+        "rank": 72
+      },
+      "Livin": {
+        "score": 9.91,
+        "rawScore": 9.915,
+        "rank": 129
+      },
+      "Kopra": {
+        "score": 9,
+        "rawScore": 9,
+        "rank": 109
+      },
+      "Acquiring": {
+        "score": 12.33,
+        "rawScore": 12.33,
+        "rank": 86
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 128
+      },
+      "Ekosistem": {
+        "score": 4.85,
+        "rawScore": 4.85,
+        "rank": 130
+      }
+    },
+    "areaRank": 16,
+    "totalInArea": 19,
+    "gradeRank": 37,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12618",
+    "name": "Jakarta Radio Dalam",
+    "head": "LELY DANU WIYARNI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 79.25,
+    "totalRaw": 79.24549999999999,
+    "totalRank": 129,
+    "categoryScores": {
+      "DPK": {
+        "score": 20.42,
+        "rawScore": 20.415,
+        "rank": 162
+      },
+      "Kredit": {
+        "score": 13.75,
+        "rawScore": 13.753,
+        "rank": 95
+      },
+      "Livin": {
+        "score": 12.99,
+        "rawScore": 12.99,
+        "rank": 37
+      },
+      "Kopra": {
+        "score": 8.76,
+        "rawScore": 8.76,
+        "rank": 132
+      },
+      "Acquiring": {
+        "score": 13.33,
+        "rawScore": 13.3275,
+        "rank": 52
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 129
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 96
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 16,
+    "gradeRank": 22,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13327",
+    "name": "Bogor Universitas Pakuan",
+    "head": "SUCI PUSFITA SETIATI",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 79.01,
+    "totalRaw": 79.00800000000001,
+    "totalRank": 130,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.68,
+        "rawScore": 24.675,
+        "rank": 124
+      },
+      "Kredit": {
+        "score": 11.15,
+        "rawScore": 11.153,
+        "rank": 156
+      },
+      "Livin": {
+        "score": 9.34,
+        "rawScore": 9.345,
+        "rank": 146
+      },
+      "Kopra": {
+        "score": 9.46,
+        "rawScore": 9.465,
+        "rank": 43
+      },
+      "Acquiring": {
+        "score": 14.37,
+        "rawScore": 14.37,
+        "rank": 26
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 130
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 97
+      }
+    },
+    "areaRank": 30,
+    "totalInArea": 34,
+    "gradeRank": 38,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10224",
+    "name": "Jakarta Gedung Sampoerna Strategic",
+    "head": "BIMA WIDIA SARI BUDIMAN",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 78.79,
+    "totalRaw": 78.78800000000001,
+    "totalRank": 131,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.82,
+        "rawScore": 27.825,
+        "rank": 25
+      },
+      "Kredit": {
+        "score": 14.64,
+        "rawScore": 14.638,
+        "rank": 66
+      },
+      "Livin": {
+        "score": 9.36,
+        "rawScore": 9.36,
+        "rank": 144
+      },
+      "Kopra": {
+        "score": 7.95,
+        "rawScore": 7.95,
+        "rank": 160
+      },
+      "Acquiring": {
+        "score": 9.02,
+        "rawScore": 9.015,
+        "rank": 160
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 131
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 98
+      }
+    },
+    "areaRank": 11,
+    "totalInArea": 21,
+    "gradeRank": 48,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10213",
+    "name": "Jakarta Energi (dh Jkt Plaza ABDA)",
+    "head": "QURROTUL FAIZAH",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 78.56,
+    "totalRaw": 78.562,
+    "totalRank": 132,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.76,
+        "rawScore": 26.76,
+        "rank": 58
+      },
+      "Kredit": {
+        "score": 16.34,
+        "rawScore": 16.337,
+        "rank": 18
+      },
+      "Livin": {
+        "score": 9.02,
+        "rawScore": 9.015,
+        "rank": 152
+      },
+      "Kopra": {
+        "score": 7.51,
+        "rawScore": 7.51,
+        "rank": 163
+      },
+      "Acquiring": {
+        "score": 11.34,
+        "rawScore": 11.34,
+        "rank": 125
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 132
+      },
+      "Ekosistem": {
+        "score": 2.6,
+        "rawScore": 2.6,
+        "rank": 162
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 21,
+    "gradeRank": 22,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12602",
+    "name": "Jakarta Grand Wijaya",
+    "head": "LILIES HARLISTIATI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 78.45,
+    "totalRaw": 78.4485,
+    "totalRank": 133,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.32,
+        "rawScore": 23.325,
+        "rank": 143
+      },
+      "Kredit": {
+        "score": 13.59,
+        "rawScore": 13.586,
+        "rank": 104
+      },
+      "Livin": {
+        "score": 10.02,
+        "rawScore": 10.02,
+        "rank": 121
+      },
+      "Kopra": {
+        "score": 8.97,
+        "rawScore": 8.97,
+        "rank": 115
+      },
+      "Acquiring": {
+        "score": 12.55,
+        "rawScore": 12.5475,
+        "rank": 77
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 133
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 99
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 16,
+    "gradeRank": 23,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12401",
+    "name": "Jakarta Rasuna Said",
+    "head": "ADELINE YUANITA",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 78.42,
+    "totalRaw": 78.42,
+    "totalRank": 134,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.97,
+        "rawScore": 23.97,
+        "rank": 133
+      },
+      "Kredit": {
+        "score": 15.08,
+        "rawScore": 15.075,
+        "rank": 53
+      },
+      "Livin": {
+        "score": 8.87,
+        "rawScore": 8.865,
+        "rank": 156
+      },
+      "Kopra": {
+        "score": 9.04,
+        "rawScore": 9.045,
+        "rank": 105
+      },
+      "Acquiring": {
+        "score": 12.62,
+        "rawScore": 12.615,
+        "rank": 74
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 134
+      },
+      "Ekosistem": {
+        "score": 3.85,
+        "rawScore": 3.85,
+        "rank": 155
+      }
+    },
+    "areaRank": 20,
+    "totalInArea": 26,
+    "gradeRank": 24,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13392",
+    "name": "Bogor Karadenan",
+    "head": "MURNI YANTI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 78.42,
+    "totalRaw": 78.416,
+    "totalRank": 135,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.16,
+        "rawScore": 25.155,
+        "rank": 108
+      },
+      "Kredit": {
+        "score": 13.71,
+        "rawScore": 13.711,
+        "rank": 98
+      },
+      "Livin": {
+        "score": 9,
+        "rawScore": 9,
+        "rank": 153
+      },
+      "Kopra": {
+        "score": 8.37,
+        "rawScore": 8.37,
+        "rank": 154
+      },
+      "Acquiring": {
+        "score": 12.18,
+        "rawScore": 12.18,
+        "rank": 91
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 135
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 100
+      }
+    },
+    "areaRank": 31,
+    "totalInArea": 34,
+    "gradeRank": 39,
+    "totalInGrade": 43
+  },
+  {
+    "code": "13316",
+    "name": "Bogor Ciluar",
+    "head": "SONNY IRWANTO",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 78.36,
+    "totalRaw": 78.35849999999999,
+    "totalRank": 136,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.09,
+        "rawScore": 25.095,
+        "rank": 113
+      },
+      "Kredit": {
+        "score": 10.34,
+        "rawScore": 10.341,
+        "rank": 162
+      },
+      "Livin": {
+        "score": 11.67,
+        "rawScore": 11.67,
+        "rank": 58
+      },
+      "Kopra": {
+        "score": 9.56,
+        "rawScore": 9.56,
+        "rank": 26
+      },
+      "Acquiring": {
+        "score": 12.14,
+        "rawScore": 12.1425,
+        "rank": 92
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 136
+      },
+      "Ekosistem": {
+        "score": 4.55,
+        "rawScore": 4.55,
+        "rank": 142
+      }
+    },
+    "areaRank": 32,
+    "totalInArea": 34,
+    "gradeRank": 49,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12614",
+    "name": "Jakarta Mabes Polri",
+    "head": "EVA FIBRIA KURNIATI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 78.2,
+    "totalRaw": 78.2025,
+    "totalRank": 137,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.42,
+        "rawScore": 25.425,
+        "rank": 99
+      },
+      "Kredit": {
+        "score": 15.18,
+        "rawScore": 15.185,
+        "rank": 50
+      },
+      "Livin": {
+        "score": 9.44,
+        "rawScore": 9.435,
+        "rank": 141
+      },
+      "Kopra": {
+        "score": 8.37,
+        "rawScore": 8.37,
+        "rank": 155
+      },
+      "Acquiring": {
+        "score": 9.79,
+        "rawScore": 9.7875,
+        "rank": 151
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 137
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 101
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 16,
+    "gradeRank": 25,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13323",
+    "name": "Bogor Grand Nusa Dua (dh Villa Nusa Indah)",
+    "head": "ARIS SUSATYO",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 78.09,
+    "totalRaw": 78.0865,
+    "totalRank": 138,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.07,
+        "rawScore": 25.065,
+        "rank": 116
+      },
+      "Kredit": {
+        "score": 11.9,
+        "rawScore": 11.904,
+        "rank": 144
+      },
+      "Livin": {
+        "score": 9.95,
+        "rawScore": 9.945,
+        "rank": 125
+      },
+      "Kopra": {
+        "score": 9.5,
+        "rawScore": 9.495,
+        "rank": 39
+      },
+      "Acquiring": {
+        "score": 11.68,
+        "rawScore": 11.6775,
+        "rank": 107
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 138
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 102
+      }
+    },
+    "areaRank": 33,
+    "totalInArea": 34,
+    "gradeRank": 50,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10225",
+    "name": "Jakarta Ambassador",
+    "head": "ARI PRIHATI",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 78,
+    "totalRaw": 78.00200000000001,
+    "totalRank": 139,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.65,
+        "rawScore": 24.645,
+        "rank": 125
+      },
+      "Kredit": {
+        "score": 14.07,
+        "rawScore": 14.067,
+        "rank": 85
+      },
+      "Livin": {
+        "score": 8.98,
+        "rawScore": 8.985,
+        "rank": 154
+      },
+      "Kopra": {
+        "score": 8.48,
+        "rawScore": 8.485,
+        "rank": 151
+      },
+      "Acquiring": {
+        "score": 11.82,
+        "rawScore": 11.82,
+        "rank": 100
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 139
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 103
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 21,
+    "gradeRank": 51,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12419",
+    "name": "Jakarta Kalibata Rawajati",
+    "head": "NUNUK NURLAILI",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 77.94,
+    "totalRaw": 77.94399999999999,
+    "totalRank": 140,
+    "categoryScores": {
+      "DPK": {
+        "score": 26.5,
+        "rawScore": 26.505,
+        "rank": 65
+      },
+      "Kredit": {
+        "score": 13.18,
+        "rawScore": 13.179,
+        "rank": 117
+      },
+      "Livin": {
+        "score": 9.16,
+        "rawScore": 9.165,
+        "rank": 149
+      },
+      "Kopra": {
+        "score": 8.63,
+        "rawScore": 8.635,
+        "rank": 139
+      },
+      "Acquiring": {
+        "score": 11.16,
+        "rawScore": 11.16,
+        "rank": 128
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 140
+      },
+      "Ekosistem": {
+        "score": 4.3,
+        "rawScore": 4.3,
+        "rank": 149
+      }
+    },
+    "areaRank": 21,
+    "totalInArea": 26,
+    "gradeRank": 40,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12610",
+    "name": "Jakarta PLN Pusat",
+    "head": "ANANG DEDDY ANORAGA",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 77.84,
+    "totalRaw": 77.837,
+    "totalRank": 141,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.54,
+        "rawScore": 24.54,
+        "rank": 128
+      },
+      "Kredit": {
+        "score": 15.01,
+        "rawScore": 15.007,
+        "rank": 54
+      },
+      "Livin": {
+        "score": 9.07,
+        "rawScore": 9.075,
+        "rank": 150
+      },
+      "Kopra": {
+        "score": 8.8,
+        "rawScore": 8.805,
+        "rank": 128
+      },
+      "Acquiring": {
+        "score": 10.41,
+        "rawScore": 10.41,
+        "rank": 143
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 141
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 104
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 16,
+    "gradeRank": 23,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10220",
+    "name": "Jakarta World Trade Center (dh Wisma Metropolitan)",
+    "head": "FATRIZAL PUTRA",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 77.65,
+    "totalRaw": 77.652,
+    "totalRank": 142,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.45,
+        "rawScore": 24.45,
+        "rank": 129
+      },
+      "Kredit": {
+        "score": 11.33,
+        "rawScore": 11.327,
+        "rank": 152
+      },
+      "Livin": {
+        "score": 11.25,
+        "rawScore": 11.25,
+        "rank": 76
+      },
+      "Kopra": {
+        "score": 8.98,
+        "rawScore": 8.985,
+        "rank": 112
+      },
+      "Acquiring": {
+        "score": 11.64,
+        "rawScore": 11.64,
+        "rank": 108
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 142
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 105
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 21,
+    "gradeRank": 24,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12405",
+    "name": "Jakarta Plaza Setiabudi (dh Jkt Gedung Tira)",
+    "head": "DODI KURNIAWAN",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 77.5,
+    "totalRaw": 77.505,
+    "totalRank": 143,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.11,
+        "rawScore": 25.11,
+        "rank": 112
+      },
+      "Kredit": {
+        "score": 10.43,
+        "rawScore": 10.43,
+        "rank": 161
+      },
+      "Livin": {
+        "score": 10.29,
+        "rawScore": 10.29,
+        "rank": 111
+      },
+      "Kopra": {
+        "score": 8.74,
+        "rawScore": 8.745,
+        "rank": 134
+      },
+      "Acquiring": {
+        "score": 12.93,
+        "rawScore": 12.93,
+        "rank": 66
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 143
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 106
+      }
+    },
+    "areaRank": 22,
+    "totalInArea": 26,
+    "gradeRank": 26,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10229",
+    "name": "Jakarta Sudirman Plaza",
+    "head": "ALBERT RONALDO",
+    "grade": "B.4.1",
+    "nonMicro": false,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 77.43,
+    "totalRaw": 77.434,
+    "totalRank": 144,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.7,
+        "rawScore": 27.705,
+        "rank": 33
+      },
+      "Kredit": {
+        "score": 14.26,
+        "rawScore": 14.264,
+        "rank": 76
+      },
+      "Livin": {
+        "score": 10.14,
+        "rawScore": 10.14,
+        "rank": 116
+      },
+      "Kopra": {
+        "score": 9.12,
+        "rawScore": 9.12,
+        "rank": 93
+      },
+      "Acquiring": {
+        "score": 8.65,
+        "rawScore": 8.655,
+        "rank": 162
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 144
+      },
+      "Ekosistem": {
+        "score": 2.55,
+        "rawScore": 2.55,
+        "rank": 163
+      }
+    },
+    "areaRank": 15,
+    "totalInArea": 21,
+    "gradeRank": 41,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12601",
+    "name": "Jakarta Iskandarsyah",
+    "head": "TRIONO ADINUGROHO",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 77.21,
+    "totalRaw": 77.20750000000001,
+    "totalRank": 145,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.16,
+        "rawScore": 25.155,
+        "rank": 109
+      },
+      "Kredit": {
+        "score": 13.64,
+        "rawScore": 13.635,
+        "rank": 100
+      },
+      "Livin": {
+        "score": 9.2,
+        "rawScore": 9.195,
+        "rank": 148
+      },
+      "Kopra": {
+        "score": 9.18,
+        "rawScore": 9.18,
+        "rank": 87
+      },
+      "Acquiring": {
+        "score": 10.04,
+        "rawScore": 10.0425,
+        "rank": 148
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 145
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 107
+      }
+    },
+    "areaRank": 15,
+    "totalInArea": 16,
+    "gradeRank": 25,
+    "totalInGrade": 31
+  },
+  {
+    "code": "13301",
+    "name": "Bogor Kapten Muslihat",
+    "head": "ERNAWATI",
+    "grade": "B.2",
+    "nonMicro": false,
+    "areaCode": "133",
+    "areaName": "Area Bogor",
+    "totalScore": 77.16,
+    "totalRaw": 77.1595,
+    "totalRank": 146,
+    "categoryScores": {
+      "DPK": {
+        "score": 21.27,
+        "rawScore": 21.27,
+        "rank": 161
+      },
+      "Kredit": {
+        "score": 12.97,
+        "rawScore": 12.967,
+        "rank": 124
+      },
+      "Livin": {
+        "score": 11.36,
+        "rawScore": 11.355,
+        "rank": 75
+      },
+      "Kopra": {
+        "score": 8.99,
+        "rawScore": 8.99,
+        "rank": 111
+      },
+      "Acquiring": {
+        "score": 12.58,
+        "rawScore": 12.5775,
+        "rank": 75
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 146
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 108
+      }
+    },
+    "areaRank": 34,
+    "totalInArea": 34,
+    "gradeRank": 27,
+    "totalInGrade": 31
+  },
+  {
+    "code": "15711",
+    "name": "Depok Cinere Limo",
+    "head": "UTAMI PRABANDARI",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "157",
+    "areaName": "Area Depok",
+    "totalScore": 76.71,
+    "totalRaw": 76.712,
+    "totalRank": 147,
+    "categoryScores": {
+      "DPK": {
+        "score": 21.96,
+        "rawScore": 21.96,
+        "rank": 157
+      },
+      "Kredit": {
+        "score": 13.96,
+        "rawScore": 13.957,
+        "rank": 88
+      },
+      "Livin": {
+        "score": 9.95,
+        "rawScore": 9.945,
+        "rank": 126
+      },
+      "Kopra": {
+        "score": 9.11,
+        "rawScore": 9.105,
+        "rank": 97
+      },
+      "Acquiring": {
+        "score": 11.75,
+        "rawScore": 11.745,
+        "rank": 104
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 147
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 109
+      }
+    },
+    "areaRank": 19,
+    "totalInArea": 19,
+    "gradeRank": 52,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10216",
+    "name": "Jakarta Kebayoran Lama 2",
+    "head": "INDRIA PERMATA",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 76.71,
+    "totalRaw": 76.7065,
+    "totalRank": 148,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.49,
+        "rawScore": 23.49,
+        "rank": 139
+      },
+      "Kredit": {
+        "score": 15.21,
+        "rawScore": 15.214,
+        "rank": 48
+      },
+      "Livin": {
+        "score": 9.97,
+        "rawScore": 9.975,
+        "rank": 123
+      },
+      "Kopra": {
+        "score": 8.93,
+        "rawScore": 8.93,
+        "rank": 121
+      },
+      "Acquiring": {
+        "score": 10.45,
+        "rawScore": 10.4475,
+        "rank": 141
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 148
+      },
+      "Ekosistem": {
+        "score": 3.65,
+        "rawScore": 3.65,
+        "rank": 159
+      }
+    },
+    "areaRank": 16,
+    "totalInArea": 21,
+    "gradeRank": 42,
+    "totalInGrade": 43
+  },
+  {
+    "code": "10218",
+    "name": "Jakarta R.S. Jakarta",
+    "head": "MELISA KARTIKA INDRIAWATI",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 76.67,
+    "totalRaw": 76.675,
+    "totalRank": 149,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.65,
+        "rawScore": 22.65,
+        "rank": 151
+      },
+      "Kredit": {
+        "score": 12.52,
+        "rawScore": 12.52,
+        "rank": 134
+      },
+      "Livin": {
+        "score": 9.66,
+        "rawScore": 9.66,
+        "rank": 137
+      },
+      "Kopra": {
+        "score": 9.56,
+        "rawScore": 9.56,
+        "rank": 27
+      },
+      "Acquiring": {
+        "score": 12.29,
+        "rawScore": 12.285,
+        "rank": 87
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 149
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 110
+      }
+    },
+    "areaRank": 17,
+    "totalInArea": 21,
+    "gradeRank": 53,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10227",
+    "name": "Jakarta Ciputra World Love",
+    "head": "KEGGY KANZENA KOMERING",
+    "grade": "B.4.1",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 76.35,
+    "totalRaw": 76.3495,
+    "totalRank": 150,
+    "categoryScores": {
+      "DPK": {
+        "score": 27.02,
+        "rawScore": 27.015,
+        "rank": 52
+      },
+      "Kredit": {
+        "score": 10.01,
+        "rawScore": 10.012,
+        "rank": 163
+      },
+      "Livin": {
+        "score": 8.8,
+        "rawScore": 8.805,
+        "rank": 158
+      },
+      "Kopra": {
+        "score": 7.49,
+        "rawScore": 7.49,
+        "rank": 164
+      },
+      "Acquiring": {
+        "score": 13.03,
+        "rawScore": 13.0275,
+        "rank": 63
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 150
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 111
+      }
+    },
+    "areaRank": 18,
+    "totalInArea": 21,
+    "gradeRank": 43,
+    "totalInGrade": 43
+  },
+  {
+    "code": "12717",
+    "name": "Jakarta Kemang Selatan",
+    "head": "ONYSH PRATIWI",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 76.03,
+    "totalRaw": 76.03099999999999,
+    "totalRank": 151,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.38,
+        "rawScore": 25.38,
+        "rank": 100
+      },
+      "Kredit": {
+        "score": 9.23,
+        "rawScore": 9.231,
+        "rank": 164
+      },
+      "Livin": {
+        "score": 10.16,
+        "rawScore": 10.155,
+        "rank": 114
+      },
+      "Kopra": {
+        "score": 8.98,
+        "rawScore": 8.98,
+        "rank": 113
+      },
+      "Acquiring": {
+        "score": 12.29,
+        "rawScore": 12.285,
+        "rank": 88
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 151
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 112
+      }
+    },
+    "areaRank": 17,
+    "totalInArea": 19,
+    "gradeRank": 54,
+    "totalInGrade": 57
+  },
+  {
+    "code": "7010",
+    "name": "Jakarta Gedung Patrajasa",
+    "head": "RATIH HARYANTI",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 75.93,
+    "totalRaw": 75.9285,
+    "totalRank": 152,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.02,
+        "rawScore": 25.02,
+        "rank": 117
+      },
+      "Kredit": {
+        "score": 13.8,
+        "rawScore": 13.801,
+        "rank": 92
+      },
+      "Livin": {
+        "score": 10.32,
+        "rawScore": 10.32,
+        "rank": 107
+      },
+      "Kopra": {
+        "score": 8.04,
+        "rawScore": 8.035,
+        "rank": 159
+      },
+      "Acquiring": {
+        "score": 8.75,
+        "rawScore": 8.7525,
+        "rank": 161
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 152
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 113
+      }
+    },
+    "areaRank": 12,
+    "totalInArea": 14,
+    "gradeRank": 26,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12402",
+    "name": "Jakarta Graha Irama",
+    "head": "PANDHU YOGAEDI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 75.81,
+    "totalRaw": 75.8065,
+    "totalRank": 153,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.71,
+        "rawScore": 25.71,
+        "rank": 92
+      },
+      "Kredit": {
+        "score": 15.37,
+        "rawScore": 15.374,
+        "rank": 39
+      },
+      "Livin": {
+        "score": 7.95,
+        "rawScore": 7.95,
+        "rank": 164
+      },
+      "Kopra": {
+        "score": 8.88,
+        "rawScore": 8.875,
+        "rank": 126
+      },
+      "Acquiring": {
+        "score": 8.2,
+        "rawScore": 8.1975,
+        "rank": 163
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 153
+      },
+      "Ekosistem": {
+        "score": 4.7,
+        "rawScore": 4.7,
+        "rank": 136
+      }
+    },
+    "areaRank": 23,
+    "totalInArea": 26,
+    "gradeRank": 27,
+    "totalInGrade": 31
+  },
+  {
+    "code": "7020",
+    "name": "Jakarta Wisma Mulia",
+    "head": "INDRA JAYAPRIATNA",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 75.72,
+    "totalRaw": 75.717,
+    "totalRank": 154,
+    "categoryScores": {
+      "DPK": {
+        "score": 20.4,
+        "rawScore": 20.4,
+        "rank": 163
+      },
+      "Kredit": {
+        "score": 14.65,
+        "rawScore": 14.647,
+        "rank": 65
+      },
+      "Livin": {
+        "score": 10.8,
+        "rawScore": 10.8,
+        "rank": 91
+      },
+      "Kopra": {
+        "score": 9.34,
+        "rawScore": 9.34,
+        "rank": 60
+      },
+      "Acquiring": {
+        "score": 10.53,
+        "rawScore": 10.53,
+        "rank": 138
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 154
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 114
+      }
+    },
+    "areaRank": 13,
+    "totalInArea": 14,
+    "gradeRank": 28,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12423",
+    "name": "Jakarta Duren Tiga (dh Jakarta Pancoran L'Avenue)",
+    "head": "NETA HARIMENI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 75.43,
+    "totalRaw": 75.42599999999999,
+    "totalRank": 155,
+    "categoryScores": {
+      "DPK": {
+        "score": 23.1,
+        "rawScore": 23.1,
+        "rank": 147
+      },
+      "Kredit": {
+        "score": 13.45,
+        "rawScore": 13.451,
+        "rank": 106
+      },
+      "Livin": {
+        "score": 8.49,
+        "rawScore": 8.49,
+        "rank": 163
+      },
+      "Kopra": {
+        "score": 8.88,
+        "rawScore": 8.88,
+        "rank": 125
+      },
+      "Acquiring": {
+        "score": 11.51,
+        "rawScore": 11.505,
+        "rank": 118
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 155
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 115
+      }
+    },
+    "areaRank": 24,
+    "totalInArea": 26,
+    "gradeRank": 28,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12622",
+    "name": "Jakarta R.S. Pusat Pertamina",
+    "head": "WISNU PRAMUJA",
+    "grade": "B.3",
+    "nonMicro": true,
+    "areaCode": "126",
+    "areaName": "Area Falatehan",
+    "totalScore": 75.3,
+    "totalRaw": 75.3035,
+    "totalRank": 156,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.68,
+        "rawScore": 22.68,
+        "rank": 150
+      },
+      "Kredit": {
+        "score": 14.08,
+        "rawScore": 14.081,
+        "rank": 84
+      },
+      "Livin": {
+        "score": 10.13,
+        "rawScore": 10.125,
+        "rank": 118
+      },
+      "Kopra": {
+        "score": 8.78,
+        "rawScore": 8.78,
+        "rank": 131
+      },
+      "Acquiring": {
+        "score": 9.64,
+        "rawScore": 9.6375,
+        "rank": 154
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 156
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 116
+      }
+    },
+    "areaRank": 16,
+    "totalInArea": 16,
+    "gradeRank": 55,
+    "totalInGrade": 57
+  },
+  {
+    "code": "12422",
+    "name": "Jakarta M.T. Haryono",
+    "head": "ARIF PRIYO SETIAJI",
+    "grade": "B.1",
+    "nonMicro": false,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 75.3,
+    "totalRaw": 75.2985,
+    "totalRank": 157,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.16,
+        "rawScore": 22.155,
+        "rank": 156
+      },
+      "Kredit": {
+        "score": 15.11,
+        "rawScore": 15.111,
+        "rank": 52
+      },
+      "Livin": {
+        "score": 8.52,
+        "rawScore": 8.52,
+        "rank": 162
+      },
+      "Kopra": {
+        "score": 9.01,
+        "rawScore": 9.005,
+        "rank": 107
+      },
+      "Acquiring": {
+        "score": 10.51,
+        "rawScore": 10.5075,
+        "rank": 140
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 157
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 117
+      }
+    },
+    "areaRank": 25,
+    "totalInArea": 26,
+    "gradeRank": 29,
+    "totalInGrade": 31
+  },
+  {
+    "code": "7004",
+    "name": "Jakarta Krakatau Steel",
+    "head": "FRANSISCA NURAINI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "70",
+    "areaName": "Area Wisma Danantara",
+    "totalScore": 75.12,
+    "totalRaw": 75.11749999999999,
+    "totalRank": 158,
+    "categoryScores": {
+      "DPK": {
+        "score": 25.35,
+        "rawScore": 25.35,
+        "rank": 101
+      },
+      "Kredit": {
+        "score": 10.56,
+        "rawScore": 10.565,
+        "rank": 160
+      },
+      "Livin": {
+        "score": 9.45,
+        "rawScore": 9.45,
+        "rank": 140
+      },
+      "Kopra": {
+        "score": 9.18,
+        "rawScore": 9.185,
+        "rank": 84
+      },
+      "Acquiring": {
+        "score": 10.57,
+        "rawScore": 10.5675,
+        "rank": 136
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 158
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 118
+      }
+    },
+    "areaRank": 14,
+    "totalInArea": 14,
+    "gradeRank": 29,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12400",
+    "name": "Jakarta Casablanca",
+    "head": "DUDY MULYADY",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "124",
+    "areaName": "Area Tebet Supomo",
+    "totalScore": 73.95,
+    "totalRaw": 73.9515,
+    "totalRank": 159,
+    "categoryScores": {
+      "DPK": {
+        "score": 19.84,
+        "rawScore": 19.845,
+        "rank": 164
+      },
+      "Kredit": {
+        "score": 16.24,
+        "rawScore": 16.244,
+        "rank": 20
+      },
+      "Livin": {
+        "score": 9.25,
+        "rawScore": 9.255,
+        "rank": 147
+      },
+      "Kopra": {
+        "score": 9.3,
+        "rawScore": 9.3,
+        "rank": 64
+      },
+      "Acquiring": {
+        "score": 9.31,
+        "rawScore": 9.3075,
+        "rank": 159
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 159
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 119
+      }
+    },
+    "areaRank": 26,
+    "totalInArea": 26,
+    "gradeRank": 30,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12703",
+    "name": "Jakarta Cibis Nine (dh Jkt KK Cilandak Kawasan Komersial Cilandak)",
+    "head": "HERRY CANDI JAKOBUS ALEXANDER SIANTURI",
+    "grade": "B.1",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 73.65,
+    "totalRaw": 73.6465,
+    "totalRank": 160,
+    "categoryScores": {
+      "DPK": {
+        "score": 21.67,
+        "rawScore": 21.675,
+        "rank": 159
+      },
+      "Kredit": {
+        "score": 11.22,
+        "rawScore": 11.219,
+        "rank": 154
+      },
+      "Livin": {
+        "score": 10.32,
+        "rawScore": 10.32,
+        "rank": 108
+      },
+      "Kopra": {
+        "score": 9.16,
+        "rawScore": 9.16,
+        "rank": 88
+      },
+      "Acquiring": {
+        "score": 11.27,
+        "rawScore": 11.2725,
+        "rank": 127
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 160
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 120
+      }
+    },
+    "areaRank": 18,
+    "totalInArea": 19,
+    "gradeRank": 31,
+    "totalInGrade": 31
+  },
+  {
+    "code": "12705",
+    "name": "Jakarta Gedung Elnusa",
+    "head": "ROS INTAN TAMPUBOLON",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "127",
+    "areaName": "Area Fatmawati",
+    "totalScore": 73.02,
+    "totalRaw": 73.0245,
+    "totalRank": 161,
+    "categoryScores": {
+      "DPK": {
+        "score": 24.99,
+        "rawScore": 24.99,
+        "rank": 118
+      },
+      "Kredit": {
+        "score": 11.79,
+        "rawScore": 11.787,
+        "rank": 145
+      },
+      "Livin": {
+        "score": 8.82,
+        "rawScore": 8.82,
+        "rank": 157
+      },
+      "Kopra": {
+        "score": 9.32,
+        "rawScore": 9.32,
+        "rank": 62
+      },
+      "Acquiring": {
+        "score": 8.11,
+        "rawScore": 8.1075,
+        "rank": 164
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 161
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 121
+      }
+    },
+    "areaRank": 19,
+    "totalInArea": 19,
+    "gradeRank": 30,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10202",
+    "name": "Jakarta Simprug",
+    "head": "MARITZA AL IRADAH",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 72.96,
+    "totalRaw": 72.9565,
+    "totalRank": 162,
+    "categoryScores": {
+      "DPK": {
+        "score": 21.51,
+        "rawScore": 21.51,
+        "rank": 160
+      },
+      "Kredit": {
+        "score": 12.5,
+        "rawScore": 12.504,
+        "rank": 135
+      },
+      "Livin": {
+        "score": 9.48,
+        "rawScore": 9.48,
+        "rank": 139
+      },
+      "Kopra": {
+        "score": 9.24,
+        "rawScore": 9.24,
+        "rank": 77
+      },
+      "Acquiring": {
+        "score": 10.22,
+        "rawScore": 10.2225,
+        "rank": 146
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 162
+      },
+      "Ekosistem": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 122
+      }
+    },
+    "areaRank": 19,
+    "totalInArea": 21,
+    "gradeRank": 56,
+    "totalInGrade": 57
+  },
+  {
+    "code": "10219",
+    "name": "Jakarta Wisma Indosemen",
+    "head": "DIAN ANGGRAENI",
+    "grade": "B.2",
+    "nonMicro": true,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 72.81,
+    "totalRaw": 72.815,
+    "totalRank": 163,
+    "categoryScores": {
+      "DPK": {
+        "score": 22.49,
+        "rawScore": 22.485,
+        "rank": 153
+      },
+      "Kredit": {
+        "score": 11.08,
+        "rawScore": 11.075,
+        "rank": 157
+      },
+      "Livin": {
+        "score": 9.7,
+        "rawScore": 9.705,
+        "rank": 135
+      },
+      "Kopra": {
+        "score": 8.51,
+        "rawScore": 8.51,
+        "rank": 149
+      },
+      "Acquiring": {
+        "score": 11.64,
+        "rawScore": 11.64,
+        "rank": 109
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 163
+      },
+      "Ekosistem": {
+        "score": 4.4,
+        "rawScore": 4.4,
+        "rank": 146
+      }
+    },
+    "areaRank": 20,
+    "totalInArea": 21,
+    "gradeRank": 31,
+    "totalInGrade": 31
+  },
+  {
+    "code": "10212",
+    "name": "Jakarta ITC Permata Hijau",
+    "head": "EVA NURFITRIANI SUHERMAN",
+    "grade": "B.3",
+    "nonMicro": false,
+    "areaCode": "102",
+    "areaName": "Area Sudirman",
+    "totalScore": 72.32,
+    "totalRaw": 72.32499999999999,
+    "totalRank": 164,
+    "categoryScores": {
+      "DPK": {
+        "score": 21.84,
+        "rawScore": 21.84,
+        "rank": 158
+      },
+      "Kredit": {
+        "score": 11.64,
+        "rawScore": 11.645,
+        "rank": 150
+      },
+      "Livin": {
+        "score": 8.98,
+        "rawScore": 8.985,
+        "rank": 155
+      },
+      "Kopra": {
+        "score": 9.26,
+        "rawScore": 9.26,
+        "rank": 72
+      },
+      "Acquiring": {
+        "score": 10.99,
+        "rawScore": 10.995,
+        "rank": 130
+      },
+      "GMM": {
+        "score": 5,
+        "rawScore": 5,
+        "rank": 164
+      },
+      "Ekosistem": {
+        "score": 4.6,
+        "rawScore": 4.6,
+        "rank": 140
+      }
+    },
+    "areaRank": 21,
+    "totalInArea": 21,
+    "gradeRank": 57,
+    "totalInGrade": 57
+  }
+]

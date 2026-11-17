@@ -1,0 +1,206 @@
+{
+  "users": [
+    {
+      "username": "superadmin",
+      "displayName": "Super Administrator",
+      "password": "mandiri123",
+      "role": "superadmin",
+      "jabatan": "System Superadmin & IT",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "alvin.superadmin",
+      "displayName": "Alvin (Superadmin)",
+      "password": "mandiri123",
+      "role": "superadmin",
+      "jabatan": "Superadmin & System Architect",
+      "createdAt": "2026-11-17T08:00:00Z",
+      "updatedAt": "2026-11-17T08:00:00Z"
+    },
+    {
+      "username": "michael.superadmin",
+      "displayName": "Michael Danniel (Superadmin)",
+      "password": "mandiri123",
+      "role": "superadmin",
+      "jabatan": "Kepala Cabang & Superadmin",
+      "createdAt": "2026-11-17T08:00:00Z",
+      "updatedAt": "2026-11-17T08:00:00Z"
+    },
+    {
+      "username": "amalia.superadmin",
+      "displayName": "Amalia (Superadmin)",
+      "password": "mandiri123",
+      "role": "superadmin",
+      "jabatan": "Superadmin Cabang",
+      "createdAt": "2026-11-17T08:00:00Z",
+      "updatedAt": "2026-11-17T08:00:00Z"
+    },
+    {
+      "username": "michael",
+      "displayName": "Michael Danniel",
+      "password": "mandiri123",
+      "role": "admin",
+      "jabatan": "Kepala Cabang / Konseptor Utama",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "alvin.admin",
+      "displayName": "Alvin (Admin)",
+      "password": "mandiri123",
+      "role": "admin",
+      "jabatan": "Admin / Konseptor Cabang",
+      "createdAt": "2026-11-17T08:00:00Z",
+      "updatedAt": "2026-11-17T08:00:00Z"
+    },
+    {
+      "username": "amal.admin",
+      "displayName": "Amal (Admin)",
+      "password": "mandiri123",
+      "role": "admin",
+      "jabatan": "Admin / Konseptor Cabang",
+      "createdAt": "2026-11-17T08:00:00Z",
+      "updatedAt": "2026-11-17T08:00:00Z"
+    },
+    {
+      "username": "rian",
+      "displayName": "Rian",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "dina",
+      "displayName": "Dina",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "disa",
+      "displayName": "Disa",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "fia",
+      "displayName": "Fia",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "wardah",
+      "displayName": "Wardah",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "embun",
+      "displayName": "Embun",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "febri",
+      "displayName": "Febri",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "arga",
+      "displayName": "Arga",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "arsya",
+      "displayName": "Arsya",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "akbar",
+      "displayName": "Akbar",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "dimas",
+      "displayName": "Dimas",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "rafli",
+      "displayName": "Rafli",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "alvin",
+      "displayName": "Alvin",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    },
+    {
+      "username": "amalia",
+      "displayName": "Amalia",
+      "password": "mandiri123",
+      "role": "viewer",
+      "jabatan": "Branch Officer (Viewer)",
+      "createdAt": "2026-11-16T08:00:00Z",
+      "updatedAt": "2026-11-16T08:00:00Z"
+    }
+  ],
+  "masterTargets": {},
+  "masterStrategies": {},
+  "viewerSimulations": [],
+  "timestandConfig": {
+    "startDate": "2026-12-01",
+    "endDate": "2026-12-31",
+    "calendarId": "id.indonesian#holiday@group.v.calendar.google.com",
+    "googleApiKey": "",
+    "customHolidays": [],
+    "effectiveWorkdays": 21,
+    "updatedBy": "michael",
+    "updatedAt": "2026-11-17T03:27:14.905Z"
+  }
+}

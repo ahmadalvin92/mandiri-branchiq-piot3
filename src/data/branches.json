@@ -1,0 +1,986 @@
+[
+  {
+    "code": "7000",
+    "name": "Jakarta Wisma Danantara Indonesia (dh Jakarta Plaza Mandiri)",
+    "head": "ROYANI HERAWATI",
+    "grade": "B.1"
+  },
+  {
+    "code": "7004",
+    "name": "Jakarta Krakatau Steel",
+    "head": "FRANSISCA NURAINI",
+    "grade": "B.2"
+  },
+  {
+    "code": "7005",
+    "name": "Jakarta Telkom Landmark Tower (dh Jakarta Grha Citra Caraka)",
+    "head": "MEYRINA HUTAMI",
+    "grade": "B.1"
+  },
+  {
+    "code": "7009",
+    "name": "Jakarta Gatot Subroto",
+    "head": "KARTIKA DELSY MARDIANI",
+    "grade": "B.2"
+  },
+  {
+    "code": "7011",
+    "name": "Jakarta BKPM",
+    "head": "CHRISTOPHER",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "7017",
+    "name": "Jakarta Sopo Del Tower (dh Jakarta Mega Kuningan)",
+    "head": "ALBETTY SWATRIANA",
+    "grade": "B.1"
+  },
+  {
+    "code": "7019",
+    "name": "Jakarta Graha Pulo (dh Jakarta Graha Mampang)",
+    "head": "R A  RETNO PRAMUDYASTUTI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "7020",
+    "name": "Jakarta Wisma Mulia",
+    "head": "INDRA JAYAPRIATNA",
+    "grade": "B.1"
+  },
+  {
+    "code": "7021",
+    "name": "Jakarta Oakwood",
+    "head": "REZA IRSAN UTAMA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "10105",
+    "name": "Jakarta Mal Pondok Indah",
+    "head": "NENET KUSDIATI",
+    "grade": "B.1"
+  },
+  {
+    "code": "10115",
+    "name": "Jakarta Mal Pondok Indah 2",
+    "head": "IMACULATA ARIMBI",
+    "grade": "B.2"
+  },
+  {
+    "code": "10121",
+    "name": "Jakarta Gedung Lemigas",
+    "head": "ZAKI MUNAZAT",
+    "grade": "B.3"
+  },
+  {
+    "code": "10124",
+    "name": "Jakarta Gandaria City",
+    "head": "DICKY AGFA WIARTHA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "10125",
+    "name": "Jakarta Pondok Indah Office 3",
+    "head": "MICHAEL DANNIEL",
+    "grade": "B.3"
+  },
+  {
+    "code": "10126",
+    "name": "Jakarta Palma Tower",
+    "head": "ARIE ENDANG SUMIAHWATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "10200",
+    "name": "Jakarta Sudirman",
+    "head": "BESTRINA INDRASWARI",
+    "grade": "B.1"
+  },
+  {
+    "code": "10204",
+    "name": "Jakarta Puncak Emas",
+    "head": "BINTANG SARI KLEMENTINA S",
+    "grade": "B.1"
+  },
+  {
+    "code": "10213",
+    "name": "Jakarta Energi (dh Jkt Plaza ABDA)",
+    "head": "QURROTUL FAIZAH",
+    "grade": "B.1"
+  },
+  {
+    "code": "10216",
+    "name": "Jakarta Kebayoran Lama 2",
+    "head": "INDRIA PERMATA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "10218",
+    "name": "Jakarta R.S. Jakarta",
+    "head": "MELISA KARTIKA INDRIAWATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "10219",
+    "name": "Jakarta Wisma Indosemen",
+    "head": "DIAN ANGGRAENI",
+    "grade": "B.2"
+  },
+  {
+    "code": "10221",
+    "name": "Jakarta Permata Senayan (dh Jakarta Permata Hijau)",
+    "head": "TRIANA HAPSARI",
+    "grade": "B.1"
+  },
+  {
+    "code": "10222",
+    "name": "Jakarta Mayapada Tower (dh Jkt Plaza Dua Mutiara)",
+    "head": "MAS ARIEF FADILLAH DIRDJA",
+    "grade": "B.3"
+  },
+  {
+    "code": "10224",
+    "name": "Jakarta Gedung Sampoerna Strategic",
+    "head": "BIMA WIDIA SARI BUDIMAN",
+    "grade": "B.3"
+  },
+  {
+    "code": "10225",
+    "name": "Jakarta Ambassador",
+    "head": "ARI PRIHATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "10226",
+    "name": "Jakarta Kuningan City",
+    "head": "NANDA NOVANDA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "10227",
+    "name": "Jakarta Ciputra World Love",
+    "head": "KEGGY KANZENA KOMERING",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "10228",
+    "name": "Jakarta SCBD (dh Jakarta Kresna SCBD)",
+    "head": "MELISSA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "10230",
+    "name": "Jakarta Satrio Tower",
+    "head": "PATRICIA AGUSTINE",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "10400",
+    "name": "Jakarta Bursa Efek",
+    "head": "GILANG PETRAGANI",
+    "grade": "B.1"
+  },
+  {
+    "code": "12400",
+    "name": "Jakarta Casablanca",
+    "head": "DUDY MULYADY",
+    "grade": "B.1"
+  },
+  {
+    "code": "12401",
+    "name": "Jakarta Rasuna Said",
+    "head": "ADELINE YUANITA",
+    "grade": "B.2"
+  },
+  {
+    "code": "12402",
+    "name": "Jakarta Graha Irama",
+    "head": "PANDHU YOGAEDI",
+    "grade": "B.1"
+  },
+  {
+    "code": "12403",
+    "name": "Jakarta Kuningan",
+    "head": "RR. FARIDA YAQUARTI",
+    "grade": "B.1"
+  },
+  {
+    "code": "12405",
+    "name": "Jakarta Plaza Setiabudi (dh Jkt Gedung Tira)",
+    "head": "DODI KURNIAWAN",
+    "grade": "B.2"
+  },
+  {
+    "code": "12410",
+    "name": "Jakarta Wisma Tugu",
+    "head": "LAILA AMINATUL FATHONAH",
+    "grade": "B.3"
+  },
+  {
+    "code": "12412",
+    "name": "Jakarta Tebet Timur",
+    "head": "DYAN EKAWATIE",
+    "grade": "B.3"
+  },
+  {
+    "code": "12414",
+    "name": "Jakarta Trinity Tower (dh Jakarta Menara Palma)",
+    "head": "ELSA DESTYA PUTRI",
+    "grade": "B.2"
+  },
+  {
+    "code": "12415",
+    "name": "Jakarta Rasuna Episentrum",
+    "head": "ARINTA BERLIANTY",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12423",
+    "name": "Jakarta Duren Tiga (dh Jakarta Pancoran L'Avenue)",
+    "head": "NETA HARIMENI",
+    "grade": "B.2"
+  },
+  {
+    "code": "12424",
+    "name": "Jakarta Wisma IKPT",
+    "head": "TIRZA KARTIKA ANDARINI",
+    "grade": "B.3"
+  },
+  {
+    "code": "12425",
+    "name": "Jakarta Gedung Sucofindo",
+    "head": "DHARU WINARDONO",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12426",
+    "name": "Jakarta Multivision Tower",
+    "head": "RAHMANDHIKA SETYAATMAJA KUFFAL",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12428",
+    "name": "Jakarta Kota Kasablanka",
+    "head": "WINDA WULANJANI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12431",
+    "name": "Jakarta Kementerian Kesehatan",
+    "head": "FIRMANSYAH",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12432",
+    "name": "Jakarta Menara Cyber 2",
+    "head": "STEVI MELVA ROSA SIANTURI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12433",
+    "name": "Jakarta Plaza BP Jamsostek (dh Jakarta Gedung Jamsostek)",
+    "head": "ISNAENI SUBEKTI",
+    "grade": "B.2"
+  },
+  {
+    "code": "12601",
+    "name": "Jakarta Iskandarsyah",
+    "head": "TRIONO ADINUGROHO",
+    "grade": "B.1"
+  },
+  {
+    "code": "12603",
+    "name": "Jakarta Kemang Raya",
+    "head": "YUNIAR HANITA HAKIM",
+    "grade": "B.2"
+  },
+  {
+    "code": "12605",
+    "name": "Jakarta Panglima Polim",
+    "head": "SEFTY FATYA NUR",
+    "grade": "B.3"
+  },
+  {
+    "code": "12607",
+    "name": "Jakarta Kementerian Pekerjaan Umum (dh Jakarta Kementerian PUPR)",
+    "head": "REZA SAFRIANTO",
+    "grade": "B.2"
+  },
+  {
+    "code": "12609",
+    "name": "Jakarta Wolter Monginsidi",
+    "head": "WULAN SARI DEWI",
+    "grade": "B.2"
+  },
+  {
+    "code": "12610",
+    "name": "Jakarta PLN Pusat",
+    "head": "ANANG DEDDY ANORAGA",
+    "grade": "B.1"
+  },
+  {
+    "code": "12611",
+    "name": "Jakarta Kemang Plaza",
+    "head": "DEISY INDARTY WERDIASTUTI S",
+    "grade": "B.2"
+  },
+  {
+    "code": "12614",
+    "name": "Jakarta Mabes Polri",
+    "head": "EVA FIBRIA KURNIATI",
+    "grade": "B.2"
+  },
+  {
+    "code": "12619",
+    "name": "Jakarta Gandaria (dh Jkt Arteri Pondok Indah)",
+    "head": "FEBRIANTI KELLY",
+    "grade": "B.3"
+  },
+  {
+    "code": "12622",
+    "name": "Jakarta R.S. Pusat Pertamina",
+    "head": "WISNU PRAMUJA",
+    "grade": "B.3"
+  },
+  {
+    "code": "12701",
+    "name": "Jakarta Ragunan",
+    "head": "EKA NOVIYANTY",
+    "grade": "B.1"
+  },
+  {
+    "code": "12703",
+    "name": "Jakarta Cibis Nine (dh Jkt KK Cilandak Kawasan Komersial Cilandak)",
+    "head": "HERRY CANDI JAKOBUS ALEXANDER SIANTURI",
+    "grade": "B.1"
+  },
+  {
+    "code": "12705",
+    "name": "Jakarta Gedung Elnusa",
+    "head": "ROS INTAN TAMPUBOLON",
+    "grade": "B.2"
+  },
+  {
+    "code": "12706",
+    "name": "Jakata Cipete IBI (dh Jakarta Cipete)",
+    "head": "DEYANDA ANNISA RIZKA",
+    "grade": "B.3"
+  },
+  {
+    "code": "12709",
+    "name": "Jakarta South Quarter (dh Jakarta Simatupang)",
+    "head": "DEWI MAULINA WIDIYANINGSIH",
+    "grade": "B.3"
+  },
+  {
+    "code": "12715",
+    "name": "Jakarta Gedung Arkadia",
+    "head": "IKA PRASASTI JANUAR",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12716",
+    "name": "Jakarta Margasatwa",
+    "head": "ANDRIYANSYAHMI MAHENDRA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12717",
+    "name": "Jakarta Kemang Selatan",
+    "head": "ONYSH PRATIWI",
+    "grade": "B.3"
+  },
+  {
+    "code": "12718",
+    "name": "Jakarta Ampera Raya (dh Jkt Grha Matra)",
+    "head": "NURSAMAN",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12719",
+    "name": "Jakarta Gedung Aneka Tambang",
+    "head": "EFIN",
+    "grade": "B.1"
+  },
+  {
+    "code": "12721",
+    "name": "Jakarta Gedung Talavera",
+    "head": "RIANA ADHIKA",
+    "grade": "B.3"
+  },
+  {
+    "code": "12723",
+    "name": "Jakarta PHE Tower",
+    "head": "TETI ANGGRAINI",
+    "grade": "B.2"
+  },
+  {
+    "code": "13322",
+    "name": "Cibubur Kota Wisata",
+    "head": "M. TAUFIQI AKBAR",
+    "grade": "B.3"
+  },
+  {
+    "code": "13327",
+    "name": "Bogor Universitas Pakuan",
+    "head": "SUCI PUSFITA SETIATI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12406",
+    "name": "Jakarta Lapangan Ros",
+    "head": "SELVYA RAHMAYATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "7002",
+    "name": "Jakarta Gedung Bidakara",
+    "head": "SITTI RAISSA ALIDHINNA",
+    "grade": "B.1"
+  },
+  {
+    "code": "10229",
+    "name": "Jakarta Sudirman Plaza",
+    "head": "ALBERT RONALDO",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12411",
+    "name": "Jakarta Pasar Rumput",
+    "head": "NURUL FITRI",
+    "grade": "B.3"
+  },
+  {
+    "code": "10100",
+    "name": "Jakarta Pondok Indah",
+    "head": "TRIANA WAHYUNINGSIH",
+    "grade": "B.1"
+  },
+  {
+    "code": "10107",
+    "name": "Jakarta Aminta Plaza",
+    "head": "ARIE SATYA HAPSARI",
+    "grade": "B.2"
+  },
+  {
+    "code": "12409",
+    "name": "Jakarta Tebet Barat",
+    "head": "SARA HASIANA SIREGAR",
+    "grade": "B.3"
+  },
+  {
+    "code": "10111",
+    "name": "Jakarta Arteri Pondok Indah",
+    "head": "ROSILA",
+    "grade": "B.3"
+  },
+  {
+    "code": "10207",
+    "name": "Jakarta Tendean",
+    "head": "HERNANI ENDAH SETYOWATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "15708",
+    "name": "Depok ITC",
+    "head": "WAHYU YULIASTUTI WIDORINI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "7018",
+    "name": "Jakarta Warung Buncit Raya",
+    "head": "DEWI NOVITA",
+    "grade": "B.1"
+  },
+  {
+    "code": "10122",
+    "name": "Jakarta Bintaro Veteran",
+    "head": "KARINA FADHILA",
+    "grade": "B.3"
+  },
+  {
+    "code": "10106",
+    "name": "Jakarta Lebak Bulus",
+    "head": "INDAH JUARIAH",
+    "grade": "B.3"
+  },
+  {
+    "code": "12600",
+    "name": "Jakarta Falatehan",
+    "head": "GUGI ANUGRAH",
+    "grade": "B.1"
+  },
+  {
+    "code": "12418",
+    "name": "Jakarta Pasar Minggu",
+    "head": "NURHAYATI NINGSIH",
+    "grade": "B.2"
+  },
+  {
+    "code": "12419",
+    "name": "Jakarta Kalibata Rawajati",
+    "head": "NUNUK NURLAILI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "7010",
+    "name": "Jakarta Gedung Patrajasa",
+    "head": "RATIH HARYANTI",
+    "grade": "B.1"
+  },
+  {
+    "code": "7007",
+    "name": "Jakarta Mampang",
+    "head": "GUSTI AYU PUTU DEWI ARTATI",
+    "grade": "B.2"
+  },
+  {
+    "code": "10211",
+    "name": "Jakarta Pakubuwono",
+    "head": "NIDYA DEWI KUMALASARI",
+    "grade": "B.3"
+  },
+  {
+    "code": "10220",
+    "name": "Jakarta World Trade Center (dh Wisma Metropolitan)",
+    "head": "FATRIZAL PUTRA",
+    "grade": "B.1"
+  },
+  {
+    "code": "10123",
+    "name": "Jakarta Petukangan",
+    "head": "HARRY GUNAWAN",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "7008",
+    "name": "Jakarta Graha Mitra ( dh Jakarta Wisma Argo Manunggal)",
+    "head": "LEONY CIPTA ANDRYA",
+    "grade": "B.1"
+  },
+  {
+    "code": "12618",
+    "name": "Jakarta Radio Dalam",
+    "head": "LELY DANU WIYARNI",
+    "grade": "B.2"
+  },
+  {
+    "code": "10110",
+    "name": "Jakarta Pondok Pinang Center",
+    "head": "NIKEN UTAMI WULANDARI",
+    "grade": "B.3"
+  },
+  {
+    "code": "12713",
+    "name": "Jakarta Cilandak KKO",
+    "head": "MURTI WIJAYANTI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13316",
+    "name": "Bogor Ciluar",
+    "head": "SONNY IRWANTO",
+    "grade": "B.3"
+  },
+  {
+    "code": "12606",
+    "name": "Jakarta Melawai",
+    "head": "FERY RIZKI PRASETYA",
+    "grade": "B.1"
+  },
+  {
+    "code": "12675",
+    "name": "Jakarta Jagakarsa",
+    "head": "BAYU ARIWIBOWO",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12602",
+    "name": "Jakarta Grand Wijaya",
+    "head": "LILIES HARLISTIATI",
+    "grade": "B.2"
+  },
+  {
+    "code": "10212",
+    "name": "Jakarta ITC Permata Hijau",
+    "head": "EVA NURFITRIANI SUHERMAN",
+    "grade": "B.3"
+  },
+  {
+    "code": "13308",
+    "name": "Bogor Warung Jambu",
+    "head": "HAPERANIM DAMANIK",
+    "grade": "B.3"
+  },
+  {
+    "code": "10202",
+    "name": "Jakarta Simprug",
+    "head": "MARITZA AL IRADAH",
+    "grade": "B.3"
+  },
+  {
+    "code": "12417",
+    "name": "Jakarta Kalibata",
+    "head": "RINI HELYANTI",
+    "grade": "B.2"
+  },
+  {
+    "code": "12408",
+    "name": "Jakarta Saharjo",
+    "head": "SUNJI SIREGAR",
+    "grade": "B.2"
+  },
+  {
+    "code": "10116",
+    "name": "Jakarta Kebayoran Lama",
+    "head": "ASTUTI DWI LESTARI",
+    "grade": "B.2"
+  },
+  {
+    "code": "15713",
+    "name": "Depok Universitas Indonesia",
+    "head": "ALEXANDER EKO KURNIAWAN",
+    "grade": "B.3"
+  },
+  {
+    "code": "12708",
+    "name": "Jakarta Cilandak Barat (dh Jkt Pondok Labu)",
+    "head": "AYU PRATIWI REZKI",
+    "grade": "B.3"
+  },
+  {
+    "code": "12775",
+    "name": "Jakarta Lenteng Agung (dh Lenteng Agung)",
+    "head": "VALDY PRASETYO BIRI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "15716",
+    "name": "Depok Kartini",
+    "head": "SINTYA ROSELINDA",
+    "grade": "B.3"
+  },
+  {
+    "code": "12720",
+    "name": "Jakarta Universitas Pancasila",
+    "head": "RAVIKA WULANSUCI WIRNASAPUTRI",
+    "grade": "B.3"
+  },
+  {
+    "code": "12404",
+    "name": "Jakarta Tebet Supomo",
+    "head": "FITRATI NOVIYANTI",
+    "grade": "B.2"
+  },
+  {
+    "code": "13301",
+    "name": "Bogor Kapten Muslihat",
+    "head": "ERNAWATI",
+    "grade": "B.2"
+  },
+  {
+    "code": "15714",
+    "name": "Depok Margo City (dh Depok Pondok Cina)",
+    "head": "ARIZ FAZLI PUTRA",
+    "grade": "B.3"
+  },
+  {
+    "code": "10119",
+    "name": "Jakarta Bintaro Jaya",
+    "head": "DINNY ERLINDA",
+    "grade": "B.1"
+  },
+  {
+    "code": "15709",
+    "name": "Depok Timur",
+    "head": "TAMARA HANUM KRISNA WIRDANI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13302",
+    "name": "Bogor Suryakencana",
+    "head": "RIFKI",
+    "grade": "B.3"
+  },
+  {
+    "code": "12422",
+    "name": "Jakarta M.T. Haryono",
+    "head": "ARIF PRIYO SETIAJI",
+    "grade": "B.1"
+  },
+  {
+    "code": "15705",
+    "name": "Depok Cisalak",
+    "head": "JENY DWI MASTIKOWATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13395",
+    "name": "Bogor Metland Cileungsi",
+    "head": "DECEKA RANDY RAHARDJA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13317",
+    "name": "Bogor Sholeh Iskandar",
+    "head": "LESTARI KURNIATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "12620",
+    "name": "Jakarta Mayestik",
+    "head": "KRISTI HAYUNINGTIYAS",
+    "grade": "B.3"
+  },
+  {
+    "code": "13381",
+    "name": "Jonggol",
+    "head": "KHORI ARIYANI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "15700",
+    "name": "Depok",
+    "head": "PUTRI MEGA WIJAYANTI",
+    "grade": "B.1"
+  },
+  {
+    "code": "15704",
+    "name": "Depok Kelapa Dua",
+    "head": "SUKMA DEWI HAPSARI",
+    "grade": "B.2"
+  },
+  {
+    "code": "13323",
+    "name": "Bogor Grand Nusa Dua (dh Villa Nusa Indah)",
+    "head": "ARIS SUSATYO",
+    "grade": "B.3"
+  },
+  {
+    "code": "12710",
+    "name": "Jakarta ITC Fatmawati",
+    "head": "AGENG RURI WIDAGDO",
+    "grade": "B.3"
+  },
+  {
+    "code": "15777",
+    "name": "Depok Citayam",
+    "head": "JOHANNES ANTONIUS MANURUNG",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "12700",
+    "name": "Jakarta Fatmawati",
+    "head": "AGUNG PRAWIRA UTAMA",
+    "grade": "B.1"
+  },
+  {
+    "code": "15711",
+    "name": "Depok Cinere Limo",
+    "head": "UTAMI PRABANDARI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13315",
+    "name": "Bogor Pasar Anyar",
+    "head": "ANISAK RAHAYUK RAHMAWATI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13380",
+    "name": "Bogor Cisarua",
+    "head": "TEGUH ARIF WICAKSANA",
+    "grade": "B.3"
+  },
+  {
+    "code": "13391",
+    "name": "Bogor Kemang (dh Bogor Parung)",
+    "head": "UPIK SETYANINGRUM",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13379",
+    "name": "Bogor Cigombong",
+    "head": "MELIANY",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "15703",
+    "name": "Depok Tengah",
+    "head": "IRA PUSPITA YUNIANA",
+    "grade": "B.3"
+  },
+  {
+    "code": "15717",
+    "name": "Cinere",
+    "head": "HENNY FUZIATIE BURHAN",
+    "grade": "B.2"
+  },
+  {
+    "code": "13300",
+    "name": "Bogor Juanda",
+    "head": "ALDIN MUHAMMAD",
+    "grade": "B.1"
+  },
+  {
+    "code": "12714",
+    "name": "Jakarta Jatipadang",
+    "head": "A.INDRA SITEPU",
+    "grade": "B.2"
+  },
+  {
+    "code": "15718",
+    "name": "Depok Bukit Cinere Gandul (dh Cinere PLN Gandul)",
+    "head": "SRI WULAN RAHMAWATI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13313",
+    "name": "Bogor Pajajaran",
+    "head": "VINNY DEWI ARTIANTHY A",
+    "grade": "B.3"
+  },
+  {
+    "code": "15715",
+    "name": "Depok Jatijajar",
+    "head": "DORIS YANIZAR",
+    "grade": "B.3"
+  },
+  {
+    "code": "13326",
+    "name": "Bogor ATC Parung",
+    "head": "RD DADE KUSUMA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "15789",
+    "name": "Depok Meruyung (dh Depok Galeria Sawangan)",
+    "head": "IMELDA BUTAR BUTAR",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13397",
+    "name": "Bogor Klapanunggal",
+    "head": "DERRI ARIBOWO",
+    "grade": "B.4.2"
+  },
+  {
+    "code": "13319",
+    "name": "Bogor Sentul City",
+    "head": "FAJAR ADITYO ISMANTORO",
+    "grade": "B.3"
+  },
+  {
+    "code": "13318",
+    "name": "Bogor Kampus IPB Darmaga",
+    "head": "ADIT PRASETYO",
+    "grade": "B.3"
+  },
+  {
+    "code": "15786",
+    "name": "Depok Cinangka",
+    "head": "SRI SUPRIATI",
+    "grade": "B.4.2"
+  },
+  {
+    "code": "15788",
+    "name": "Depok Pekapuran",
+    "head": "DERY BAGJA SUKMA PUTRA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "15707",
+    "name": "Sawangan Sari Plaza (dh Depok Bukit Sawangan)",
+    "head": "QORY OCTAVIANI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13324",
+    "name": "Bogor Nirwana Residence",
+    "head": "TEGUH OCTORA TRINANDA",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13375",
+    "name": "Bogor Gunung Sindur",
+    "head": "RARAS DEWI PRIMA EKASARI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13310",
+    "name": "Bogor Tajur",
+    "head": "ISDHORRA DEWI NURBUATI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13321",
+    "name": "Cileungsi",
+    "head": "YENI ARYANI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13386",
+    "name": "Bogor Ciomas",
+    "head": "STEFANUS DIDIT YUNIARTO",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13320",
+    "name": "Citeureup",
+    "head": "RIZKI SYAHBANI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13393",
+    "name": "Bogor Yasmin (dh Bogor Semplak)",
+    "head": "PUSPASARI DWI ARIYANI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13382",
+    "name": "Bogor Bojong Gede",
+    "head": "ITA PUSPITASARI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13376",
+    "name": "Bogor Gunung Putri",
+    "head": "YESSI ANGGRAINI",
+    "grade": "B.3"
+  },
+  {
+    "code": "13383",
+    "name": "Dramaga",
+    "head": "TRI HUTOMO",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13307",
+    "name": "Cibinong City Center (dh Cibinong)",
+    "head": "DEWI NURHATI",
+    "grade": "B.2"
+  },
+  {
+    "code": "15706",
+    "name": "Depok I",
+    "head": "NOVIANTI KURNIASARI",
+    "grade": "B.2"
+  },
+  {
+    "code": "13392",
+    "name": "Bogor Karadenan",
+    "head": "MURNI YANTI",
+    "grade": "B.4.1"
+  },
+  {
+    "code": "13325",
+    "name": "Cibinong Mayor Oking",
+    "head": "TRIASRI WIDYA WAHYUNINGSIH",
+    "grade": "B.3"
+  },
+  {
+    "code": "13384",
+    "name": "Leuwiliang",
+    "head": "ANTHI DWI PUTRIANI ANUGRAH",
+    "grade": "B.4.1"
+  }
+]
