@@ -226,10 +226,13 @@ export function SimulationManagerBar({
                 <button
                   type="button"
                   onClick={handleOpenSaveModal}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#003D79] hover:bg-[#00254D] text-white text-xs font-extrabold shadow-xs transition-all cursor-pointer"
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#003D79] hover:bg-[#00254D] text-white text-xs font-extrabold shadow-xs transition-all cursor-pointer ${
+                    modifiedDraftCount > 0 ? 'ring-2 ring-[#FFB81C]' : ''
+                  }`}
+                  title="Simpan simulasi skenario target Anda untuk dipresentasikan ke Konseptor"
                 >
                   <Save className="w-3.5 h-3.5 text-[#FFB81C]" />
-                  <span>Save Simulation</span>
+                  <span>Simpan Simulasi {modifiedDraftCount > 0 ? `(${modifiedDraftCount} Diubah)` : ''}</span>
                 </button>
 
                 {modifiedDraftCount > 0 && (

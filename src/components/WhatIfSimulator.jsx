@@ -470,9 +470,12 @@ export function WhatIfSimulator({
                                 )}
                               </div>
                               <p className="text-[11px] text-slate-500 mt-0.5">
-                                Aktual: <strong className="text-slate-700">{formatBankingNumber(m.real, unit)}</strong>
-                                {' '}vs Target: <strong className="text-slate-700">{formatBankingNumber(m.target, unit)}</strong>
+                                Aktual: <strong className="text-slate-700">{formatBankingNumber(m.real, unit, m.isPct)}</strong>
+                                {' '}vs Target: <strong className="text-slate-700">{formatBankingNumber(m.target, unit, m.isPct)}</strong>
                                 {unit && <span className="text-slate-400"> {unit}</span>}
+                              </p>
+                              <p className="text-[10px] text-slate-500">
+                                Target Awal (Konseptor): <strong className="text-[#003D79] font-mono">{formatBankingNumber(m.konseptorTarget !== undefined ? m.konseptorTarget : (m.originalTarget !== undefined ? m.originalTarget : m.target), unit, m.isPct)}</strong>
                               </p>
                             </div>
 

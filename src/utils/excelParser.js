@@ -212,8 +212,8 @@ function scoreBranchRow(row, metricDefs) {
     const maxScore = CATEGORY_MULTIPLIERS[c] || 0;
     const rawCatScore = sumCat(rows, c);
     totalRaw += rawCatScore;
-    const actualScore = Number(rawCatScore.toFixed(2));
-    const gapScore = Number(Math.max(0, maxScore - actualScore).toFixed(2));
+    const actualScore = xround(rawCatScore, 2);
+    const gapScore = xround(Math.max(0, maxScore - rawCatScore), 2);
     const usedCatRows = catRows.filter(x => x.used);
     const underTargetCount = usedCatRows.filter(x => x.maxAcv < 1).length;
 
@@ -275,13 +275,18 @@ export function recalculateBranchWithOverrides(branchData, targetOverrides = {},
 
     const nominalGap = m.isQuality ? (effectiveTarget - effectiveReal) : (effectiveReal - effectiveTarget);
 
+    const baselineKonseptorTarget = m.konseptorTarget !== undefined ? m.konseptorTarget : m.target;
+    const baselineExcelTarget = m.originalTarget !== undefined ? m.originalTarget : m.target;
+    const isTargetChanged = Math.abs(effectiveTarget - baselineKonseptorTarget) > 1e-6 || Math.abs(effectiveTarget - baselineExcelTarget) > 1e-6;
+
     return {
       ...m,
-      originalTarget: m.originalTarget !== undefined ? m.originalTarget : m.target,
+      originalTarget: baselineExcelTarget,
+      konseptorTarget: baselineKonseptorTarget,
       originalReal: m.originalReal !== undefined ? m.originalReal : m.real,
       target: Number(effectiveTarget.toFixed(6)),
       real: Number(effectiveReal.toFixed(6)),
-      isTargetModified: Math.abs(effectiveTarget - (m.originalTarget !== undefined ? m.originalTarget : m.target)) > 1e-6,
+      isTargetModified: isTargetChanged,
       isRealModified: Math.abs(effectiveReal - (m.originalReal !== undefined ? m.originalReal : m.real)) > 1e-6,
       used,
       acv,
@@ -303,8 +308,8 @@ export function recalculateBranchWithOverrides(branchData, targetOverrides = {},
       .filter(x => x.scored !== false && x.score)
       .reduce((s, x) => s + x.score, 0);
     totalRaw += rawCatScore;
-    const actualScore = Number(rawCatScore.toFixed(2));
-    const gapScore = Number(Math.max(0, maxScore - actualScore).toFixed(2));
+    const actualScore = xround(rawCatScore, 2);
+    const gapScore = xround(Math.max(0, maxScore - rawCatScore), 2);
     const usedCatRows = catRows.filter(x => x.used);
     const underTargetCount = usedCatRows.filter(x => x.maxAcv < 1).length;
 

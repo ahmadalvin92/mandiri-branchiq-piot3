@@ -11,7 +11,8 @@ import {
   ChevronDown,
   Trophy,
   LogOut,
-  Users
+  Users,
+  History
 } from 'lucide-react';
 import { getRoleLabel, isSuperadmin } from '../utils/dbService';
 
@@ -218,14 +219,24 @@ export function Header({
                 <span className="hidden xs:inline sm:inline">Simulator</span>
               </button>
 
-              {/* Upload & Daily Excel History Button */}
+              {/* Upload & Daily Excel History Button (Upload only for Superadmin; History for all) */}
               <button
                 onClick={onUploadClick}
                 className="inline-flex items-center gap-1 px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-[#003D79] hover:bg-[#002D59] text-white text-[11px] sm:text-xs font-bold shadow-xs cursor-pointer"
-                title="Upload File Excel Harian Baru atau Buka Riwayat Posisi Tanggal Sebelumnya"
+                title={
+                  isSuperadmin(currentUser)
+                    ? 'Upload File Excel Harian Baru (Superadmin) atau Buka Riwayat Posisi Tanggal'
+                    : 'Buka Riwayat Posisi Tanggal Excel Sebelumnya'
+                }
               >
-                <Upload className="w-3.5 h-3.5 text-[#FFB81C]" />
-                <span className="hidden md:inline">Upload / Riwayat Excel</span>
+                {isSuperadmin(currentUser) ? (
+                  <Upload className="w-3.5 h-3.5 text-[#FFB81C]" />
+                ) : (
+                  <History className="w-3.5 h-3.5 text-[#FFB81C]" />
+                )}
+                <span className="hidden md:inline">
+                  {isSuperadmin(currentUser) ? 'Upload / Riwayat Excel' : 'Riwayat Posisi Data'}
+                </span>
                 {excelHistoryList.length > 1 && (
                   <span className="px-1.5 py-0.1 rounded-full bg-[#FFB81C] text-[#00254D] text-[10px] font-black">
                     {excelHistoryList.length}

@@ -760,8 +760,10 @@ export function App() {
                   categorySummary={currentBranchData.categorySummary}
                   totalScore={currentBranchData.totalScore}
                   filterCategory={selectedCategory}
+                  onSelectCategory={setSelectedCategory}
                   filterUnderTarget={filterUnderTarget}
                   searchQuery={searchQuery}
+                  onSearchChange={setSearchQuery}
                   branchInfo={currentBranchData.branchInfo}
                   onSelectMetricForDetail={setSelectedMetricForDetail}
                   onOpenSimulatorForMetric={() => setIsSimulatorOpen(true)}
@@ -832,6 +834,8 @@ export function App() {
         onSelectHistorySnapshot={handleSelectHistorySnapshot}
         onDeleteHistorySnapshot={handleDeleteHistorySnapshot}
         onPruneOldSnapshots={handlePruneOldSnapshots}
+        isSuperadmin={isSuperadminUser}
+        currentUser={currentUser}
       />
 
       {/* Leaderboard & Branch Comparison Modal */}

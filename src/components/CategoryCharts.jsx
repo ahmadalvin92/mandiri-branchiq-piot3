@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   BarChart,
   Bar,
@@ -16,10 +16,13 @@ import {
   Search,
   CheckCircle2,
   AlertCircle,
-  RotateCcw
+  RotateCcw,
+  X,
+  ArrowDownRight
 } from 'lucide-react';
 
 import { CAT_ORDER } from '../utils/excelParser';
+import { formatBankingNumber, getMetricKnowledge } from '../utils/knowledgeBase';
 
 export function CategoryCharts({
   categorySummary,
@@ -43,12 +46,35 @@ export function CategoryCharts({
   const chasableGainTotal = usedMetrics.reduce((s, m) => s + (m.scoreGap || 0), 0);
   const unreachableGap = Math.max(0, 100 - totalScore - chasableGainTotal);
 
+  // Instant search matching across all metrics
+  const searchMatches = useMemo(() => {
+    const q = (searchQuery || '').trim().toLowerCase();
+    if (!q) return [];
+    return metrics.filter(m => {
+      if (!m.metric && !m.subMetric && !m.name) return false;
+      const matchName = m.name?.toLowerCase().includes(q);
+      const matchMetric = m.metric?.toLowerCase().includes(q);
+      const matchSub = m.subMetric?.toLowerCase().includes(q);
+      const matchCat = m.category?.toLowerCase().includes(q);
+      const matchRow = String(m.row).includes(q);
+      return matchName || matchMetric || matchSub || matchCat || matchRow;
+    });
+  }, [metrics, searchQuery]);
+
+  // Count matches per category when searching
+  const matchCountByCat = useMemo(() => {
+    const map = {};
+    searchMatches.forEach(m => {
+      map[m.category] = (map[m.category] || 0) + 1;
+    });
+    return map;
+  }, [searchMatches]);
+
   // Sorted by lost points descending for "Poin hilang per kategori"
   const sortedByLost = [...categories].sort((a, b) => (b.gapScore || 0) - (a.gapScore || 0));
   const maxLost = Math.max(...categories.map(c => c.gapScore || 0), 0.01);
 
   // Chart data formatted for horizontal bar chart with direct visible label text
-  // Ensure gapScore has a tiny epsilon (0.0001) for full categories so Recharts renders the right-side LabelList cleanly!
   const chartData = categories.map(c => ({
     name: c.category,
     actualScore: c.actualScore,
@@ -129,9 +155,39 @@ export function CategoryCharts({
     }, 90);
   };
 
+  // Scroll directly to a specific metric row in MetricsTable
+  const scrollToMetricRowInTable = (rowId) => {
+    setTimeout(() => {
+      const desktopRow = document.getElementById(`metric-row-${rowId}`);
+      const mobileRow = document.getElementById(`metric-mob-${rowId}`);
+      const fallbackTable = document.getElementById('scorecard-table-section');
+
+      const targetEl =
+        (desktopRow && desktopRow.offsetParent !== null ? desktopRow : null) ||
+        (mobileRow && mobileRow.offsetParent !== null ? mobileRow : null) ||
+        desktopRow ||
+        mobileRow ||
+        fallbackTable;
+
+      if (targetEl) {
+        const y = targetEl.getBoundingClientRect().top + window.scrollY - 60;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }, 90);
+  };
+
   const handleCategoryCardClick = (catName) => {
+    if (searchQuery) onSearchChange('');
     onSelectCategory(catName);
     scrollToCategoryInTable(catName);
+  };
+
+  const handleSearchInput = (val) => {
+    onSearchChange(val);
+    // Reset category filter when typing a search so results across all categories are found
+    if (val.trim() && selectedCategory !== 'all') {
+      onSelectCategory('all');
+    }
   };
 
   return (
@@ -151,17 +207,32 @@ export function CategoryCharts({
           </p>
         </div>
 
-        {/* Quick Filter Controls */}
+        {/* Quick Filter & Search Controls */}
         <div className="flex flex-wrap items-center gap-2">
           <div className="relative flex-1 sm:flex-none">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
             <input
               type="text"
-              placeholder="Cari sub-metrik..."
+              placeholder="Cari metrik / kategori (mis: livin, kpr)..."
               value={searchQuery}
-              onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full sm:w-44 text-xs bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 transition-colors focus:outline-hidden focus:ring-2 focus:ring-[#003D79]/20 focus:border-[#003D79]"
+              onChange={(e) => handleSearchInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchMatches.length > 0) {
+                  scrollToMetricRowInTable(searchMatches[0].row);
+                }
+              }}
+              className="w-full sm:w-64 text-xs bg-slate-50 hover:bg-slate-100 focus:bg-white border border-slate-300 rounded-lg pl-8 pr-7 py-1.5 font-semibold text-slate-800 transition-colors focus:outline-hidden focus:ring-2 focus:ring-[#003D79]/20 focus:border-[#003D79]"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => onSearchChange('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer"
+                title="Hapus pencarian"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
 
           <button
@@ -178,6 +249,103 @@ export function CategoryCharts({
           </button>
         </div>
       </div>
+
+      {/* INSTANT SEARCH RESULTS PANEL (Appears immediately when user types in search box!) */}
+      {searchQuery.trim() !== '' && (
+        <div className="bg-blue-50/70 border-2 border-[#003D79]/30 rounded-xl p-3.5 space-y-2.5 animate-in fade-in duration-150">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2 text-xs">
+              <span className="px-2 py-0.5 rounded-md bg-[#003D79] text-white font-extrabold">
+                Hasil Pencarian: "{searchQuery}"
+              </span>
+              <span className="font-bold text-slate-700">
+                Ditemukan {searchMatches.length} Sub-Metrik
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {searchMatches.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    const tbl = document.getElementById('scorecard-table-section');
+                    if (tbl) tbl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#003D79] hover:bg-[#00254D] text-white text-[11px] font-bold cursor-pointer"
+                >
+                  <span>Lihat Tabel Hasil Pencarian di Bawah</span>
+                  <ArrowDownRight className="w-3.5 h-3.5 text-[#FFB81C]" />
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => onSearchChange('')}
+                className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-[11px] font-bold cursor-pointer"
+              >
+                Reset Cari
+              </button>
+            </div>
+          </div>
+
+          {searchMatches.length === 0 ? (
+            <p className="text-xs text-rose-700 font-semibold py-2">
+              Tidak ditemukan metrik atau kategori dengan kata kunci "{searchQuery}". Coba kata kunci seperti: DPK, Tabungan, Giro, KPR, CC, KUR, Livin, Kopra, EDC, atau GMM.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-60 overflow-y-auto pr-1">
+              {searchMatches.map((m, idx) => {
+                const unit = getMetricKnowledge(m)?.unit || '';
+                const isAch = m.maxAcv >= 1;
+                return (
+                  <div
+                    key={m.row}
+                    onClick={() => scrollToMetricRowInTable(m.row)}
+                    className="p-2.5 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 hover:border-[#003D79] transition-all cursor-pointer flex items-center justify-between gap-2 shadow-2xs"
+                    title="Klik untuk langsung lompat ke baris metrik ini di tabel"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] font-mono font-black px-1.5 py-0.1 rounded bg-[#003D79] text-white">
+                          #{idx + 1}
+                        </span>
+                        <span className="text-[10px] font-bold px-1.5 py-0.1 rounded bg-slate-100 text-[#003D79]">
+                          {m.category}
+                        </span>
+                        <span className={`text-[10px] font-mono font-bold ${isAch ? 'text-emerald-700' : 'text-rose-600'}`}>
+                          Acv {(m.acv * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                      <p className="font-bold text-xs text-slate-900 truncate mt-1">
+                        {m.subMetric && m.subMetric !== m.metric ? `${m.metric} – ${m.subMetric}` : (m.metric || m.name)}
+                      </p>
+                      <p className="text-[10px] text-slate-500 font-mono">
+                        Real: <strong>{formatBankingNumber(m.real, unit, m.isPct)}</strong> / Tgt: <strong>{formatBankingNumber(m.target, unit, m.isPct)}</strong>
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
+                      {m.used ? (
+                        <>
+                          <span className="font-mono font-bold text-xs text-slate-900 block">
+                            {m.score.toFixed(2).replace('.', ',')}/{m.maxScore.toFixed(2).replace('.', ',')}
+                          </span>
+                          {m.scoreGap > 0.0005 ? (
+                            <span className="text-[10px] font-mono font-black px-1.5 py-0.1 rounded bg-[#FFB81C]/30 text-[#996000]">
+                              +{m.scoreGap.toFixed(2).replace('.', ',')}
+                            </span>
+                          ) : (
+                            <span className="text-[10px] font-bold text-emerald-600">Penuh ✓</span>
+                          )}
+                        </>
+                      ) : (
+                        <span className="text-[10px] text-slate-400">Bobot 0%</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Main 2-Column Layout: On mobile, Skor per Kategori comes FIRST (order-1 lg:order-2) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
@@ -203,22 +371,26 @@ export function CategoryCharts({
             )}
           </div>
 
-          {/* 7 Category Score Cards Grid (2 columns on mobile & desktop!) */}
+          {/* 7 Category Score Cards Grid */}
           <div className="grid grid-cols-2 gap-2.5 sm:gap-3">
             {categories.map((c) => {
               const isFull = (c.gapScore || 0) < 0.005;
               const pct = c.maxScore ? Math.min(100, (c.actualScore / c.maxScore) * 100) : 0;
               const rank = rankingInfo?.categoryScores?.[c.category]?.rank;
               const isSelected = selectedCategory === c.category;
+              const searchMatchCount = matchCountByCat[c.category] || 0;
+              const isHighlightedBySearch = searchQuery.trim() !== '' && searchMatchCount > 0;
 
               return (
                 <div
                   key={c.category}
                   onClick={() => handleCategoryCardClick(c.category)}
                   className={`rounded-xl border p-2.5 sm:p-3.5 transition-all cursor-pointer ${
-                    isSelected
+                    isSelected || isHighlightedBySearch
                       ? 'bg-blue-50/70 border-[#003D79] ring-2 ring-[#003D79]/20 shadow-xs'
-                      : 'bg-white hover:bg-slate-50/80 border-slate-200 hover:border-[#003D79]/50 shadow-2xs'
+                      : searchQuery.trim() !== '' && searchMatchCount === 0
+                        ? 'bg-slate-50/50 border-slate-200 opacity-50'
+                        : 'bg-white hover:bg-slate-50/80 border-slate-200 hover:border-[#003D79]/50 shadow-2xs'
                   }`}
                 >
                   {/* Top Row: Category Name + Rank Badge on Left, Actual / Max Score on Right */}
@@ -230,6 +402,11 @@ export function CategoryCharts({
                       {rank && (
                         <span className="text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.1 rounded bg-slate-100 text-[#003D79] border border-slate-200 shrink-0">
                           #{rank}
+                        </span>
+                      )}
+                      {isHighlightedBySearch && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.1 rounded-full bg-[#FFB81C] text-[#00254D] shrink-0">
+                          {searchMatchCount} cocok
                         </span>
                       )}
                     </div>
@@ -391,7 +568,7 @@ export function CategoryCharts({
             </div>
           </div>
 
-          {/* Card 2: Horizontal Bar Chart with Direct Text Labels (Full Height so all 7 categories fit cleanly) */}
+          {/* Card 2: Horizontal Bar Chart with Direct Text Labels */}
           <div className="bg-[#F8FAFC] rounded-xl border border-slate-200/90 p-3.5">
             <p className="text-xs font-extrabold text-[#003D79] mb-1 px-1">
               Grafik Skor Aktual vs Poin Bocor

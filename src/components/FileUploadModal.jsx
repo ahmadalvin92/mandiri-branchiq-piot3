@@ -28,7 +28,9 @@ export function FileUploadModal({
   activeSnapshotId = DEFAULT_SNAPSHOT_META.id,
   onSelectHistorySnapshot,
   onDeleteHistorySnapshot,
-  onPruneOldSnapshots
+  onPruneOldSnapshots,
+  isSuperadmin = false,
+  currentUser = null
 }) {
   const [isDragging, setIsDragging] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -106,10 +108,14 @@ export function FileUploadModal({
             </div>
             <div>
               <h3 className="font-extrabold text-sm sm:text-base text-white tracking-tight">
-                Upload Update Excel Harian & Riwayat Posisi Data
+                {isSuperadmin
+                  ? 'Upload Update Excel Harian & Riwayat Posisi Data'
+                  : 'Riwayat Posisi Data Excel Cabang'}
               </h3>
               <p className="text-[11px] sm:text-xs text-slate-300">
-                100% Client-Side Processing • Auto-Replace Otomatis pada Batas 80% Memori (400 MB)
+                {isSuperadmin
+                  ? 'Wewenang Superadmin • Auto-Replace Otomatis pada Batas 80% Memori (400 MB)'
+                  : 'Pilih & telusuri performa BranchIQ pada tanggal-tanggal posisi sebelumnya'}
               </p>
             </div>
           </div>
@@ -125,108 +131,127 @@ export function FileUploadModal({
         {/* Content */}
         <div className="p-4 sm:p-6 space-y-4 text-xs overflow-y-auto">
           
-          {/* Storage Quota & 80% Auto-Replace Status Bar */}
-          <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/90 space-y-2">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex items-center gap-1.5 font-extrabold text-[#003D79]">
-                <HardDrive className="w-4 h-4 text-[#003D79]" />
-                <span>Kapasitas Memori Riwayat: {quotaStats.usedMBText} / {quotaStats.maxMBText} ({quotaStats.usedPctOfMax}%)</span>
+          {/* Informational Box for Non-Superadmin */}
+          {!isSuperadmin && (
+            <div className="p-3.5 bg-amber-50 border border-amber-300 rounded-xl flex items-start gap-2.5 text-amber-900">
+              <ShieldCheck className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div className="text-xs">
+                <p className="font-bold">Akses Unggah File Excel Dibatasi (Khusus Superadmin)</p>
+                <p className="mt-0.5 text-amber-800">
+                  Wewenang upload update file Excel master harian hanya dimiliki oleh <strong>Superadmin</strong>. Anda ({currentUser?.displayName || currentUser?.username || 'Viewer'}) dapat dengan bebas memilih dan memuat snapshot tanggal posisi yang tersedia pada daftar riwayat di bawah.
+                </p>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-[10px] inline-flex items-center gap-1">
-                <ShieldCheck className="w-3 h-3 text-emerald-600" />
-                <span>Auto-Replace Aktif di ≥ 80% (400 MB)</span>
-              </span>
             </div>
+          )}
 
-            {/* Visual Memory Bar with 80% Threshold Marker */}
-            <div className="relative h-2.5 bg-slate-200 rounded-full overflow-hidden">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  quotaStats.isNearLimit ? 'bg-amber-500' : 'bg-[#003D79]'
-                }`}
-                style={{ width: `${Math.max(2, quotaStats.usedPctOfMax)}%` }}
-              />
-              {/* 80% Marker Line */}
-              <div
-                className="absolute top-0 bottom-0 w-0.5 bg-rose-600"
-                style={{ left: '80%' }}
-                title="Batas Auto-Replace 80% (400 MB)"
+          {/* Storage Quota & 80% Auto-Replace Status Bar (Superadmin Only) */}
+          {isSuperadmin && (
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/90 space-y-2">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 font-extrabold text-[#003D79]">
+                  <HardDrive className="w-4 h-4 text-[#003D79]" />
+                  <span>Kapasitas Memori Riwayat: {quotaStats.usedMBText} / {quotaStats.maxMBText} ({quotaStats.usedPctOfMax}%)</span>
+                </div>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 font-bold text-[10px] inline-flex items-center gap-1">
+                  <ShieldCheck className="w-3 h-3 text-emerald-600" />
+                  <span>Auto-Replace Aktif di ≥ 80% (400 MB)</span>
+                </span>
+              </div>
+
+              {/* Visual Memory Bar with 80% Threshold Marker */}
+              <div className="relative h-2.5 bg-slate-200 rounded-full overflow-hidden">
+                <div
+                  className={`h-full rounded-full transition-all duration-500 ${
+                    quotaStats.isNearLimit ? 'bg-amber-500' : 'bg-[#003D79]'
+                  }`}
+                  style={{ width: `${Math.max(2, quotaStats.usedPctOfMax)}%` }}
+                />
+                {/* 80% Marker Line */}
+                <div
+                  className="absolute top-0 bottom-0 w-0.5 bg-rose-600"
+                  style={{ left: '80%' }}
+                  title="Batas Auto-Replace 80% (400 MB)"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
+                <span>
+                  Jika memori mencapai <strong>80% (400 MB)</strong> atau tanggal posisi sama, sistem otomatis me-<em>replace</em> data paling lama agar tidak pernah penuh.
+                </span>
+                {excelHistoryList.filter(x => !x.isDefault).length > 1 && onPruneOldSnapshots && (
+                  <button
+                    type="button"
+                    onClick={onPruneOldSnapshots}
+                    className="inline-flex items-center gap-1 px-2 py-1 rounded bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[10px] cursor-pointer shrink-0"
+                  >
+                    <RefreshCw className="w-3 h-3" />
+                    <span>Sisakan Terbaru Saja</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Optional Custom Date / Label Input before Upload (Superadmin Only) */}
+          {isSuperadmin && (
+            <div className="bg-[#F8FAFC] p-3.5 rounded-xl border border-slate-200 space-y-1.5">
+              <label className="block font-bold text-slate-700 text-xs">
+                Label Posisi Tanggal / Catatan Update (Opsional — Jika tanggal sama, otomatis me-replace data tanggal tersebut)
+              </label>
+              <input
+                type="text"
+                value={customDateLabel}
+                onChange={(e) => setCustomDateLabel(e.target.value)}
+                placeholder="Contoh: 17 November 2026 (Kosongkan agar otomatis membaca tanggal dari sheet Excel)"
+                className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#003D79]/20 focus:border-[#003D79]"
               />
             </div>
+          )}
 
-            <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500">
-              <span>
-                Jika memori mencapai <strong>80% (400 MB)</strong> atau tanggal posisi sama, sistem otomatis me-<em>replace</em> data paling lama agar tidak pernah penuh.
-              </span>
-              {excelHistoryList.filter(x => !x.isDefault).length > 1 && onPruneOldSnapshots && (
-                <button
-                  type="button"
-                  onClick={onPruneOldSnapshots}
-                  className="inline-flex items-center gap-1 px-2 py-1 rounded bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 font-bold text-[10px] cursor-pointer shrink-0"
-                >
-                  <RefreshCw className="w-3 h-3" />
-                  <span>Sisakan Terbaru Saja</span>
-                </button>
+          {/* Drag & Drop Zone (Superadmin Only) */}
+          {isSuperadmin && (
+            <div
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={() => fileInputRef.current?.click()}
+              className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
+                isDragging 
+                  ? 'border-[#003D79] bg-blue-50/50 scale-[1.01]' 
+                  : 'border-slate-300 hover:border-[#003D79] bg-slate-50/60 hover:bg-blue-50/30'
+              }`}
+            >
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleFileInputChange} 
+                accept=".xlsx,.xls,.xlsm"
+                className="hidden" 
+              />
+
+              {isLoading ? (
+                <div className="py-3 space-y-2 flex flex-col items-center">
+                  <Loader2 className="w-8 h-8 text-[#003D79] animate-spin" />
+                  <p className="font-bold text-slate-700 text-sm">Memproses file Excel & mengecek kuota memori 80%...</p>
+                  <p className="text-slate-400 text-xs">Menyimpan snapshot posisi terbaru secara aman</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="w-11 h-11 rounded-full bg-blue-100/70 text-[#003D79] flex items-center justify-center mx-auto shadow-2xs">
+                    <Upload className="w-5 h-5 text-[#003D79]" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-slate-800">
+                      Upload File Excel Update Harian Baru (.xlsx)
+                    </p>
+                    <p className="text-slate-500 mt-0.5">
+                      Tarik & lepaskan file ke sini atau <span className="text-[#003D79] font-bold underline">klik untuk memilih file</span>
+                    </p>
+                  </div>
+                </div>
               )}
             </div>
-          </div>
-
-          {/* Optional Custom Date / Label Input before Upload */}
-          <div className="bg-[#F8FAFC] p-3.5 rounded-xl border border-slate-200 space-y-1.5">
-            <label className="block font-bold text-slate-700 text-xs">
-              Label Posisi Tanggal / Catatan Update (Opsional — Jika tanggal sama, otomatis me-replace data tanggal tersebut)
-            </label>
-            <input
-              type="text"
-              value={customDateLabel}
-              onChange={(e) => setCustomDateLabel(e.target.value)}
-              placeholder="Contoh: 17 November 2026 (Kosongkan agar otomatis membaca tanggal dari sheet Excel)"
-              className="w-full px-3 py-2 rounded-lg border border-slate-300 bg-white text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#003D79]/20 focus:border-[#003D79]"
-            />
-          </div>
-
-          {/* Drag & Drop Zone */}
-          <div
-            onDragOver={handleDragOver}
-            onDragLeave={handleDragLeave}
-            onDrop={handleDrop}
-            onClick={() => fileInputRef.current?.click()}
-            className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
-              isDragging 
-                ? 'border-[#003D79] bg-blue-50/50 scale-[1.01]' 
-                : 'border-slate-300 hover:border-[#003D79] bg-slate-50/60 hover:bg-blue-50/30'
-            }`}
-          >
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              onChange={handleFileInputChange} 
-              accept=".xlsx,.xls,.xlsm"
-              className="hidden" 
-            />
-
-            {isLoading ? (
-              <div className="py-3 space-y-2 flex flex-col items-center">
-                <Loader2 className="w-8 h-8 text-[#003D79] animate-spin" />
-                <p className="font-bold text-slate-700 text-sm">Memproses file Excel & mengecek kuota memori 80%...</p>
-                <p className="text-slate-400 text-xs">Menyimpan snapshot posisi terbaru secara aman</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                <div className="w-11 h-11 rounded-full bg-blue-100/70 text-[#003D79] flex items-center justify-center mx-auto shadow-2xs">
-                  <Upload className="w-5 h-5 text-[#003D79]" />
-                </div>
-                <div>
-                  <p className="text-sm font-bold text-slate-800">
-                    Upload File Excel Update Harian Baru (.xlsx)
-                  </p>
-                  <p className="text-slate-500 mt-0.5">
-                    Tarik & lepaskan file ke sini atau <span className="text-[#003D79] font-bold underline">klik untuk memilih file</span>
-                  </p>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
 
           {/* Error Message */}
           {errorMessage && (
@@ -324,7 +349,7 @@ export function FileUploadModal({
                         {isSelected ? 'Sedang Aktif' : 'Buka Data Ini'}
                       </button>
 
-                      {!item.isDefault && onDeleteHistorySnapshot && (
+                      {!item.isDefault && onDeleteHistorySnapshot && isSuperadmin && (
                         <button
                           type="button"
                           onClick={(e) => {
@@ -332,7 +357,7 @@ export function FileUploadModal({
                             onDeleteHistorySnapshot(item.id);
                           }}
                           className="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 cursor-pointer"
-                          title="Hapus dari riwayat"
+                          title="Hapus dari riwayat (Superadmin)"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>

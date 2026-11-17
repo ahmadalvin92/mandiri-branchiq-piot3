@@ -21,7 +21,8 @@ import {
   EyeOff,
   X,
   RotateCcw,
-  Check
+  Check,
+  Search
 } from 'lucide-react';
 import { formatBankingNumber, getMetricKnowledge } from '../utils/knowledgeBase';
 import {
@@ -43,8 +44,10 @@ export function MetricsTable({
   categorySummary = {},
   totalScore = 85.53,
   filterCategory = 'all',
+  onSelectCategory,
   filterUnderTarget = false,
   searchQuery = '',
+  onSearchChange,
   branchInfo = { code: '10125', name: 'Jakarta Pondok Indah Office 3', head: 'MICHAEL DANNIEL', grade: 'B.3' },
   onSelectMetricForDetail,
   onOpenSimulatorForMetric,
@@ -245,20 +248,25 @@ export function MetricsTable({
 
   // Filter metrics
   const filteredMetrics = useMemo(() => {
+    const isSearching = Boolean(searchQuery && searchQuery.trim());
+    const q = isSearching ? searchQuery.trim().toLowerCase() : '';
+
     const base = metrics.filter((m) => {
       if (!m.metric && !m.subMetric && !m.name) return false;
       if (!showZeroWeightRows && (!m.bobot || m.bobot <= 0)) return false;
-      if (filterCategory !== 'all' && m.category !== filterCategory) return false;
-      if (filterUnderTarget && (!m.used || m.scoreGap <= 0.0005)) return false;
 
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase();
+      // When searching, perform global search across ALL categories so items like "livin", "kpr", "giro" are never hidden by active category filters!
+      if (isSearching) {
         const matchName = m.name?.toLowerCase().includes(q);
         const matchMetric = m.metric?.toLowerCase().includes(q);
         const matchSub = m.subMetric?.toLowerCase().includes(q);
         const matchCat = m.category?.toLowerCase().includes(q);
-        if (!matchName && !matchMetric && !matchSub && !matchCat) return false;
+        const matchRow = String(m.row).includes(q);
+        return matchName || matchMetric || matchSub || matchCat || matchRow;
       }
+
+      if (filterCategory !== 'all' && m.category !== filterCategory) return false;
+      if (filterUnderTarget && (!m.used || m.scoreGap <= 0.0005)) return false;
 
       return true;
     });
@@ -568,6 +576,32 @@ export function MetricsTable({
                   +10%
                 </button>
               </div>
+
+              {/* Baseline Target Awal dari Konseptor */}
+              <div className="mt-2.5 p-2.5 rounded-xl bg-blue-50/80 border border-blue-200/90 flex items-center justify-between gap-2">
+                <div>
+                  <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
+                    Target Awal (Ditetapkan Konseptor):
+                  </span>
+                  <strong className="font-mono text-sm text-[#003D79]">
+                    {formatBankingNumber(
+                      item.konseptorTarget !== undefined ? item.konseptorTarget : (item.originalTarget !== undefined ? item.originalTarget : item.target),
+                      unit,
+                      item.isPct
+                    )} {unit}
+                  </strong>
+                </div>
+                {item.isTargetModified && (
+                  <button
+                    type="button"
+                    onClick={(e) => handleResetTarget(e, item)}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold cursor-pointer"
+                  >
+                    <RotateCcw className="w-3 h-3 text-[#FFB81C]" />
+                    <span>Pakai Target Konseptor</span>
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Live Formula Preview Box */}
@@ -726,6 +760,28 @@ export function MetricsTable({
         </div>
 
         <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-slate-600">
+          {/* Quick Search in Table Bar */}
+          <div className="relative">
+            <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Cari metrik di tabel (livin, kpr...)"
+              value={searchQuery}
+              onChange={(e) => onSearchChange && onSearchChange(e.target.value)}
+              className="w-44 sm:w-56 text-xs bg-white border border-slate-300 rounded-lg pl-8 pr-7 py-1 font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#003D79]/20 focus:border-[#003D79]"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => onSearchChange && onSearchChange('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 cursor-pointer"
+                title="Hapus pencarian"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
+          </div>
+
           {/* Toggle Show/Hide All Strategies */}
           <button
             type="button"
@@ -773,6 +829,43 @@ export function MetricsTable({
           </div>
         </div>
       </div>
+
+      {/* Search / Filter Notification Strip */}
+      {searchQuery && searchQuery.trim() !== '' && (
+        <div className="px-3.5 sm:px-5 py-2 bg-blue-50/90 border-b border-blue-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <Search className="w-4 h-4 text-[#003D79] shrink-0" />
+            <span className="font-bold text-[#003D79]">
+              Hasil Pencarian: <span className="underline font-black">"{searchQuery}"</span> — Ditemukan {filteredMetrics.length} Sub-Metrik di Semua Kategori
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={() => onSearchChange && onSearchChange('')}
+            className="px-2.5 py-0.5 rounded bg-white hover:bg-slate-100 text-[#003D79] border border-blue-300 font-bold text-[11px] cursor-pointer"
+          >
+            Reset Pencarian
+          </button>
+        </div>
+      )}
+      {!searchQuery && filterCategory !== 'all' && (
+        <div className="px-3.5 sm:px-5 py-2 bg-slate-100/90 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-slate-700">
+              Filter Aktif: Kategori <span className="text-[#003D79] font-black">{filterCategory}</span> ({filteredMetrics.length} Metrik)
+            </span>
+          </div>
+          {onSelectCategory && (
+            <button
+              type="button"
+              onClick={() => onSelectCategory('all')}
+              className="px-2.5 py-0.5 rounded bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 font-bold text-[11px] cursor-pointer"
+            >
+              Tampilkan Semua Kategori
+            </button>
+          )}
+        </div>
+      )}
 
       {/* MOBILE CARD VIEW (Shown on HP / screens < md) */}
       <div className="md:hidden divide-y divide-slate-200/80">
@@ -878,12 +971,25 @@ export function MetricsTable({
                     </div>
 
                     <div className="border-x border-slate-200/80 px-2">
-                      <span className="text-[10px] text-slate-400 block">Target ({effectiveWorkdays} HK)</span>
+                      <span className="text-[10px] text-slate-400 block">
+                        {item.isTargetModified ? 'Target Simulasi' : `Target (${effectiveWorkdays} HK)`}
+                      </span>
                       <span className="font-mono font-bold text-slate-900 block">
                         {item.target ? formatBankingNumber(item.target, unit, item.isPct) : '–'}
                       </span>
+                      {/* Target Awal dari Konseptor */}
+                      <div className="text-[9px] text-slate-500 mt-0.5 leading-tight">
+                        <span className="text-slate-400">Awal (Konseptor):</span>{' '}
+                        <strong className="font-mono text-[#003D79]">
+                          {formatBankingNumber(
+                            item.konseptorTarget !== undefined ? item.konseptorTarget : (item.originalTarget !== undefined ? item.originalTarget : item.target),
+                            unit,
+                            item.isPct
+                          )}
+                        </strong>
+                      </div>
                       {item.target > 0 && effectiveWorkdays > 0 && !isAchieved && (
-                        <span className="mt-0.5 inline-block px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 font-mono font-extrabold text-[9px]">
+                        <span className="mt-1 inline-block px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 font-mono font-extrabold text-[9px]">
                           {item.isQuality ? 'Turun ' : 'Kejar +'}
                           {formatBankingNumber(chaseInfo.dailyChase, unit, item.isPct)}/HK
                         </span>
@@ -947,14 +1053,26 @@ export function MetricsTable({
                       <span>{stratOpen ? 'Tutup Strategi' : 'Lihat Strategi'}</span>
                     </button>
 
-                    {canInlineEdit && (
+                    {canInlineEdit ? (
                       <button
                         type="button"
                         onClick={(e) => handleOpenFullEditor(e, item)}
                         className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white text-[#003D79] border border-slate-300 text-[11px] font-bold cursor-pointer"
                       >
                         <Edit3 className="w-3 h-3 text-[#FFB81C]" />
-                        <span>Edit</span>
+                        <span>{isViewerSimMode ? 'Simulasi' : 'Edit'}</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          if (onActivateViewerSimMode) onActivateViewerSimMode();
+                          handleOpenFullEditor(e, item);
+                        }}
+                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#00254D] border border-amber-300 text-[11px] font-bold cursor-pointer"
+                      >
+                        <Edit3 className="w-3 h-3 text-[#FFB81C]" />
+                        <span>Simulasi</span>
                       </button>
                     )}
                   </div>
@@ -1255,10 +1373,24 @@ export function MetricsTable({
                                 {isViewerSimMode ? 'Simulasi' : 'Diedit'}
                               </span>
                             )}
-                            <span className="text-[10px] font-sans text-slate-400">Target:</span>
+                            <span className="text-[10px] font-sans text-slate-400">
+                              {item.isTargetModified ? 'Target Simulasi:' : 'Target:'}
+                            </span>
                             <span className={`font-extrabold text-xs sm:text-sm ${item.used ? 'text-slate-900' : 'text-slate-500'}`}>
                               {item.target ? formatBankingNumber(item.target, unit, item.isPct) : '–'}
                             </span>
+                          </div>
+
+                          {/* Target Awal dari Konseptor (Always Visible Directly Below) */}
+                          <div className="text-[10px] font-sans text-slate-500 flex items-center justify-end gap-1">
+                            <span className="text-slate-400">Target Awal (Konseptor):</span>
+                            <strong className="font-mono text-slate-800">
+                              {formatBankingNumber(
+                                item.konseptorTarget !== undefined ? item.konseptorTarget : (item.originalTarget !== undefined ? item.originalTarget : item.target),
+                                unit,
+                                item.isPct
+                              )}
+                            </strong>
                           </div>
 
                           {/* KEJARAN PER HARI S.D. TARGET (BERDASARKAN TIMESTAND) */}
@@ -1423,22 +1555,22 @@ export function MetricsTable({
                                 title="Buka Panel Lebar untuk Edit Target, Rumus & Strategi"
                               >
                                 <Edit3 className="w-3 h-3" />
-                                <span>{isEditingRow ? 'Tutup Edit' : 'Edit Target / Strategi'}</span>
+                                <span>{isViewerSimMode ? (isEditingRow ? 'Tutup Simulasi' : 'Simulasi Target') : (isEditingRow ? 'Tutup Edit' : 'Edit Target / Strategi')}</span>
                               </button>
                             ) : (
-                              onActivateViewerSimMode && (
-                                <button
-                                  type="button"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    onActivateViewerSimMode();
-                                  }}
-                                  className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 text-[10px] font-bold cursor-pointer"
-                                >
-                                  <Sliders className="w-3 h-3 text-amber-600" />
-                                  <span>Simulasi</span>
-                                </button>
-                              )
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (onActivateViewerSimMode) onActivateViewerSimMode();
+                                  handleOpenFullEditor(e, item);
+                                }}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#00254D] border border-[#FFB81C] text-[11px] font-bold cursor-pointer shadow-2xs"
+                                title="Klik untuk langsung mensimulasikan angka target metrik ini"
+                              >
+                                <Edit3 className="w-3 h-3 text-[#FFB81C]" />
+                                <span>Simulasi Target</span>
+                              </button>
                             )}
 
                             <button
