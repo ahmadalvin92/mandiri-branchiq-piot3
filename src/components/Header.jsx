@@ -66,7 +66,11 @@ export function Header({
             {isSimulated ? (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.2 rounded-full bg-[#FFB81C] text-[#00254D] font-black text-[10px] sm:text-[11px] shadow-xs animate-pulse">
                 <Sparkles className="w-3 h-3 text-[#00254D]" />
-                <span>TOTAL SKOR SIMULASI: {activeTotalScore.toFixed(2).replace('.', ',')} ({scoreDelta >= 0 ? '+' : ''}{scoreDelta.toFixed(2).replace('.', ',')} pt) • Master: {masterTotalScore.toFixed(2).replace('.', ',')}</span>
+                <span>
+                  <span className="hidden sm:inline">TOTAL SKOR SIMULASI:</span>
+                  <span className="sm:hidden">SIM:</span> {activeTotalScore.toFixed(2).replace('.', ',')} ({scoreDelta >= 0 ? '+' : ''}{scoreDelta.toFixed(2).replace('.', ',')} pt)
+                  <span className="hidden sm:inline"> • Master: {masterTotalScore.toFixed(2).replace('.', ',')}</span>
+                </span>
               </span>
             ) : (
               <span className="hidden md:inline text-[#FFE5A3] font-semibold">Score Board BranchIQ 164 Cabang</span>

@@ -63,7 +63,7 @@ export function ExecutiveSummary({
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 text-[10px] sm:text-xs font-bold text-slate-500 uppercase tracking-wider">
               <Trophy className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FFB81C] shrink-0" />
-              <span className="truncate">{isSimulated ? 'Total Skor Simulasi' : 'Total Skor'}</span>
+              <span className="truncate">{isSimulated ? 'Skor Simulasi' : 'Total Skor'}</span>
               {isSimulated && (
                 <span className="px-1.5 py-0.2 rounded-full bg-[#FFB81C] text-[#00254D] font-black text-[9px] uppercase tracking-normal">
                   Simulasi
@@ -230,7 +230,7 @@ export function ExecutiveSummary({
               {biggestGapCategory.actualScore.toFixed(2).replace('.', ',')}
             </span>
             <span className="text-[10px] sm:text-xs font-semibold text-slate-400">
-              / {biggestGapCategory.maxScore} pt ({biggestGapCategory.achievementPct}%)
+              / {biggestGapCategory.maxScore} pt <span className="hidden sm:inline">({biggestGapCategory.achievementPct}%)</span>
             </span>
           </div>
         </div>

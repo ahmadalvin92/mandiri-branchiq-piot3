@@ -388,7 +388,7 @@ export function CategoryCharts({
                 <div
                   key={c.category}
                   onClick={() => handleCategoryCardClick(c.category)}
-                  className={`rounded-xl border-2 p-2.5 sm:p-3.5 transition-all cursor-pointer ${
+                  className={`rounded-xl border-2 p-2 sm:p-3.5 transition-all cursor-pointer ${
                     isSelected || isHighlightedBySearch
                       ? `bg-blue-50/70 border-[#003D79] ring-2 ring-[#003D79]/20 shadow-xs`
                       : searchQuery.trim() !== '' && searchMatchCount === 0
@@ -397,14 +397,14 @@ export function CategoryCharts({
                   }`}
                   style={{ borderLeftWidth: '5px', borderLeftColor: theme.accentHex }}
                 >
-                  {/* Top Row: Category Name + Rank Badge on Left, Actual / Max Score on Right */}
-                  <div className="flex items-baseline justify-between gap-1">
+                  {/* Top Row: Responsive layout — On Mobile stacks category/rank & score cleanly; On Desktop stays in single row */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-2">
                     <div className="flex items-center gap-1.5 min-w-0">
-                      <span className={`px-1.5 py-0.2 rounded text-[10px] ${theme.badge}`}>
+                      <span className={`px-1.5 py-0.2 rounded text-[10px] ${theme.badge} shrink-0`}>
                         {c.category}
                       </span>
                       {rank && (
-                        <span className="text-[9px] sm:text-[10px] font-bold px-1 sm:px-1.5 py-0.1 rounded bg-slate-100 text-[#003D79] border border-slate-200 shrink-0">
+                        <span className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.1 rounded bg-slate-100 text-[#003D79] border border-slate-200 shrink-0">
                           #{rank}
                         </span>
                       )}
@@ -414,7 +414,7 @@ export function CategoryCharts({
                         </span>
                       )}
                     </div>
-                    <div className="font-mono font-black text-xs sm:text-base text-slate-900 shrink-0">
+                    <div className="font-mono font-black text-xs sm:text-base text-slate-900 text-right shrink-0 mt-0.5 sm:mt-0">
                       {c.actualScore.toFixed(2).replace('.', ',')}{' '}
                       <span className="text-[10px] sm:text-xs font-semibold text-slate-400">
                         / {c.maxScore}
@@ -446,7 +446,7 @@ export function CategoryCharts({
                     ) : (
                       <span className="font-bold text-rose-700 inline-flex items-center gap-0.5 truncate">
                         <AlertCircle className="w-3 h-3 text-rose-600 shrink-0 hidden sm:inline" />
-                        <span>Hilang {c.gapScore.toFixed(2).replace('.', ',')} poin</span>
+                        <span>Hilang -{c.gapScore.toFixed(2).replace('.', ',')}</span>
                       </span>
                     )}
 

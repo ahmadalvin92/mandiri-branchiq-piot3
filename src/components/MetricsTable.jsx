@@ -965,7 +965,7 @@ export function MetricsTable({
                       </span>
                       {/* Target Awal dari Konseptor */}
                       <div className="text-[9px] text-slate-500 mt-0.5 leading-tight">
-                        <span className="text-slate-400">Awal (Konseptor):</span>{' '}
+                        <span className="text-slate-400" title="Target Awal dari Konseptor">Awal:</span>{' '}
                         <strong className="font-mono text-[#003D79]">
                           {formatBankingNumber(
                             item.konseptorTarget !== undefined ? item.konseptorTarget : (item.originalTarget !== undefined ? item.originalTarget : item.target),
