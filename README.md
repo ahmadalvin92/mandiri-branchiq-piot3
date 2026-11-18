@@ -31,19 +31,24 @@ Menghitung otomatis **Hari Kerja Efektif (HK)** dengan mengecualikan Sabtu, Ming
 Menampilkan tabel terstruktur dengan penomoran berurutan mulai dari **No. 1**, kolom **Realisasi & Selisih**, kolom **Target & Kejaran / Hari (`Kejar +X,XX/HK`)**, serta tombol **Lihat Strategi** yang dapat dibuka/ditutup sesuai kebutuhan.
 ![Tabel Scorecard & Target Harian](./screenshoot/03-tabel-scorecard-dan-target-harian-timestand.jpg)
 
-### 6. Detail Rincian Strategi & Taktik Eksekusi Cabang
+### 6. Detail Rincian Strategi, Panel Simulasi & Rumus Skor Cabang
+Menampilkan panel simulasi interaktif dua kolom (*What-If Simulator*) dengan tombol persentase instan (`-10%`, `-5%`, `+5%`, `+10%`), live pratinjau dampak poin terhadap total skor cabang (`85,53 → 85,80 pt`), serta catatan eksekusi taktis.
 ![Detail Metrik & Strategi Cabang](./screenshoot/04-detail-metrik-dan-strategi-cabang.jpg)
 
-### 7. Modal Upload Excel Harian, Riwayat Posisi Data & Auto-Replace Memori 80% (400 MB / 500 MB)
+### 7. Tombol Info Penjelasan Interaktif (ℹ️) & Definisi Resmi Scorecard Mandiri
+Menyediakan popover edukatif interaktif di seluruh kategori, header tabel, dan 74 metrik scorecard (menjelaskan arti *Endbal*, *Avgbal*, *CASA*, *HK*, *Bobot*, *Acv*, *Potensi*, hingga tips taktis eksekusi cabang).
+![Info Popover Definisi KPI](./screenshoot/12-info-popover-dan-definisi-kpi.png)
+
+### 8. Modal Upload Excel Harian, Riwayat Posisi Data & Auto-Replace Memori 80% (400 MB / 500 MB)
 Menampilkan indikator kapasitas memori riwayat (`X,XX MB / 500 MB`) dengan proteksi **Auto-Replace Otomatis saat mencapai $\ge 80\%$ (`400 MB`)** serta daftar **Riwayat Posisi Data Harian** untuk membuka kembali data hari-hari sebelumnya.
 ![Modal Upload & Auto-Replace 80%](./screenshoot/11-modal-upload-dan-auto-replace-80persen.png)
 
-### 8. Tampilan Responsif (Mobile / Tablet View) & Konfigurasi Deploy Vercel
+### 9. Tampilan Responsif (Mobile / Tablet View) & Konfigurasi Deploy Vercel
 | Tampilan Responsif Mobile / Tablet | Konfigurasi Deploy Vercel |
 | :---: | :---: |
 | ![Tampilan Responsif Mobile](./screenshoot/05-tampilan-responsif-mobile.jpg) | ![Konfigurasi Deploy Vercel](./screenshoot/06-konfigurasi-deploy-vercel.png) |
 
-### 9. Gedung & Interior KCP Jakarta Pondok Indah Office Tower 3
+### 10. Gedung & Interior KCP Jakarta Pondok Indah Office Tower 3
 | Eksterior KCP Pondok Indah Office Tower 3 | Interior Layanan Mandiri KCP PIOT |
 | :---: | :---: |
 | ![Eksterior Cabang](./screenshoot/07-eksterior-cabang-pondok-indah.jpg) | ![Interior KCP PIOT](./screenshoot/08-interior-mandiri-kcp-piot.jpg) |
@@ -82,13 +87,24 @@ mandiri_brach iq _score/
 │   ├── 08-interior-mandiri-kcp-piot.jpg
 │   ├── 09-skor-per-kategori-dan-kpi-summary.png
 │   ├── 10-timestand-target-kejaran-per-hari.png
-│   └── 11-modal-upload-dan-auto-replace-80persen.png
+│   ├── 11-modal-upload-dan-auto-replace-80persen.png
+│   └── 12-info-popover-dan-definisi-kpi.png
 ├── public/                        # Aset statis, foto cabang, & sampel Excel resmi
 ├── src/
-│   ├── components/                # Komponen UI React (LoginPage, Header, CategoryCharts, TimestandControl, MetricsTable, dll.)
-│   ├── utils/                     # Kalkulator Excel, History Auto-Replace 80%, Google Calendar & RBAC
+│   ├── components/                # Komponen UI React (LoginPage, Header, CategoryCharts, TimestandControl, MetricsTable, InfoTooltip, dll.)
+│   ├── utils/                     # Kalkulator Excel, Knowledge Base, History Auto-Replace 80%, Google Calendar & RBAC
 │   └── data/                      # Dataset baseline R05 KC 10125 & 164 cabang Region V
 ├── vercel.json                    # Konfigurasi routing SPA & security headers untuk Vercel
 ├── vite.config.js                 # Konfigurasi bundler Vite & middleware API
 └── package.json                   # Daftar dependensi & skrip npm
 ```
+
+---
+
+## 👥 Tim Pengembang & Inisiator
+
+- **Inisiator & Idea by**: **Michael Daniel** *(Branch Manager KCP Jakarta Pondok Indah Office Tower 3)*
+- **Developed by**: 
+  - [**Ahmad Alvin Griffin**](https://vinsky-techfolio.vercel.app/) *(ODP 348)*
+  - **Amalia Sekar Arum** *(ODP 348)*
+
