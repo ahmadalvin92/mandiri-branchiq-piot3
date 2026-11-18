@@ -241,8 +241,9 @@ function scoreBranchRow(row, metricDefs) {
  * Used for both Master Target edits (by Admin/Konseptor `michael` & `superadmin`)
  * and Local Simulation Mode (by `viewer`).
  */
-export function recalculateBranchWithOverrides(branchData, targetOverrides = {}, realOverrides = {}) {
+export function recalculateBranchWithOverrides(branchData, targetOverrides = {}, realOverrides = {}, options = {}) {
   if (!branchData || !branchData.calculatedMetrics) return branchData;
+  const isSimulationLayer = options.isSimulationLayer === true;
   const code = String(branchData.branchInfo?.code || '10125');
 
   const updatedMetrics = branchData.calculatedMetrics.map(m => {
@@ -275,25 +276,33 @@ export function recalculateBranchWithOverrides(branchData, targetOverrides = {},
 
     const nominalGap = m.isQuality ? (effectiveTarget - effectiveReal) : (effectiveReal - effectiveTarget);
 
-    const baselineKonseptorTarget = m.konseptorTarget !== undefined ? m.konseptorTarget : m.target;
-    const baselineExcelTarget = m.originalTarget !== undefined ? m.originalTarget : m.target;
-    const baselineMasterScore = m.masterScore !== undefined ? m.masterScore : (m.originalScore !== undefined ? m.originalScore : m.score);
-    const baselineMasterReal = m.masterReal !== undefined ? m.masterReal : (m.originalReal !== undefined ? m.originalReal : m.real);
+    // Excel (raw file) baseline values — never change across layers
+    const excelTarget = m.originalTarget !== undefined ? m.originalTarget : m.target;
+    const excelReal = m.originalReal !== undefined ? m.originalReal : m.real;
+    const excelScore = m.originalScore !== undefined ? m.originalScore : m.score;
 
-    const isTargetChanged = Math.abs(effectiveTarget - baselineKonseptorTarget) > 1e-6 || Math.abs(effectiveTarget - baselineExcelTarget) > 1e-6;
-    const isRealChanged = Math.abs(effectiveReal - baselineMasterReal) > 1e-6;
-    const scoreDelta = Number((score - baselineMasterScore).toFixed(4));
+    // Baseline for comparison:
+    // - Master layer  (raw Excel + master target konseptor): baseline = Excel file
+    // - Simulation layer (master data + viewer simulation): baseline = Master data
+    //   (= the "Awal (Konseptor)" total shown on the floating simulation bar)
+    const baseTarget = isSimulationLayer ? m.target : excelTarget;
+    const baseReal = isSimulationLayer ? m.real : excelReal;
+    const baseScore = isSimulationLayer ? m.score : score;
+
+    const isTargetChanged = Math.abs(effectiveTarget - baseTarget) > 1e-6;
+    const isRealChanged = Math.abs(effectiveReal - baseReal) > 1e-6;
+    const scoreDelta = isSimulationLayer ? Number((score - baseScore).toFixed(4)) : 0;
     const isScoreChanged = Math.abs(scoreDelta) > 0.0005;
 
     return {
       ...m,
-      originalTarget: baselineExcelTarget,
-      konseptorTarget: baselineKonseptorTarget,
-      masterTarget: baselineKonseptorTarget,
-      originalReal: m.originalReal !== undefined ? m.originalReal : m.real,
-      masterReal: baselineMasterReal,
-      originalScore: m.originalScore !== undefined ? m.originalScore : m.score,
-      masterScore: baselineMasterScore,
+      originalTarget: excelTarget,
+      konseptorTarget: baseTarget,
+      masterTarget: baseTarget,
+      originalReal: excelReal,
+      masterReal: baseReal,
+      originalScore: excelScore,
+      masterScore: baseScore,
       target: Number(effectiveTarget.toFixed(6)),
       real: Number(effectiveReal.toFixed(6)),
       isTargetModified: isTargetChanged,

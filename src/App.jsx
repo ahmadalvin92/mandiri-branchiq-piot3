@@ -179,7 +179,7 @@ export function App() {
   // Active Displayed Branch Data (either Master Data or Viewer Simulation Data)
   const currentBranchData = useMemo(() => {
     if (!isViewerSimMode) return masterBranchData;
-    return recalculateBranchWithOverrides(masterBranchData, viewerSimTargets, viewerSimReals);
+    return recalculateBranchWithOverrides(masterBranchData, viewerSimTargets, viewerSimReals, { isSimulationLayer: true });
   }, [masterBranchData, isViewerSimMode, viewerSimTargets, viewerSimReals]);
 
   // Timestand Effective Workdays Calculation
@@ -835,7 +835,8 @@ export function App() {
         isOpen={isSimulatorOpen}
         onClose={() => setIsSimulatorOpen(false)}
         onApplyToViewerSim={(newRealsMap) => {
-          setViewerSimReals(newRealsMap);
+          // Merge (jangan timpa) simulasi realisasi yang sudah ada dari tabel
+          setViewerSimReals(prev => ({ ...prev, ...(newRealsMap || {}) }));
           setIsViewerSimMode(true);
         }}
       />

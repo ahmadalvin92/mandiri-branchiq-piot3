@@ -200,15 +200,33 @@ export function MetricsTable({
     setDraftRealVal(String(Number(baseTgt.toFixed(4))));
   };
 
+  // Helpers: convert draft input (display units) <-> stored value, and detect real changes
+  const toDisplayVal = (item, v) => (item.isPct ? Number((v * 100).toFixed(4)) : Number(Number(v).toFixed(4)));
+  const parseDraft = (item, draft) => {
+    const parsed = parseFloat(draft);
+    if (isNaN(parsed) || parsed < 0) return null;
+    return item.isPct ? parsed / 100 : parsed;
+  };
+  // True only if the user actually typed a different number (ignores display rounding to 4 decimals)
+  const isDraftDifferent = (item, draft, currentVal) => {
+    const parsed = parseFloat(draft);
+    if (isNaN(parsed)) return false;
+    return Math.abs(parsed - toDisplayVal(item, currentVal)) > 1e-9;
+  };
+  const ensureSimMode = () => {
+    if (!isViewerSimMode && onActivateViewerSimMode) onActivateViewerSimMode();
+  };
+
   const handleSaveReal = (e, item) => {
     if (e) e.stopPropagation();
-    const parsed = parseFloat(draftRealVal);
-    if (!isNaN(parsed) && parsed >= 0) {
-      const actualRealValue = item.isPct ? parsed / 100 : parsed;
-      if (onUpdateViewerSimReal) {
-        onUpdateViewerSimReal(item.row, actualRealValue);
-      }
-    }
+    if (!isDraftDifferent(item, draftRealVal, item.real)) return;
+    const actualRealValue = parseDraft(item, draftRealVal);
+    if (actualRealValue === null || !onUpdateViewerSimReal) return;
+    // Realisasi hanya bisa disimulasikan (bukan data master) -> otomatis aktifkan Mode Simulasi
+    ensureSimMode();
+    const base = item.masterReal !== undefined ? item.masterReal : item.real;
+    // Jika kembali sama dengan realisasi aktual, hapus override agar tidak dianggap simulasi
+    onUpdateViewerSimReal(item.row, Math.abs(actualRealValue - base) < 1e-9 ? undefined : actualRealValue);
   };
 
   const handleResetReal = (e, item) => {
@@ -232,15 +250,17 @@ export function MetricsTable({
 
   const handleSaveTarget = (e, item) => {
     if (e) e.stopPropagation();
-    const parsed = parseFloat(draftTargetVal);
-    if (!isNaN(parsed) && parsed >= 0) {
-      const actualTargetValue = item.isPct ? parsed / 100 : parsed;
-      if (isViewerSimMode) {
-        onUpdateViewerSimTarget(item.row, actualTargetValue);
-      } else if (canEditMaster) {
-        onSaveMasterTarget(branchCode, item.row, actualTargetValue);
-      }
+    if (!isDraftDifferent(item, draftTargetVal, item.target)) return;
+    const actualTargetValue = parseDraft(item, draftTargetVal);
+    if (actualTargetValue === null) return;
+    if (!isViewerSimMode && canEditMaster) {
+      onSaveMasterTarget(branchCode, item.row, actualTargetValue);
+      return;
     }
+    // Viewer (atau mode simulasi) -> simpan sebagai target simulasi
+    ensureSimMode();
+    const base = item.masterTarget !== undefined ? item.masterTarget : item.target;
+    onUpdateViewerSimTarget(item.row, Math.abs(actualTargetValue - base) < 1e-9 ? undefined : actualTargetValue);
   };
 
   const handleResetTarget = (e, item) => {
@@ -535,6 +555,19 @@ export function MetricsTable({
     );
     const baseScore = item.masterScore !== undefined ? item.masterScore : (item.originalScore !== undefined ? item.originalScore : item.score);
     const previewScoreDelta = Number((previewScoreObj.score - baseScore).toFixed(4));
+    // Proyeksi Total Skor cabang jika draft ini disimpan (total saat ini - skor metrik saat ini + skor metrik baru)
+    const projectedTotal = Number((totalScore - item.score + previewScoreObj.score).toFixed(2));
+    const projectedTotalDelta = Number((projectedTotal - totalScore).toFixed(2));
+    const isRealDirty = isDraftDifferent(item, draftRealVal, item.real);
+    const isTargetDirty = isDraftDifferent(item, draftTargetVal, item.target);
+    const isDirty = isRealDirty || isTargetDirty;
+    // Rekomendasi metrik berbobot dengan potensi poin terbesar (untuk metrik Bobot 0%)
+    const topGapSuggestions = !item.used
+      ? metrics
+          .filter(x => x.used && x.scoreGap > 0.0005)
+          .sort((a, b) => b.scoreGap - a.scoreGap)
+          .slice(0, 3)
+      : [];
 
     return (
       <div
@@ -574,6 +607,29 @@ export function MetricsTable({
                 </span>
               )}
             </div>
+
+            {/* WARNING: Metrik Bobot 0% tidak mempengaruhi skor */}
+            {!item.used && (
+              <div className="p-3 rounded-xl bg-amber-50 border-2 border-amber-300 text-[11px] text-amber-900 leading-relaxed space-y-1.5">
+                <p className="font-extrabold text-xs">⚠️ Metrik ini Bobot 0% (hanya monitoring / informasi)</p>
+                <p>
+                  Metrik ini <strong>tidak dihitung ke skor</strong>. Berapa pun Realisasi atau Target yang Anda isi,
+                  <strong> Total Skor tidak akan bertambah atau berkurang</strong> (tetap +0,00 pt).
+                </p>
+                {topGapSuggestions.length > 0 && (
+                  <div>
+                    <p className="font-bold">Untuk menaikkan skor, simulasikan metrik berbobot dengan potensi poin terbesar:</p>
+                    <ul className="list-disc pl-4 mt-0.5">
+                      {topGapSuggestions.map(s => (
+                        <li key={s.row}>
+                          [{s.category}] {s.name} — potensi <strong>+{s.scoreGap.toFixed(2).replace('.', ',')} pt</strong>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Sub-Tabs: Simulasi Realisasi (Capaian) vs Edit Target KPI */}
             <div className="flex items-center gap-1.5 p-1 bg-slate-200/80 rounded-xl">
@@ -758,11 +814,14 @@ export function MetricsTable({
                 <p className="text-[11px] font-extrabold text-[#003D79] uppercase tracking-wider">
                   Pratinjau Hasil Rumus Otomatis:
                 </p>
-                {previewScoreDelta !== 0 && (
-                  <span className={`px-2 py-0.5 rounded font-mono font-bold text-[11px] ${
-                    previewScoreDelta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                  }`}>
-                    {previewScoreDelta > 0 ? 'Naik +' : 'Turun '}{previewScoreDelta.toFixed(2).replace('.', ',')} pt
+                {Math.abs(previewScoreDelta) > 0.0005 && (
+                  <span
+                    className={`px-2 py-0.5 rounded font-mono font-bold text-[11px] ${
+                      previewScoreDelta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                    }`}
+                    title="Selisih skor metrik ini dibanding data awal (konseptor)"
+                  >
+                    Metrik vs Awal: {previewScoreDelta > 0 ? '+' : ''}{previewScoreDelta.toFixed(2).replace('.', ',')} pt
                   </span>
                 )}
               </div>
@@ -790,21 +849,58 @@ export function MetricsTable({
                 </div>
                 <div className="p-2 rounded-lg bg-amber-50/70">
                   <span className="text-slate-500 block text-[10px]">Skor Metrik Baru:</span>
-                  <strong className={`font-mono text-sm ${previewScoreDelta >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
-                    {previewScoreObj.score.toFixed(2).replace('.', ',')} / {previewScoreObj.maxScore.toFixed(2).replace('.', ',')} pt
+                  <strong className={`font-mono text-sm ${!item.used ? 'text-slate-500' : previewScoreDelta >= 0 ? 'text-emerald-700' : 'text-rose-700'}`}>
+                    {item.used
+                      ? `${previewScoreObj.score.toFixed(2).replace('.', ',')} / ${previewScoreObj.maxScore.toFixed(2).replace('.', ',')} pt`
+                      : 'Tidak dihitung (Bobot 0%)'}
                   </strong>
                 </div>
               </div>
 
-              {/* Informative Guidance */}
-              {previewScoreDelta < -0.0005 && (
-                <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-[11px] text-rose-800 leading-relaxed font-medium">
-                  ⚠️ <strong>Skor berjalan metrik ini turun {Math.abs(previewScoreDelta).toFixed(2).replace('.', ',')} pt</strong> karena Target KPI dinaikkan tanpa menaikkan Realisasi berjalan. Jika Anda ingin menguji proyeksi kenaikan skor dari capaian kinerja cabang, gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong> di atas untuk menaikkan angka Realisasi!
+              {/* Dampak langsung ke Total Skor Cabang */}
+              <div className="p-2.5 rounded-lg bg-[#00254D] text-white flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                  Dampak ke Total Skor:
+                </span>
+                <span className="font-mono text-sm font-black">
+                  {totalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')}
+                  <span
+                    className={`ml-2 px-1.5 py-0.5 rounded text-[11px] ${
+                      projectedTotalDelta > 0
+                        ? 'bg-emerald-500 text-white'
+                        : projectedTotalDelta < 0
+                          ? 'bg-rose-500 text-white'
+                          : 'bg-slate-500 text-white'
+                    }`}
+                  >
+                    {projectedTotalDelta > 0 ? '+' : ''}{projectedTotalDelta.toFixed(2).replace('.', ',')} pt
+                  </span>
+                </span>
+              </div>
+
+              {/* Belum disimpan */}
+              {isDirty && (
+                <div className="p-2 rounded-lg bg-blue-50 border border-blue-300 text-[11px] text-[#003D79] leading-relaxed font-bold">
+                  ℹ️ Angka belum disimpan. Klik <strong>"{activeEditorTab === 'realisasi' ? 'Simpan Realisasi Simulasi' : 'Simpan Angka Target'}"</strong> atau
+                  <strong> "Simpan Semua Perubahan"</strong> agar Total Skor Simulasi di bawah ikut berubah.
                 </div>
               )}
-              {previewScoreDelta > 0.0005 && (
+
+              {/* Informative Guidance */}
+              {item.used && isTargetDirty && projectedTotalDelta < 0 && (
+                <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-[11px] text-rose-800 leading-relaxed font-medium">
+                  ⚠️ <strong>Skor turun karena Target dinaikkan</strong> sementara Realisasi tetap (Pencapaian = Realisasi ÷ Target jadi lebih kecil).
+                  Untuk melihat kenaikan skor dari kinerja cabang, gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong>.
+                </div>
+              )}
+              {item.used && projectedTotalDelta === 0 && isDirty && previewScoreObj.maxAcv >= 1 && item.maxAcv >= 1 && (
+                <div className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700 leading-relaxed font-medium">
+                  ℹ️ Pencapaian sudah ≥ 100% (skor dibatasi maksimal / Max 100%), jadi menaikkan realisasi lagi tidak menambah poin.
+                </div>
+              )}
+              {item.used && projectedTotalDelta > 0 && (
                 <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800 leading-relaxed font-bold">
-                  ✓ Proyeksi simulasi ini akan menambah <strong>+{previewScoreDelta.toFixed(2).replace('.', ',')} poin</strong> ke total skor cabang!
+                  ✓ Jika disimpan, Total Skor cabang naik <strong>+{projectedTotalDelta.toFixed(2).replace('.', ',')} pt</strong>.
                 </div>
               )}
             </div>
@@ -1215,7 +1311,7 @@ export function MetricsTable({
                           ) : (
                             item.scoreGap > 0.0005 && (
                               <span className="mt-0.5 inline-block text-[9px] text-amber-800 font-bold">
-                                Gap: +{item.scoreGap.toFixed(2).replace('.', ',')}
+                                Potensi +{item.scoreGap.toFixed(2).replace('.', ',')} pt
                               </span>
                             )
                           )}
@@ -1542,7 +1638,9 @@ export function MetricsTable({
                           {(item.bobot * 100).toFixed(1).replace('.0', '')}%
                         </span>
                         {!item.used && (
-                          <span className="block text-[9px] text-slate-400 font-sans">Bobot 0%</span>
+                          <span className="block text-[9px] text-amber-700 font-sans font-bold" title="Bobot 0%: hanya monitoring, tidak mempengaruhi total skor">
+                            Info (tdk dihitung skor)
+                          </span>
                         )}
                       </td>
 
@@ -1740,7 +1838,7 @@ export function MetricsTable({
                                 </span>
                                 {item.scoreGap > 0.0005 && (
                                   <span className="text-[9px] text-slate-400 font-sans mt-0.5">
-                                    Gap max: {item.scoreGap.toFixed(2).replace('.', ',')}
+                                    Sisa potensi: {item.scoreGap.toFixed(2).replace('.', ',')}
                                   </span>
                                 )}
                               </div>
@@ -1751,7 +1849,7 @@ export function MetricsTable({
                                     className="mt-1 inline-block font-bold text-[#996000] text-[10px] bg-[#FFB81C]/25 border border-[#FFB81C]/50 px-1.5 py-0.2 rounded"
                                     title="Potensi poin tambahan jika metrik ini mencapai target 100%"
                                   >
-                                    Gap: +{item.scoreGap.toFixed(2).replace('.', ',')}
+                                    Potensi +{item.scoreGap.toFixed(2).replace('.', ',')} pt
                                   </span>
                                 ) : (
                                   <span className="text-emerald-600 font-sans font-bold text-[10px] block mt-0.5">
@@ -1762,7 +1860,9 @@ export function MetricsTable({
                             )}
                           </div>
                         ) : (
-                          <span className="text-slate-400 text-[11px]">–</span>
+                          <span className="text-slate-400 text-[10px] font-sans font-semibold" title="Bobot 0%: tidak mempengaruhi total skor">
+                            Tidak dihitung
+                          </span>
                         )}
                       </td>
 
