@@ -178,7 +178,8 @@ export function App() {
 
   // Active Displayed Branch Data (either Master Data or Viewer Simulation Data)
   const currentBranchData = useMemo(() => {
-    if (!isViewerSimMode) return masterBranchData;
+    const hasSim = isViewerSimMode || Object.keys(viewerSimTargets).length > 0 || Object.keys(viewerSimReals).length > 0;
+    if (!hasSim) return masterBranchData;
     return recalculateBranchWithOverrides(masterBranchData, viewerSimTargets, viewerSimReals, { isSimulationLayer: true });
   }, [masterBranchData, isViewerSimMode, viewerSimTargets, viewerSimReals]);
 
@@ -331,6 +332,7 @@ export function App() {
 
   // ---------------- VIEWER SIMULATION HANDLERS ----------------
   const handleUpdateViewerSimTarget = (rowId, val) => {
+    setIsViewerSimMode(true);
     setViewerSimTargets((prev) => {
       const next = { ...prev };
       if (val === undefined || val === null) delete next[rowId];
@@ -340,6 +342,7 @@ export function App() {
   };
 
   const handleUpdateViewerSimReal = (rowId, val) => {
+    setIsViewerSimMode(true);
     setViewerSimReals((prev) => {
       const next = { ...prev };
       if (val === undefined || val === null) delete next[rowId];
@@ -349,6 +352,7 @@ export function App() {
   };
 
   const handleUpdateViewerSimStrategy = (rowId, text) => {
+    setIsViewerSimMode(true);
     setViewerSimStrategies((prev) => {
       const next = { ...prev };
       if (!text) delete next[rowId];
@@ -362,6 +366,7 @@ export function App() {
     setViewerSimReals({});
     setViewerSimStrategies({});
     setActiveSimulationId(null);
+    setIsViewerSimMode(false);
   };
 
   const handleSaveViewerSimulation = (simObj) => {

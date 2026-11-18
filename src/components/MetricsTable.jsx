@@ -184,22 +184,6 @@ export function MetricsTable({
     setEditingRowId(prev => (prev === item.row ? null : item.row));
   };
 
-  const handleStepReal = (e, item, factorPct) => {
-    if (e) e.stopPropagation();
-    const cur = parseFloat(draftRealVal);
-    const base = !isNaN(cur) ? cur : (item.isPct ? item.real * 100 : item.real);
-    const step = base !== 0 ? Math.abs(base) * Math.abs(factorPct) : 1;
-    const next = Math.max(0, Number((base + (factorPct > 0 ? step : -step)).toFixed(4)));
-    setDraftRealVal(String(next));
-  };
-
-  const handleSetRealToTarget = (e, item) => {
-    if (e) e.stopPropagation();
-    const curTarget = parseFloat(draftTargetVal);
-    const baseTgt = !isNaN(curTarget) ? curTarget : (item.isPct ? item.target * 100 : item.target);
-    setDraftRealVal(String(Number(baseTgt.toFixed(4))));
-  };
-
   // Helpers: convert draft input (display units) <-> stored value, and detect real changes
   const toDisplayVal = (item, v) => (item.isPct ? Number((v * 100).toFixed(4)) : Number(Number(v).toFixed(4)));
   const parseDraft = (item, draft) => {
@@ -216,17 +200,63 @@ export function MetricsTable({
   const ensureSimMode = () => {
     if (!isViewerSimMode && onActivateViewerSimMode) onActivateViewerSimMode();
   };
+  // Target diedit LIVE sebagai simulasi, kecuali konseptor sedang mengedit data MASTER (perlu klik Simpan)
+  const isTargetLive = isViewerSimMode || !canEditMaster;
+
+  // LIVE: terapkan angka realisasi simulasi langsung ke Total Skor Simulasi
+  const commitReal = (item, draft) => {
+    if (!onUpdateViewerSimReal) return;
+    const val = parseDraft(item, draft);
+    if (val === null) return; // input kosong / tidak valid -> abaikan sementara
+    const base = item.masterReal !== undefined ? item.masterReal : item.real;
+    const isBase = !isDraftDifferent(item, draft, base);
+    if (isBase && !isViewerSimMode) return;
+    ensureSimMode();
+    // Jika sama dengan realisasi aktual, hapus override agar tidak dianggap simulasi
+    onUpdateViewerSimReal(item.row, isBase ? undefined : val);
+  };
+
+  // LIVE: terapkan angka target simulasi langsung ke Total Skor Simulasi
+  const commitTarget = (item, draft) => {
+    if (!onUpdateViewerSimTarget) return;
+    const val = parseDraft(item, draft);
+    if (val === null) return;
+    const base = item.masterTarget !== undefined ? item.masterTarget : item.target;
+    const isBase = !isDraftDifferent(item, draft, base);
+    if (isBase && !isViewerSimMode) return;
+    ensureSimMode();
+    onUpdateViewerSimTarget(item.row, isBase ? undefined : val);
+  };
+
+  const handleChangeReal = (item, v) => {
+    setDraftRealVal(v);
+    commitReal(item, v);
+  };
+
+  const handleChangeTarget = (item, v) => {
+    setDraftTargetVal(v);
+    if (isTargetLive) commitTarget(item, v);
+  };
+
+  const handleStepReal = (e, item, factorPct) => {
+    if (e) e.stopPropagation();
+    const cur = parseFloat(draftRealVal);
+    const base = !isNaN(cur) ? cur : (item.isPct ? item.real * 100 : item.real);
+    const step = base !== 0 ? Math.abs(base) * Math.abs(factorPct) : 1;
+    const next = Math.max(0, Number((base + (factorPct > 0 ? step : -step)).toFixed(4)));
+    handleChangeReal(item, String(next));
+  };
+
+  const handleSetRealToTarget = (e, item) => {
+    if (e) e.stopPropagation();
+    const curTarget = parseFloat(draftTargetVal);
+    const baseTgt = !isNaN(curTarget) ? curTarget : (item.isPct ? item.target * 100 : item.target);
+    handleChangeReal(item, String(Number(baseTgt.toFixed(4))));
+  };
 
   const handleSaveReal = (e, item) => {
     if (e) e.stopPropagation();
-    if (!isDraftDifferent(item, draftRealVal, item.real)) return;
-    const actualRealValue = parseDraft(item, draftRealVal);
-    if (actualRealValue === null || !onUpdateViewerSimReal) return;
-    // Realisasi hanya bisa disimulasikan (bukan data master) -> otomatis aktifkan Mode Simulasi
-    ensureSimMode();
-    const base = item.masterReal !== undefined ? item.masterReal : item.real;
-    // Jika kembali sama dengan realisasi aktual, hapus override agar tidak dianggap simulasi
-    onUpdateViewerSimReal(item.row, Math.abs(actualRealValue - base) < 1e-9 ? undefined : actualRealValue);
+    commitReal(item, draftRealVal);
   };
 
   const handleResetReal = (e, item) => {
@@ -235,8 +265,7 @@ export function MetricsTable({
       onUpdateViewerSimReal(item.row, undefined);
     }
     const orig = item.masterReal !== undefined ? item.masterReal : (item.originalReal !== undefined ? item.originalReal : item.real);
-    const displayVal = item.isPct ? Number((orig * 100).toFixed(4)) : Number(orig.toFixed(4));
-    setDraftRealVal(String(displayVal));
+    setDraftRealVal(String(toDisplayVal(item, orig)));
   };
 
   const handleStepTarget = (e, item, factorPct) => {
@@ -245,22 +274,19 @@ export function MetricsTable({
     const base = !isNaN(cur) ? cur : (item.isPct ? item.target * 100 : item.target);
     const step = base !== 0 ? Math.abs(base) * Math.abs(factorPct) : 1;
     const next = Math.max(0, Number((base + (factorPct > 0 ? step : -step)).toFixed(4)));
-    setDraftTargetVal(String(next));
+    handleChangeTarget(item, String(next));
   };
 
   const handleSaveTarget = (e, item) => {
     if (e) e.stopPropagation();
-    if (!isDraftDifferent(item, draftTargetVal, item.target)) return;
-    const actualTargetValue = parseDraft(item, draftTargetVal);
-    if (actualTargetValue === null) return;
     if (!isViewerSimMode && canEditMaster) {
-      onSaveMasterTarget(branchCode, item.row, actualTargetValue);
+      // Konseptor: simpan permanen ke data MASTER
+      if (!isDraftDifferent(item, draftTargetVal, item.target)) return;
+      const val = parseDraft(item, draftTargetVal);
+      if (val !== null) onSaveMasterTarget(branchCode, item.row, val);
       return;
     }
-    // Viewer (atau mode simulasi) -> simpan sebagai target simulasi
-    ensureSimMode();
-    const base = item.masterTarget !== undefined ? item.masterTarget : item.target;
-    onUpdateViewerSimTarget(item.row, Math.abs(actualTargetValue - base) < 1e-9 ? undefined : actualTargetValue);
+    commitTarget(item, draftTargetVal);
   };
 
   const handleResetTarget = (e, item) => {
@@ -554,13 +580,14 @@ export function MetricsTable({
       effectiveWorkdays
     );
     const baseScore = item.masterScore !== undefined ? item.masterScore : (item.originalScore !== undefined ? item.originalScore : item.score);
-    const previewScoreDelta = Number((previewScoreObj.score - baseScore).toFixed(4));
-    // Proyeksi Total Skor cabang jika draft ini disimpan (total saat ini - skor metrik saat ini + skor metrik baru)
+    // Presisi pembulatan konsisten 2 desimal (menggunakan xround) agar selaras dengan total skor
+    const previewScoreDelta = xround(previewScoreObj.score - baseScore, 2);
+    // Proyeksi Total Skor cabang jika draft ini disimulasikan
     const projectedTotal = Number((totalScore - item.score + previewScoreObj.score).toFixed(2));
     const projectedTotalDelta = Number((projectedTotal - totalScore).toFixed(2));
     const isRealDirty = isDraftDifferent(item, draftRealVal, item.real);
     const isTargetDirty = isDraftDifferent(item, draftTargetVal, item.target);
-    const isDirty = isRealDirty || isTargetDirty;
+    const isSimulated = item.isRealModified || item.isTargetModified || isRealDirty || isTargetDirty;
     // Rekomendasi metrik berbobot dengan potensi poin terbesar (untuk metrik Bobot 0%)
     const topGapSuggestions = !item.used
       ? metrics
@@ -703,7 +730,7 @@ export function MetricsTable({
                   type="number"
                   step="any"
                   value={draftRealVal}
-                  onChange={(e) => setDraftRealVal(e.target.value)}
+                  onChange={(e) => handleChangeReal(item, e.target.value)}
                   className="w-full px-4 py-2.5 text-right font-mono font-black text-base text-[#003D79] bg-white border-2 border-[#003D79] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
                   placeholder="Ketik angka realisasi yang ingin dicapai..."
                 />
@@ -776,7 +803,7 @@ export function MetricsTable({
                   type="number"
                   step="any"
                   value={draftTargetVal}
-                  onChange={(e) => setDraftTargetVal(e.target.value)}
+                  onChange={(e) => handleChangeTarget(item, e.target.value)}
                   className="w-full px-4 py-2.5 text-right font-mono font-black text-base text-[#003D79] bg-white border-2 border-[#003D79] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
                 />
 
@@ -857,11 +884,14 @@ export function MetricsTable({
                 </div>
               </div>
 
-              {/* Dampak langsung ke Total Skor Cabang */}
-              <div className="p-2.5 rounded-lg bg-[#00254D] text-white flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
-                  Dampak ke Total Skor:
-                </span>
+              {/* Dampak langsung ke Total Skor Cabang (LIVE REACTIVE) */}
+              <div className="p-2.5 rounded-lg bg-[#00254D] text-white flex flex-wrap items-center justify-between gap-2 shadow-xs">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-200">
+                    Dampak ke Total Skor (Live):
+                  </span>
+                </div>
                 <span className="font-mono text-sm font-black">
                   {totalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')}
                   <span
@@ -878,55 +908,57 @@ export function MetricsTable({
                 </span>
               </div>
 
-              {/* Belum disimpan */}
-              {isDirty && (
-                <div className="p-2 rounded-lg bg-blue-50 border border-blue-300 text-[11px] text-[#003D79] leading-relaxed font-bold">
-                  ℹ️ Angka belum disimpan. Klik <strong>"{activeEditorTab === 'realisasi' ? 'Simpan Realisasi Simulasi' : 'Simpan Angka Target'}"</strong> atau
-                  <strong> "Simpan Semua Perubahan"</strong> agar Total Skor Simulasi di bawah ikut berubah.
+              {/* Status & Guidance Live Simulasi */}
+              {item.used && projectedTotalDelta > 0 && (
+                <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-300 text-[11px] text-emerald-900 leading-relaxed font-bold flex items-start gap-1.5">
+                  <span className="text-emerald-600 font-black">✓</span>
+                  <span>
+                    Simulasi Aktif (Live): Total Skor cabang bertambah <strong>+{projectedTotalDelta.toFixed(2).replace('.', ',')} pt</strong> dan langsung aktif di bar status bawah.
+                  </span>
                 </div>
               )}
 
-              {/* Informative Guidance */}
               {item.used && isTargetDirty && projectedTotalDelta < 0 && (
-                <div className="p-2 rounded-lg bg-rose-50 border border-rose-200 text-[11px] text-rose-800 leading-relaxed font-medium">
-                  ⚠️ <strong>Skor turun karena Target dinaikkan</strong> sementara Realisasi tetap (Pencapaian = Realisasi ÷ Target jadi lebih kecil).
-                  Untuk melihat kenaikan skor dari kinerja cabang, gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong>.
+                <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-300 text-[11px] text-rose-900 leading-relaxed font-medium">
+                  ⚠️ <strong>Skor turun {Math.abs(projectedTotalDelta).toFixed(2).replace('.', ',')} pt</strong> karena Target KPI dinaikkan sementara Realisasi tetap (Pencapaian = Realisasi ÷ Target mengecil). Gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong> untuk mensimulasikan kenaikan kinerja cabang.
                 </div>
               )}
-              {item.used && projectedTotalDelta === 0 && isDirty && previewScoreObj.maxAcv >= 1 && item.maxAcv >= 1 && (
+
+              {item.used && projectedTotalDelta === 0 && previewScoreObj.maxAcv >= 1 && (
                 <div className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700 leading-relaxed font-medium">
-                  ℹ️ Pencapaian sudah ≥ 100% (skor dibatasi maksimal / Max 100%), jadi menaikkan realisasi lagi tidak menambah poin.
-                </div>
-              )}
-              {item.used && projectedTotalDelta > 0 && (
-                <div className="p-2 rounded-lg bg-emerald-50 border border-emerald-200 text-[11px] text-emerald-800 leading-relaxed font-bold">
-                  ✓ Jika disimpan, Total Skor cabang naik <strong>+{projectedTotalDelta.toFixed(2).replace('.', ',')} pt</strong>.
+                  ℹ️ Pencapaian metrik ini sudah 100% penuh (skor maksimal tercapai). Kenaikan realisasi lebih lanjut tidak menambah skor lagi karena dibatasi 100%.
                 </div>
               )}
             </div>
 
             <div className="flex flex-wrap items-center gap-2 pt-1">
-              <button
-                type="button"
-                onClick={(e) => {
-                  if (activeEditorTab === 'realisasi') handleSaveReal(e, item);
-                  else handleSaveTarget(e, item);
-                }}
-                className="px-4 py-2 rounded-xl bg-[#003D79] hover:bg-[#00254D] text-white font-extrabold text-xs cursor-pointer shadow-xs"
-              >
-                {activeEditorTab === 'realisasi' ? 'Simpan Realisasi Simulasi' : 'Simpan Angka Target'}
-              </button>
-              {(item.isTargetModified || item.isRealModified) && (
+              {!isViewerSimMode && canEditMaster && activeEditorTab === 'target' && (
                 <button
                   type="button"
-                  onClick={(e) => {
-                    handleResetReal(e, item);
-                    handleResetTarget(e, item);
-                  }}
+                  onClick={(e) => handleSaveTarget(e, item)}
+                  className="px-4 py-2 rounded-xl bg-[#003D79] hover:bg-[#00254D] text-white font-extrabold text-xs cursor-pointer shadow-xs"
+                >
+                  Simpan Target Master (Permanen)
+                </button>
+              )}
+              {item.isRealModified && (
+                <button
+                  type="button"
+                  onClick={(e) => handleResetReal(e, item)}
                   className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs cursor-pointer"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
-                  <span>Reset Metrik ke Awal</span>
+                  <span>Reset Realisasi ke Aktual</span>
+                </button>
+              )}
+              {item.isTargetModified && (
+                <button
+                  type="button"
+                  onClick={(e) => handleResetTarget(e, item)}
+                  className="inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-amber-100 hover:bg-amber-200 text-amber-900 font-bold text-xs cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  <span>Reset Target ke Awal</span>
                 </button>
               )}
             </div>
@@ -997,7 +1029,7 @@ export function MetricsTable({
                   onClick={() => setEditingRowId(null)}
                   className="px-4 py-2.5 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold text-xs cursor-pointer"
                 >
-                  Tutup / Batal
+                  Tutup Panel
                 </button>
                 <button
                   type="button"
@@ -1005,7 +1037,7 @@ export function MetricsTable({
                   className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-[#003D79] hover:bg-[#00254D] text-white font-extrabold text-xs shadow-sm cursor-pointer"
                 >
                   <Check className="w-4 h-4 text-[#FFB81C]" />
-                  <span>Simpan Semua Perubahan</span>
+                  <span>Selesai & Simpan Catatan</span>
                 </button>
               </div>
             </div>
