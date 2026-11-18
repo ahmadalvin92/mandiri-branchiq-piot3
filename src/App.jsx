@@ -812,14 +812,23 @@ export function App() {
 
         {/* Modern Footer */}
         <footer className="mt-auto border-t border-slate-200/90 bg-white py-6 text-xs text-slate-500">
-          <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
+          <div className="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-2 text-center sm:text-left">
               <span className="font-extrabold text-[#003D79]">PT Bank Mandiri (Persero) Tbk.</span>
-              <span>— Region V / Jakarta 3</span>
+              <span className="text-slate-400 hidden sm:inline">—</span>
+              <span>Region V / Jakarta 3</span>
             </div>
-            <p className="text-slate-400">
-              BranchIQ Performance & Actionable Analytics Dashboard • {currentBranchData.branchInfo.name} (Kode: {currentBranchData.branchInfo.code})
-            </p>
+            <div className="flex flex-col items-center md:items-end text-center md:text-right gap-1 text-[11px] text-slate-500">
+              <p className="text-slate-600 font-semibold text-xs">
+                BranchIQ Performance & Actionable Analytics Dashboard • {currentBranchData.branchInfo.name} (Kode: {currentBranchData.branchInfo.code})
+              </p>
+              <p>
+                developed by <strong className="text-slate-700">ahmad alvin griffin</strong> & <strong className="text-slate-700">amalia sekar arum</strong> (odp 348)
+              </p>
+              <p>
+                idea by <strong className="text-[#003D79]">michael daniel</strong> (branch manager piot 3)
+              </p>
+            </div>
           </div>
         </footer>
 
