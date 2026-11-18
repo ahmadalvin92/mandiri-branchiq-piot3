@@ -277,17 +277,29 @@ export function recalculateBranchWithOverrides(branchData, targetOverrides = {},
 
     const baselineKonseptorTarget = m.konseptorTarget !== undefined ? m.konseptorTarget : m.target;
     const baselineExcelTarget = m.originalTarget !== undefined ? m.originalTarget : m.target;
+    const baselineMasterScore = m.masterScore !== undefined ? m.masterScore : (m.originalScore !== undefined ? m.originalScore : m.score);
+    const baselineMasterReal = m.masterReal !== undefined ? m.masterReal : (m.originalReal !== undefined ? m.originalReal : m.real);
+
     const isTargetChanged = Math.abs(effectiveTarget - baselineKonseptorTarget) > 1e-6 || Math.abs(effectiveTarget - baselineExcelTarget) > 1e-6;
+    const isRealChanged = Math.abs(effectiveReal - baselineMasterReal) > 1e-6;
+    const scoreDelta = Number((score - baselineMasterScore).toFixed(4));
+    const isScoreChanged = Math.abs(scoreDelta) > 0.0005;
 
     return {
       ...m,
       originalTarget: baselineExcelTarget,
       konseptorTarget: baselineKonseptorTarget,
+      masterTarget: baselineKonseptorTarget,
       originalReal: m.originalReal !== undefined ? m.originalReal : m.real,
+      masterReal: baselineMasterReal,
+      originalScore: m.originalScore !== undefined ? m.originalScore : m.score,
+      masterScore: baselineMasterScore,
       target: Number(effectiveTarget.toFixed(6)),
       real: Number(effectiveReal.toFixed(6)),
       isTargetModified: isTargetChanged,
-      isRealModified: Math.abs(effectiveReal - (m.originalReal !== undefined ? m.originalReal : m.real)) > 1e-6,
+      isRealModified: isRealChanged,
+      scoreDelta,
+      isScoreChanged,
       used,
       acv,
       maxAcv,

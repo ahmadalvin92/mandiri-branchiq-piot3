@@ -18,7 +18,7 @@ import {
   Percent
 } from 'lucide-react';
 import { formatBankingNumber, metricKnowledge } from '../utils/knowledgeBase';
-import { CATEGORY_MULTIPLIERS } from '../utils/excelParser';
+import { CATEGORY_MULTIPLIERS, calcAcv, calcMetricScore, xround } from '../utils/excelParser';
 
 const CAT_COLORS = {
   DPK: { bg: 'bg-blue-50', text: 'text-blue-700', border: 'border-blue-200', accent: '#003D79' },
@@ -98,10 +98,18 @@ export function WhatIfSimulator({
 
     weightedMetrics.forEach(m => {
       const simReal = adjustments[m.row] !== undefined ? adjustments[m.row] : m.real;
-      const simAcv = calcSimAcv(simReal, m.target, m.isQuality);
-      const simMaxAcv = Math.min(1.0, Math.max(0.0, simAcv));
-      const mult = CATEGORY_MULTIPLIERS[m.category] || 0;
-      const simScore = Number((simMaxAcv * m.bobot * mult).toFixed(4));
+      const scoreObj = calcMetricScore(
+        simReal,
+        m.target,
+        m.bobot,
+        m.category,
+        m.isQuality,
+        m.rndAcv !== false,
+        m.scored !== false
+      );
+      const simScore = scoreObj.score;
+      const simAcv = scoreObj.acv;
+      const simMaxAcv = scoreObj.maxAcv;
 
       simulatedTotalScore += simScore;
       if (!simulatedCategoryScores[m.category]) simulatedCategoryScores[m.category] = 0;
@@ -438,10 +446,18 @@ export function WhatIfSimulator({
                       const step = sliderMax > 1000 ? 10 : sliderMax > 100 ? 1 : sliderMax > 1 ? 0.01 : 0.0001;
 
                       // Calculate individual simulated score
-                      const itemSimAcv = calcSimAcv(currentSimVal, m.target, m.isQuality);
-                      const itemSimMaxAcv = Math.min(1.0, Math.max(0, itemSimAcv));
-                      const mult = CATEGORY_MULTIPLIERS[m.category] || 0;
-                      const itemSimScore = Number((itemSimMaxAcv * m.bobot * mult).toFixed(4));
+                      const itemScoreObj = calcMetricScore(
+                        currentSimVal,
+                        m.target,
+                        m.bobot,
+                        m.category,
+                        m.isQuality,
+                        m.rndAcv !== false,
+                        m.scored !== false
+                      );
+                      const itemSimAcv = itemScoreObj.acv;
+                      const itemSimMaxAcv = itemScoreObj.maxAcv;
+                      const itemSimScore = itemScoreObj.score;
                       const itemDelta = Number((itemSimScore - m.score).toFixed(2));
                       const isChanged = Math.abs(currentSimVal - m.real) > 0.0001;
                       const isMaxed = itemSimMaxAcv >= 1.0;
@@ -558,7 +574,14 @@ export function WhatIfSimulator({
             {onApplyToViewerSim && (
               <button
                 onClick={() => {
-                  onApplyToViewerSim(adjustments, simulationResult.finalTotal);
+                  const changedOnly = {};
+                  Object.entries(adjustments).forEach(([row, val]) => {
+                    const m = weightedMetrics.find(x => String(x.row) === String(row));
+                    if (m && Math.abs(val - m.real) > 1e-6) {
+                      changedOnly[row] = val;
+                    }
+                  });
+                  onApplyToViewerSim(changedOnly, simulationResult.finalTotal);
                   onClose();
                 }}
                 className="px-4 py-2 rounded-lg bg-[#FFB81C] hover:bg-[#f3aa0d] text-[#00254D] text-xs font-extrabold transition-all shadow-xs cursor-pointer"

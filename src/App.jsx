@@ -339,6 +339,15 @@ export function App() {
     });
   };
 
+  const handleUpdateViewerSimReal = (rowId, val) => {
+    setViewerSimReals((prev) => {
+      const next = { ...prev };
+      if (val === undefined || val === null) delete next[rowId];
+      else next[rowId] = Number(val);
+      return next;
+    });
+  };
+
   const handleUpdateViewerSimStrategy = (rowId, text) => {
     setViewerSimStrategies((prev) => {
       const next = { ...prev };
@@ -776,11 +785,14 @@ export function App() {
                   isViewerSimMode={isViewerSimMode}
                   masterStrategies={dbState.masterStrategies || {}}
                   viewerSimStrategies={viewerSimStrategies}
+                  viewerSimTargets={viewerSimTargets}
+                  viewerSimReals={viewerSimReals}
                   onSaveMasterTarget={handleSaveMasterTarget}
                   onResetMasterTarget={handleResetMasterTarget}
                   onSaveMasterStrategy={handleSaveMasterStrategy}
                   onResetMasterStrategy={handleResetMasterStrategy}
                   onUpdateViewerSimTarget={handleUpdateViewerSimTarget}
+                  onUpdateViewerSimReal={handleUpdateViewerSimReal}
                   onUpdateViewerSimStrategy={handleUpdateViewerSimStrategy}
                   onActivateViewerSimMode={() => setIsViewerSimMode(true)}
                   effectiveWorkdays={timestandSummary.effectiveWorkdays}
