@@ -180,8 +180,11 @@ export function MetricsTable({
     setDraftTargetVal(String(displayTgt));
     setDraftStrategyText(resolved.text);
     setDraftStrategyScope(resolved.scope === 'all' ? 'all' : 'branch');
-    // If viewer simulation mode, default to Realisasi simulation tab; otherwise Target
-    setActiveEditorTab(isViewerSimMode ? 'realisasi' : 'target');
+    // Default ke tab Simulasi Realisasi (Capaian) untuk melihat kenaikan skor; Target hanya jika admin sedang edit data master
+    setActiveEditorTab(canEditMaster && !isViewerSimMode ? 'target' : 'realisasi');
+    if (!isViewerSimMode && onActivateViewerSimMode) {
+      onActivateViewerSimMode();
+    }
     setEditingRowId(prev => (prev === item.row ? null : item.row));
   };
 
@@ -589,12 +592,11 @@ export function MetricsTable({
     const isRealDirty = isDraftDifferent(item, draftRealVal, item.real);
     const isTargetDirty = isDraftDifferent(item, draftTargetVal, item.target);
     const isSimulated = item.isRealModified || item.isTargetModified || isRealDirty || isTargetDirty;
-    // Rekomendasi metrik berbobot dengan potensi poin terbesar (untuk metrik Bobot 0%)
+    // Rekomendasi metrik berbobot dengan potensi poin terbesar (prioritaskan kategori yang sama)
+    const sameCatGap = metrics.filter(x => x.category === item.category && x.used && x.scoreGap > 0.0005);
+    const otherCatGap = metrics.filter(x => x.category !== item.category && x.used && x.scoreGap > 0.0005);
     const topGapSuggestions = !item.used
-      ? metrics
-          .filter(x => x.used && x.scoreGap > 0.0005)
-          .sort((a, b) => b.scoreGap - a.scoreGap)
-          .slice(0, 3)
+      ? [...sameCatGap.sort((a, b) => b.scoreGap - a.scoreGap), ...otherCatGap.sort((a, b) => b.scoreGap - a.scoreGap)].slice(0, 3)
       : [];
 
     return (
@@ -636,24 +638,50 @@ export function MetricsTable({
               )}
             </div>
 
-            {/* WARNING: Metrik Bobot 0% tidak mempengaruhi skor */}
+            {/* WARNING & REKOMENDASI: Metrik Bobot 0% tidak mempengaruhi skor */}
             {!item.used && (
-              <div className="p-3 rounded-xl bg-amber-50 border-2 border-amber-300 text-[11px] text-amber-900 leading-relaxed space-y-1.5">
-                <p className="font-extrabold text-xs">⚠️ Metrik ini Bobot 0% (hanya monitoring / informasi)</p>
-                <p>
-                  Metrik ini <strong>tidak dihitung ke skor</strong>. Berapa pun Realisasi atau Target yang Anda isi,
-                  <strong> Total Skor tidak akan bertambah atau berkurang</strong> (tetap +0,00 pt).
-                </p>
-                {topGapSuggestions.length > 0 && (
+              <div className="p-3.5 rounded-xl bg-amber-50 border-2 border-amber-300 text-[11px] text-amber-950 leading-relaxed space-y-2.5">
+                <div className="flex items-start gap-2">
+                  <span className="text-amber-700 font-black text-sm">⚠️</span>
                   <div>
-                    <p className="font-bold">Untuk menaikkan skor, simulasikan metrik berbobot dengan potensi poin terbesar:</p>
-                    <ul className="list-disc pl-4 mt-0.5">
-                      {topGapSuggestions.map(s => (
-                        <li key={s.row}>
-                          [{s.category}] {s.name} — potensi <strong>+{s.scoreGap.toFixed(2).replace('.', ',')} pt</strong>
-                        </li>
+                    <p className="font-extrabold text-xs text-amber-900">
+                      Metrik #{displayNumber} [{item.category}] {item.name} memiliki BOBOT 0% (Hanya Monitoring)
+                    </p>
+                    <p className="text-amber-800 mt-0.5">
+                      Metrik ini <strong>tidak memiliki porsi poin</strong> di sistem scorecard Mandiri. Berapa pun angka Realisasi atau Target yang Anda isi, <strong>Total Skor cabang tidak akan bertambah atau berkurang</strong> (tetap +0,00 pt).
+                    </p>
+                  </div>
+                </div>
+
+                {topGapSuggestions.length > 0 && (
+                  <div className="bg-white/90 p-3 rounded-xl border border-amber-200 space-y-2">
+                    <p className="font-bold text-xs text-[#003D79]">
+                      🎯 Untuk menaikkan skor, silakan pilih salah satu metrik berbobot di bawah ini:
+                    </p>
+                    <div className="grid grid-cols-1 gap-1.5">
+                      {topGapSuggestions.map((rec) => (
+                        <button
+                          key={rec.row}
+                          type="button"
+                          onClick={(e) => {
+                            handleOpenFullEditor(e, rec);
+                          }}
+                          className="flex items-center justify-between p-2 rounded-lg bg-blue-50/80 hover:bg-blue-100 border border-blue-200 text-left cursor-pointer transition-all hover:shadow-xs group"
+                        >
+                          <div className="min-w-0 pr-2">
+                            <span className="text-[10px] font-bold text-slate-500 uppercase block">
+                              [{rec.category}] Bobot {(rec.bobot * 100).toFixed(0)}%
+                            </span>
+                            <span className="text-xs font-bold text-[#003D79] group-hover:text-blue-900 block truncate">
+                              {rec.name}
+                            </span>
+                          </div>
+                          <span className="shrink-0 px-2 py-1 rounded bg-emerald-100 text-emerald-800 font-mono font-extrabold text-xs group-hover:bg-emerald-200">
+                            Simulasikan Metrik Ini (+{rec.scoreGap.toFixed(2).replace('.', ',')} pt) →
+                          </span>
+                        </button>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 )}
               </div>
@@ -767,6 +795,9 @@ export function MetricsTable({
             {/* TAB 2: EDIT / SIMULASI TARGET KPI */}
             {activeEditorTab === 'target' && (
               <div className="space-y-2.5">
+                <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] text-[#003D79] leading-relaxed">
+                  💡 <strong>Catatan:</strong> Target KPI adalah beban kuota kerja. Jika angka target dinaikkan, persentase capaian (Acv = Realisasi ÷ Target) justru akan <strong>turun</strong>. Jika Anda ingin melihat <strong>skor cabang naik</strong>, gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong> di sebelah kiri untuk menambah pencapaian riil cabang.
+                </div>
                 <label className="block font-bold text-slate-700 text-xs">
                   Masukkan Nilai Target Baru {item.isPct ? '(dalam %)' : `(${unit || 'Nominal'})`}:
                 </label>
@@ -1387,10 +1418,14 @@ export function MetricsTable({
                       <button
                         type="button"
                         onClick={(e) => handleOpenFullEditor(e, item)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-white text-[#003D79] border border-slate-300 text-[11px] font-bold cursor-pointer"
+                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border cursor-pointer ${
+                          !item.used
+                            ? 'bg-slate-100 text-slate-700 border-slate-300'
+                            : 'bg-white text-[#003D79] border-slate-300'
+                        }`}
                       >
                         <Edit3 className="w-3 h-3 text-[#FFB81C]" />
-                        <span>{isViewerSimMode ? 'Simulasi' : 'Edit'}</span>
+                        <span>{!item.used ? 'Info (0%)' : (isViewerSimMode ? 'Simulasi' : 'Edit')}</span>
                       </button>
                     ) : (
                       <button
@@ -1399,10 +1434,14 @@ export function MetricsTable({
                           if (onActivateViewerSimMode) onActivateViewerSimMode();
                           handleOpenFullEditor(e, item);
                         }}
-                        className="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#00254D] border border-amber-300 text-[11px] font-bold cursor-pointer"
+                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer border ${
+                          !item.used
+                            ? 'bg-slate-100 text-slate-600 border-slate-300'
+                            : 'bg-amber-50 hover:bg-amber-100 text-[#00254D] border-amber-300'
+                        }`}
                       >
                         <Edit3 className="w-3 h-3 text-[#FFB81C]" />
-                        <span>Simulasi</span>
+                        <span>{!item.used ? 'Info (0%)' : 'Simulasi Capaian'}</span>
                       </button>
                     )}
                   </div>
@@ -1924,12 +1963,18 @@ export function MetricsTable({
                                 className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${
                                   isEditingRow
                                     ? 'bg-[#FFB81C] text-[#00254D] border-[#FFB81C]'
-                                    : 'bg-white hover:bg-[#003D79] text-[#003D79] hover:text-white border-slate-300'
+                                    : !item.used
+                                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                                      : 'bg-white hover:bg-[#003D79] text-[#003D79] hover:text-white border-slate-300'
                                 }`}
-                                title="Buka Panel Lebar untuk Edit Target, Rumus & Strategi"
+                                title={!item.used ? 'Metrik ini berbobot 0% (hanya monitoring)' : 'Buka panel simulasi capaian atau target'}
                               >
                                 <Edit3 className="w-3 h-3" />
-                                <span>{isViewerSimMode ? (isEditingRow ? 'Tutup Simulasi' : 'Simulasi Target') : (isEditingRow ? 'Tutup Edit' : 'Edit Target / Strategi')}</span>
+                                <span>
+                                  {!item.used
+                                    ? (isEditingRow ? 'Tutup Info' : 'Info (Bobot 0%)')
+                                    : (isViewerSimMode ? (isEditingRow ? 'Tutup Simulasi' : 'Simulasi Capaian') : (isEditingRow ? 'Tutup Edit' : 'Edit Target / Strategi'))}
+                                </span>
                               </button>
                             ) : (
                               <button
@@ -1939,11 +1984,15 @@ export function MetricsTable({
                                   if (onActivateViewerSimMode) onActivateViewerSimMode();
                                   handleOpenFullEditor(e, item);
                                 }}
-                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[#00254D] border border-[#FFB81C] text-[11px] font-bold cursor-pointer shadow-2xs"
-                                title="Klik untuk langsung mensimulasikan angka target metrik ini"
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer border ${
+                                  !item.used
+                                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                                    : 'bg-amber-50 hover:bg-amber-100 text-[#00254D] border border-[#FFB81C] shadow-2xs'
+                                }`}
+                                title={!item.used ? 'Metrik ini berbobot 0% (tidak mempengaruhi skor)' : 'Klik untuk mensimulasikan peningkatan capaian agar skor cabang naik'}
                               >
                                 <Edit3 className="w-3 h-3 text-[#FFB81C]" />
-                                <span>Simulasi Target</span>
+                                <span>{!item.used ? 'Info (Bobot 0%)' : 'Simulasi Capaian'}</span>
                               </button>
                             )}
 
