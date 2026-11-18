@@ -30,7 +30,8 @@ import {
   CATEGORY_MULTIPLIERS,
   getActionText,
   getDefaultStrategyText,
-  calcMetricScore
+  calcMetricScore,
+  xround
 } from '../utils/excelParser';
 import {
   calculateDailyTargetValue,
