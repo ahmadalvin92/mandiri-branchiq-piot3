@@ -778,6 +778,7 @@ export function App() {
                   metrics={currentBranchData.calculatedMetrics}
                   categorySummary={currentBranchData.categorySummary}
                   totalScore={currentBranchData.totalScore}
+                  masterTotalScore={masterBranchData.totalScore}
                   filterCategory={selectedCategory}
                   onSelectCategory={setSelectedCategory}
                   filterUnderTarget={filterUnderTarget}

@@ -45,6 +45,7 @@ export function MetricsTable({
   metrics = [],
   categorySummary = {},
   totalScore = 85.53,
+  masterTotalScore = 85.53,
   filterCategory = 'all',
   onSelectCategory,
   filterUnderTarget = false,
@@ -586,9 +587,10 @@ export function MetricsTable({
     const baseScore = item.masterScore !== undefined ? item.masterScore : (item.originalScore !== undefined ? item.originalScore : item.score);
     // Presisi pembulatan konsisten 2 desimal (menggunakan xround) agar selaras dengan total skor
     const previewScoreDelta = xround(previewScoreObj.score - baseScore, 2);
-    // Proyeksi Total Skor cabang jika draft ini disimulasikan
+    // Proyeksi Total Skor cabang dibanding skor master awal (konseptor)
+    const baseTotalScore = masterTotalScore !== undefined ? masterTotalScore : totalScore;
     const projectedTotal = Number((totalScore - item.score + previewScoreObj.score).toFixed(2));
-    const projectedTotalDelta = Number((projectedTotal - totalScore).toFixed(2));
+    const totalSimDelta = Number((projectedTotal - baseTotalScore).toFixed(2));
     const isRealDirty = isDraftDifferent(item, draftRealVal, item.real);
     const isTargetDirty = isDraftDifferent(item, draftTargetVal, item.target);
     const isSimulated = item.isRealModified || item.isTargetModified || isRealDirty || isTargetDirty;
@@ -916,7 +918,7 @@ export function MetricsTable({
                 </div>
               </div>
 
-              {/* Dampak langsung ke Total Skor Cabang (LIVE REACTIVE) */}
+              {/* Dampak langsung ke Total Skor Cabang (LIVE REACTIVE vs AWAL KONSEPTOR) */}
               <div className="p-2.5 rounded-lg bg-[#00254D] text-white flex flex-wrap items-center justify-between gap-2 shadow-xs">
                 <div className="flex items-center gap-2">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
@@ -925,38 +927,38 @@ export function MetricsTable({
                   </span>
                 </div>
                 <span className="font-mono text-sm font-black">
-                  {totalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')}
+                  {baseTotalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')}
                   <span
                     className={`ml-2 px-1.5 py-0.5 rounded text-[11px] ${
-                      projectedTotalDelta > 0
+                      totalSimDelta > 0
                         ? 'bg-emerald-500 text-white'
-                        : projectedTotalDelta < 0
+                        : totalSimDelta < 0
                           ? 'bg-rose-500 text-white'
                           : 'bg-slate-500 text-white'
                     }`}
                   >
-                    {projectedTotalDelta > 0 ? '+' : ''}{projectedTotalDelta.toFixed(2).replace('.', ',')} pt
+                    {totalSimDelta > 0 ? '+' : ''}{totalSimDelta.toFixed(2).replace('.', ',')} pt
                   </span>
                 </span>
               </div>
 
               {/* Status & Guidance Live Simulasi */}
-              {item.used && projectedTotalDelta > 0 && (
+              {item.used && totalSimDelta > 0 && (
                 <div className="p-2.5 rounded-lg bg-emerald-50 border border-emerald-300 text-[11px] text-emerald-900 leading-relaxed font-bold flex items-start gap-1.5">
                   <span className="text-emerald-600 font-black">✓</span>
                   <span>
-                    Simulasi Aktif (Live): Total Skor cabang bertambah <strong>+{projectedTotalDelta.toFixed(2).replace('.', ',')} pt</strong> dan langsung aktif di bar status bawah.
+                    Simulasi Aktif (Live): Total Skor cabang naik <strong>+{totalSimDelta.toFixed(2).replace('.', ',')} pt</strong> dibanding skor awal ({baseTotalScore.toFixed(2).replace('.', ',')} pt).
                   </span>
                 </div>
               )}
 
-              {item.used && isTargetDirty && projectedTotalDelta < 0 && (
+              {item.used && totalSimDelta < 0 && (
                 <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-300 text-[11px] text-rose-900 leading-relaxed font-medium">
-                  ⚠️ <strong>Skor turun {Math.abs(projectedTotalDelta).toFixed(2).replace('.', ',')} pt</strong> karena Target KPI dinaikkan sementara Realisasi tetap (Pencapaian = Realisasi ÷ Target mengecil). Gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong> untuk mensimulasikan kenaikan kinerja cabang.
+                  ⚠️ <strong>Total Skor turun {Math.abs(totalSimDelta).toFixed(2).replace('.', ',')} pt</strong> ({baseTotalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')} pt) karena Target yang dinaikkan memperbesar gap kekurangan. Jika ingin melihat skor cabang naik, gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong>.
                 </div>
               )}
 
-              {item.used && projectedTotalDelta === 0 && previewScoreObj.maxAcv >= 1 && (
+              {item.used && totalSimDelta === 0 && previewScoreObj.maxAcv >= 1 && (
                 <div className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-[11px] text-slate-700 leading-relaxed font-medium">
                   ℹ️ Pencapaian metrik ini sudah 100% penuh (skor maksimal tercapai). Kenaikan realisasi lebih lanjut tidak menambah skor lagi karena dibatasi 100%.
                 </div>
