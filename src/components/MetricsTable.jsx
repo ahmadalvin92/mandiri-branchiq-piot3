@@ -17,6 +17,7 @@ import {
   Target,
   ChevronDown,
   ChevronUp,
+  ChevronRight,
   Eye,
   EyeOff,
   X,
@@ -24,6 +25,7 @@ import {
   Check,
   Search
 } from 'lucide-react';
+import metricDefinitions from '../data/metricDefinitions.json';
 import { formatBankingNumber, getMetricKnowledge } from '../utils/knowledgeBase';
 import {
   CAT_ORDER,
@@ -400,6 +402,153 @@ export function MetricsTable({
     }
   };
 
+  // Nested Accordion / Collapse States:
+  // Level 1: Category collapsed state
+  const [collapsedCategories, setCollapsedCategories] = useState({});
+  // Level 2: Sub-group collapsed state (keyed by `${category}__${metric}`)
+  const [collapsedSubGroups, setCollapsedSubGroups] = useState({});
+
+  // Permanent standard row map based on metricDefinitions (No. 1 to 74)
+  const STANDARD_ROW_MAP = useMemo(() => {
+    const map = new Map();
+    metricDefinitions.forEach((def, idx) => {
+      map.set(def.row, idx + 1);
+    });
+    return map;
+  }, []);
+
+  const getStandardNumber = (row, fallbackIdx) => {
+    return STANDARD_ROW_MAP.get(row) ?? (fallbackIdx + 1);
+  };
+
+  // Check if a category has metric sub-groupings (Level 2)
+  const hasSubGroups = (cat) => {
+    const c = String(cat || '').toLowerCase();
+    return c === 'kredit' || c === 'acquiring' || c === 'gmm';
+  };
+
+  const categoryMetricsCount = useMemo(() => {
+    const counts = {};
+    metrics.forEach((m) => {
+      counts[m.category] = (counts[m.category] || 0) + 1;
+    });
+    return counts;
+  }, [metrics]);
+
+  // Aggregate sub-group totals (Bobot, Score, Gap, Count, Achieved)
+  const subGroupSummaries = useMemo(() => {
+    const summaries = {};
+    metrics.forEach((m) => {
+      if (!hasSubGroups(m.category)) return;
+      const key = `${m.category}__${m.metric}`;
+      if (!summaries[key]) {
+        summaries[key] = {
+          category: m.category,
+          metric: m.metric,
+          totalItems: 0,
+          usedItems: 0,
+          totalBobot: 0,
+          totalScore: 0,
+          totalMaxScore: 0,
+          totalGap: 0,
+          achievedCount: 0,
+          hasBobot: false
+        };
+      }
+      const s = summaries[key];
+      s.totalItems += 1;
+      if (m.used) s.usedItems += 1;
+      s.totalBobot += m.bobot || 0;
+      s.totalScore += m.score || 0;
+      s.totalMaxScore += m.maxScore || 0;
+      s.totalGap += m.scoreGap || 0;
+      if (m.maxAcv >= 1.0) s.achievedCount += 1;
+      if (m.bobot && m.bobot > 0) s.hasBobot = true;
+    });
+    return summaries;
+  }, [metrics]);
+
+  const isSearching = Boolean(searchQuery && searchQuery.trim());
+
+  const isCategoryCollapsed = (cat) => {
+    if (isSearching) return false;
+    return Boolean(collapsedCategories[cat]);
+  };
+
+  const isSubGroupCollapsed = (cat, metric) => {
+    if (isSearching) return false;
+    return Boolean(collapsedSubGroups[`${cat}__${metric}`]);
+  };
+
+  const toggleCategory = (cat) => {
+    setCollapsedCategories(prev => ({
+      ...prev,
+      [cat]: !prev[cat]
+    }));
+  };
+
+  const toggleSubGroup = (cat, metric) => {
+    const key = `${cat}__${metric}`;
+    setCollapsedSubGroups(prev => ({
+      ...prev,
+      [key]: !prev[key]
+    }));
+  };
+
+  // Check if all active categories are currently collapsed
+  const isAllCollapsed = useMemo(() => {
+    const activeCats = filterCategory === 'all'
+      ? CAT_ORDER
+      : [filterCategory];
+    return activeCats.length > 0 && activeCats.every(cat => Boolean(collapsedCategories[cat]));
+  }, [collapsedCategories, filterCategory]);
+
+  const handleToggleAllCollapse = () => {
+    if (isAllCollapsed) {
+      // Buka Semua
+      setCollapsedCategories({});
+      setCollapsedSubGroups({});
+    } else {
+      // Minimize Semua
+      const allCats = {};
+      CAT_ORDER.forEach(c => { allCats[c] = true; });
+      const allSGs = {};
+      Object.keys(subGroupSummaries).forEach(k => { allSGs[k] = true; });
+      setCollapsedCategories(allCats);
+      setCollapsedSubGroups(allSGs);
+    }
+  };
+
+  // Auto-expand any category or sub-group containing matched metrics when user searches
+  React.useEffect(() => {
+    if (searchQuery && searchQuery.trim()) {
+      setCollapsedCategories(prev => {
+        let changed = false;
+        const next = { ...prev };
+        filteredMetrics.forEach(m => {
+          if (next[m.category]) {
+            delete next[m.category];
+            changed = true;
+          }
+        });
+        return changed ? next : prev;
+      });
+
+      setCollapsedSubGroups(prev => {
+        let changed = false;
+        const next = { ...prev };
+        filteredMetrics.forEach(m => {
+          const key = `${m.category}__${m.metric}`;
+          if (next[key]) {
+            delete next[key];
+            changed = true;
+          }
+        });
+        return changed ? next : prev;
+      });
+    }
+  }, [searchQuery, filteredMetrics]);
+
   // Distinct category theme helper
   const getCatBadge = (cat) => getCategoryTheme(cat).badge;
   const getCatTag = (cat) => getCategoryTheme(cat).tag;
@@ -627,7 +776,7 @@ export function MetricsTable({
 
         {/* 2-Column Wide Editor Body */}
         <div className="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6 text-xs">
-          
+
           {/* Left Column (5 cols): Large Realisasi / Target & Formula Editor */}
           <div className="lg:col-span-5 space-y-4 bg-[#F8FAFC] p-4 rounded-xl border border-slate-200">
             <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
@@ -696,22 +845,20 @@ export function MetricsTable({
               <button
                 type="button"
                 onClick={() => setActiveEditorTab('realisasi')}
-                className={`flex-1 py-1.5 px-2 rounded-lg font-extrabold text-xs transition-colors cursor-pointer ${
-                  activeEditorTab === 'realisasi'
-                    ? 'bg-[#003D79] text-white shadow-xs'
-                    : 'text-slate-700 hover:bg-white/60'
-                }`}
+                className={`flex-1 py-1.5 px-2 rounded-lg font-extrabold text-xs transition-colors cursor-pointer ${activeEditorTab === 'realisasi'
+                  ? 'bg-[#003D79] text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-white/60'
+                  }`}
               >
                 Simulasi Realisasi (Capaian)
               </button>
               <button
                 type="button"
                 onClick={() => setActiveEditorTab('target')}
-                className={`flex-1 py-1.5 px-2 rounded-lg font-extrabold text-xs transition-colors cursor-pointer ${
-                  activeEditorTab === 'target'
-                    ? 'bg-[#003D79] text-white shadow-xs'
-                    : 'text-slate-700 hover:bg-white/60'
-                }`}
+                className={`flex-1 py-1.5 px-2 rounded-lg font-extrabold text-xs transition-colors cursor-pointer ${activeEditorTab === 'target'
+                  ? 'bg-[#003D79] text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-white/60'
+                  }`}
               >
                 Edit / Simulasi Target KPI
               </button>
@@ -879,9 +1026,8 @@ export function MetricsTable({
                 </p>
                 {Math.abs(previewScoreDelta) > 0.0005 && (
                   <span
-                    className={`px-2 py-0.5 rounded font-mono font-bold text-[11px] ${
-                      previewScoreDelta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
-                    }`}
+                    className={`px-2 py-0.5 rounded font-mono font-bold text-[11px] ${previewScoreDelta > 0 ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                      }`}
                     title="Selisih skor metrik ini dibanding data awal (konseptor)"
                   >
                     Metrik vs Awal: {previewScoreDelta > 0 ? '+' : ''}{previewScoreDelta.toFixed(2).replace('.', ',')} pt
@@ -931,13 +1077,12 @@ export function MetricsTable({
                 <span className="font-mono text-sm font-black">
                   {baseTotalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')}
                   <span
-                    className={`ml-2 px-1.5 py-0.5 rounded text-[11px] ${
-                      totalSimDelta > 0
-                        ? 'bg-emerald-500 text-white'
-                        : totalSimDelta < 0
-                          ? 'bg-rose-500 text-white'
-                          : 'bg-slate-500 text-white'
-                    }`}
+                    className={`ml-2 px-1.5 py-0.5 rounded text-[11px] ${totalSimDelta > 0
+                      ? 'bg-emerald-500 text-white'
+                      : totalSimDelta < 0
+                        ? 'bg-rose-500 text-white'
+                        : 'bg-slate-500 text-white'
+                      }`}
                   >
                     {totalSimDelta > 0 ? '+' : ''}{totalSimDelta.toFixed(2).replace('.', ',')} pt
                   </span>
@@ -1086,7 +1231,7 @@ export function MetricsTable({
 
   return (
     <div id="scorecard-table-section" className="bg-white rounded-xl border border-slate-200/90 shadow-xs overflow-hidden scroll-mt-4">
-      
+
       {/* Table Header Controls */}
       <div className="px-3.5 sm:px-5 py-3 sm:py-4 border-b border-slate-100 flex flex-col lg:flex-row lg:items-center justify-between gap-2.5 sm:gap-3 bg-slate-50/50">
         <div className="flex items-center gap-2 flex-wrap">
@@ -1095,7 +1240,7 @@ export function MetricsTable({
             Tabel Scorecard BranchIQ & Target Kejaran Harian ({effectiveWorkdays} HK)
           </h3>
           <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-slate-200/80 text-slate-700 font-mono">
-            No. 1–{filteredMetrics.length}
+            {filteredMetrics.length === 74 ? 'No. 1–74' : `${filteredMetrics.length} / 74 Metrik`}
           </span>
         </div>
 
@@ -1122,6 +1267,29 @@ export function MetricsTable({
             )}
           </div>
 
+          {/* Toggle Minimize/Expand All Categories & Sub-Groups */}
+          <button
+            type="button"
+            onClick={handleToggleAllCollapse}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${isAllCollapsed
+              ? 'bg-amber-500 hover:bg-amber-600 text-white border-amber-600 shadow-2xs'
+              : 'bg-white hover:bg-slate-100 text-[#003D79] border-slate-300'
+              }`}
+            title={isAllCollapsed ? 'Buka seluruh kategori dan sub-group tabel' : 'Tutup / minimize seluruh kategori tabel'}
+          >
+            {isAllCollapsed ? (
+              <>
+                <ChevronDown className="w-3.5 h-3.5 text-white" />
+                <span>Buka Semua</span>
+              </>
+            ) : (
+              <>
+                <ChevronRight className="w-3.5 h-3.5 text-[#003D79]" />
+                <span>Minimize Semua</span>
+              </>
+            )}
+          </button>
+
           {/* Toggle Show/Hide All Strategies */}
           <button
             type="button"
@@ -1133,11 +1301,10 @@ export function MetricsTable({
                 setShowAllStrategies(true);
               }
             }}
-            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${
-              showAllStrategies
-                ? 'bg-[#003D79] text-white border-[#003D79]'
-                : 'bg-white hover:bg-slate-100 text-[#003D79] border-slate-300'
-            }`}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${showAllStrategies
+              ? 'bg-[#003D79] text-white border-[#003D79]'
+              : 'bg-white hover:bg-slate-100 text-[#003D79] border-slate-300'
+              }`}
           >
             {showAllStrategies ? <EyeOff className="w-3 h-3 text-[#FFB81C]" /> : <Eye className="w-3 h-3 text-[#003D79]" />}
             <span>{showAllStrategies ? 'Sembunyikan Semua Strategi' : 'Buka Semua Strategi'}</span>
@@ -1216,15 +1383,72 @@ export function MetricsTable({
           </div>
         ) : (
           filteredMetrics.map((item, idx) => {
-            const displayNumber = idx + 1;
+            const displayNumber = getStandardNumber(item.row, idx);
             const prevItem = idx > 0 ? filteredMetrics[idx - 1] : null;
             const isNewCategorySection = sortMode === 'excel' && (!prevItem || prevItem.category !== item.category);
+            const isSubGroupCat = hasSubGroups(item.category);
+            const isNewSubGroupSection =
+              sortMode === 'excel' &&
+              isSubGroupCat &&
+              (!prevItem || prevItem.category !== item.category || prevItem.metric !== item.metric);
+
+            const subGroupKey = `${item.category}__${item.metric}`;
+            const isCatClosed = isCategoryCollapsed(item.category);
+            const isSGClosed = isSubGroupCollapsed(item.category, item.metric);
+
+            const sgSummary = subGroupSummaries[subGroupKey] || {
+              totalItems: 0,
+              usedItems: 0,
+              totalBobot: 0,
+              totalScore: 0,
+              totalMaxScore: 0,
+              totalGap: 0,
+              achievedCount: 0,
+              hasBobot: false
+            };
+
             const catSum = categorySummary?.[item.category] || {
               category: item.category,
               maxScore: CATEGORY_MULTIPLIERS[item.category] || 0,
               actualScore: 0,
               gapScore: 0
             };
+
+            const catMetricsCount = categoryMetricsCount[item.category] || 0;
+
+            // If Category is collapsed on mobile:
+            if (sortMode === 'excel' && isCatClosed) {
+              if (isNewCategorySection) {
+                return (
+                  <div
+                    key={`mob-cat-${item.category}`}
+                    id={`cat-section-mob-${item.category}`}
+                    onClick={() => toggleCategory(item.category)}
+                    className={`px-3.5 py-2.5 font-extrabold flex items-center justify-between text-xs cursor-pointer select-none scroll-mt-4 ${getCatBanner(item.category)}`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <ChevronRight className="w-4 h-4 text-slate-800 shrink-0" />
+                      <span className="uppercase tracking-wide font-black">KATEGORI: {item.category}</span>
+                      <InfoTooltip type="category" id={item.category} align="left" iconSize="w-3 h-3" />
+                      <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/80 text-slate-700">
+                        {catMetricsCount} Metrik
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="font-mono font-black">
+                        {catSum.actualScore?.toFixed(2).replace('.', ',')} / {catSum.maxScore}
+                      </div>
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-white/80 text-slate-700 font-bold">
+                        Buka
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            }
+
+            const skipMetricCard = sortMode === 'excel' && isSubGroupCat && isSGClosed;
 
             const info = getMetricKnowledge(item);
             const unit = info.unit || '';
@@ -1240,248 +1464,276 @@ export function MetricsTable({
 
             return (
               <React.Fragment key={`mob-${item.row}`}>
+                {/* LEVEL 1: CATEGORY HEADER (OPEN) */}
                 {isNewCategorySection && (
                   <div
                     id={`cat-section-mob-${item.category}`}
-                    className={`px-3.5 py-2.5 font-extrabold flex items-center justify-between text-xs scroll-mt-4 ${
-                      getCatBanner(item.category)
-                    }`}
+                    onClick={() => toggleCategory(item.category)}
+                    className={`px-3.5 py-2.5 font-extrabold flex items-center justify-between text-xs cursor-pointer select-none scroll-mt-4 ${getCatBanner(item.category)}`}
                   >
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
+                      <ChevronDown className="w-4 h-4 text-slate-800 shrink-0" />
                       <span className="uppercase tracking-wide font-black">KATEGORI: {item.category}</span>
                       <InfoTooltip type="category" id={item.category} align="left" iconSize="w-3 h-3" />
                       <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/80 text-slate-700">
-                        Max {catSum.maxScore}
+                        {catMetricsCount} Metrik
                       </span>
                     </div>
-                    <div className="font-mono font-black">
-                      {catSum.actualScore?.toFixed(2).replace('.', ',')} / {catSum.maxScore}
-                      {catSum.gapScore > 0 && (
-                        <span className="ml-1.5 px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 text-[10px]">
-                          -{catSum.gapScore.toFixed(2).replace('.', ',')}
-                        </span>
-                      )}
+                    <div className="flex items-center gap-1.5">
+                      <div className="font-mono font-black">
+                        {catSum.actualScore?.toFixed(2).replace('.', ',')} / {catSum.maxScore}
+                        {catSum.gapScore > 0 && (
+                          <span className="ml-1.5 px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 text-[10px]">
+                            -{catSum.gapScore.toFixed(2).replace('.', ',')}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 )}
 
-                <div className={`p-3.5 space-y-2.5 ${!item.used ? 'bg-slate-50/60 opacity-75' : 'bg-white'}`}>
-                  {/* Top Row: Number + Category + Metric Name + Bobot */}
-                  <div className="flex items-start justify-between gap-2">
-                    <div className="flex items-start gap-2 min-w-0">
-                      <span className="w-6 h-6 rounded-lg bg-[#003D79] text-white font-mono font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
-                        {displayNumber}
+                {/* LEVEL 2: SUB-GROUP HEADER */}
+                {isNewSubGroupSection && (
+                  <div
+                    onClick={() => toggleSubGroup(item.category, item.metric)}
+                    className="px-3.5 py-2 bg-slate-100 hover:bg-slate-200/90 border-y border-slate-200/80 flex items-center justify-between text-xs cursor-pointer select-none"
+                  >
+                    <div className="flex items-center gap-1.5 pl-2">
+                      {isSGClosed ? (
+                        <ChevronRight className="w-3.5 h-3.5 text-[#003D79]" />
+                      ) : (
+                        <ChevronDown className="w-3.5 h-3.5 text-[#003D79]" />
+                      )}
+                      <span className="font-black text-[#003D79] uppercase">{item.metric}</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-blue-100 text-[#003D79]">
+                        {sgSummary.totalItems} Sub-Metrik
                       </span>
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-1">
-                          <span className={`px-1.5 py-0.1 rounded text-[10px] border ${getCatBadge(item.category)}`}>
-                            {item.category}
-                          </span>
-                          {item.subMetric && item.subMetric !== item.metric && (
-                            <span className={`text-[10px] px-1.5 py-0.1 rounded ${getCatTag(item.category)}`}>
-                              {item.metric}
+                      {isSGClosed && (
+                        <span className="text-[9px] font-bold px-1 py-0.2 rounded bg-slate-200 text-slate-600">
+                          Buka
+                        </span>
+                      )}
+                    </div>
+                    <div className="font-mono text-xs font-bold text-slate-700">
+                      {(sgSummary.totalBobot * 100).toFixed(0)}% • {sgSummary.totalScore.toFixed(2).replace('.', ',')} pt
+                    </div>
+                  </div>
+                )}
+
+                {/* LEVEL 3: METRIC CARD */}
+                {!skipMetricCard && (
+                  <div className={`p-3.5 space-y-2.5 ${!item.used ? 'bg-slate-50/60 opacity-75' : 'bg-white'} ${isSubGroupCat ? 'pl-5 border-l-3 border-[#003D79]/30' : ''}`}>
+                    {/* Top Row: Number + Category + Metric Name + Bobot */}
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-2 min-w-0">
+                        <span className="w-6 h-6 rounded-lg bg-[#003D79] text-white font-mono font-black text-xs flex items-center justify-center shrink-0 mt-0.5">
+                          {displayNumber}
+                        </span>
+                        <div className="min-w-0">
+                          <div className="flex flex-wrap items-center gap-1">
+                            <span className={`px-1.5 py-0.1 rounded text-[10px] border ${getCatBadge(item.category)}`}>
+                              {item.category}
                             </span>
-                          )}
+                            {item.subMetric && item.subMetric !== item.metric && (
+                              <span className={`text-[10px] px-1.5 py-0.1 rounded ${getCatTag(item.category)}`}>
+                                {item.metric}
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1 mt-0.5">
+                            <p className="font-bold text-slate-900 text-xs leading-snug">
+                              {item.subMetric && item.subMetric !== item.metric ? item.subMetric : (item.metric || item.name)}
+                            </p>
+                            <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1 mt-0.5">
-                          <p className="font-bold text-slate-900 text-xs leading-snug">
-                            {item.subMetric && item.subMetric !== item.metric ? item.subMetric : (item.metric || item.name)}
-                          </p>
-                          <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
-                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <span className="text-[10px] text-slate-400 block">Bobot</span>
+                        <span className="font-mono font-bold text-xs text-slate-800">
+                          {(item.bobot * 100).toFixed(1).replace('.0', '')}%
+                        </span>
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0">
-                      <span className="text-[10px] text-slate-400 block">Bobot</span>
-                      <span className="font-mono font-bold text-xs text-slate-800">
-                        {(item.bobot * 100).toFixed(1).replace('.0', '')}%
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Middle 3-Box Grid: Realisasi | Target & Kejaran/HK | Acv & Skor */}
-                  <div className="grid grid-cols-3 gap-2 bg-slate-50 rounded-xl p-2.5 border border-slate-200/70 text-[11px]">
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-slate-400 block">Realisasi</span>
-                        {item.isRealModified && (
-                          <span className="text-[8px] font-bold px-1 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                            Sim
+                    {/* Middle 3-Box Grid: Realisasi | Target & Kejaran/HK | Acv & Skor */}
+                    <div className="grid grid-cols-3 gap-2 bg-slate-50 rounded-xl p-2.5 border border-slate-200/70 text-[11px]">
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] text-slate-400 block">Realisasi</span>
+                          {item.isRealModified && (
+                            <span className="text-[8px] font-bold px-1 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                              Sim
+                            </span>
+                          )}
+                        </div>
+                        <span className="font-mono font-bold text-slate-900 block">
+                          {formatBankingNumber(item.real, unit, item.isPct)}
+                        </span>
+                        {item.isRealModified && item.masterReal !== undefined && (
+                          <span className="text-[9px] text-slate-400 font-mono block">
+                            Aktual: {formatBankingNumber(item.masterReal, unit, item.isPct)}
+                          </span>
+                        )}
+                        {item.used && !isAchieved && item.target > 0 && (
+                          <span className="text-[9px] text-rose-600 font-semibold leading-tight block mt-0.5">
+                            {actionNeededText}
                           </span>
                         )}
                       </div>
-                      <span className="font-mono font-bold text-slate-900 block">
-                        {formatBankingNumber(item.real, unit, item.isPct)}
-                      </span>
-                      {item.isRealModified && item.masterReal !== undefined && (
-                        <span className="text-[9px] text-slate-400 font-mono block">
-                          Aktual: {formatBankingNumber(item.masterReal, unit, item.isPct)}
-                        </span>
-                      )}
-                      {item.used && !isAchieved && item.target > 0 && (
-                        <span className="text-[9px] text-rose-600 font-semibold leading-tight block mt-0.5">
-                          {actionNeededText}
-                        </span>
-                      )}
-                    </div>
 
-                    <div className="border-x border-slate-200/80 px-2">
-                      <span className="text-[10px] text-slate-400 block">
-                        {item.isTargetModified ? 'Target Simulasi' : `Target (${effectiveWorkdays} HK)`}
-                      </span>
-                      <span className="font-mono font-bold text-slate-900 block">
-                        {item.target ? formatBankingNumber(item.target, unit, item.isPct) : '–'}
-                      </span>
-                      {/* Target Awal dari Konseptor */}
-                      <div className="text-[9px] text-slate-500 mt-0.5 leading-tight">
-                        <span className="text-slate-400" title="Target Awal dari Konseptor">Awal:</span>{' '}
-                        <strong className="font-mono text-[#003D79]">
-                          {formatBankingNumber(
-                            item.konseptorTarget !== undefined ? item.konseptorTarget : (item.originalTarget !== undefined ? item.originalTarget : item.target),
-                            unit,
-                            item.isPct
-                          )}
-                        </strong>
+                      <div className="border-x border-slate-200/80 px-2">
+                        <span className="text-[10px] text-slate-400 block">
+                          {item.isTargetModified ? 'Target Simulasi' : `Target (${effectiveWorkdays} HK)`}
+                        </span>
+                        <span className="font-mono font-bold text-slate-900 block">
+                          {item.target ? formatBankingNumber(item.target, unit, item.isPct) : '–'}
+                        </span>
+                        {/* Target Awal dari Konseptor */}
+                        <div className="text-[9px] text-slate-500 mt-0.5 leading-tight">
+                          <span className="text-slate-400" title="Target Awal dari Konseptor">Awal:</span>{' '}
+                          <strong className="font-mono text-[#003D79]">
+                            {formatBankingNumber(
+                              item.konseptorTarget !== undefined ? item.konseptorTarget : (item.originalTarget !== undefined ? item.originalTarget : item.target),
+                              unit,
+                              item.isPct
+                            )}
+                          </strong>
+                        </div>
+                        {item.target > 0 && effectiveWorkdays > 0 && !isAchieved && (
+                          <span className="mt-1 inline-block px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 font-mono font-extrabold text-[9px]">
+                            {item.isQuality ? 'Turun ' : 'Kejar +'}
+                            {formatBankingNumber(chaseInfo.dailyChase, unit, item.isPct)}/HK
+                          </span>
+                        )}
+                        {item.target > 0 && effectiveWorkdays > 0 && (
+                          <span className="text-[9px] text-[#003D79] block mt-0.5 font-mono">
+                            Porsi: {formatBankingNumber(dailyTargetVal, unit, item.isPct)}/HK
+                          </span>
+                        )}
                       </div>
-                      {item.target > 0 && effectiveWorkdays > 0 && !isAchieved && (
-                        <span className="mt-1 inline-block px-1.5 py-0.2 rounded bg-rose-100 text-rose-800 font-mono font-extrabold text-[9px]">
-                          {item.isQuality ? 'Turun ' : 'Kejar +'}
-                          {formatBankingNumber(chaseInfo.dailyChase, unit, item.isPct)}/HK
-                        </span>
-                      )}
-                      {item.target > 0 && effectiveWorkdays > 0 && (
-                        <span className="text-[9px] text-[#003D79] block mt-0.5 font-mono">
-                          Porsi: {formatBankingNumber(dailyTargetVal, unit, item.isPct)}/HK
-                        </span>
-                      )}
-                    </div>
 
-                    <div className="text-right">
-                      <span className="text-[10px] text-slate-400 block">Acv & Skor</span>
-                      <span
-                        className={`font-mono font-black ${
-                          isAchieved ? 'text-emerald-600' : isAlmost ? 'text-amber-600' : 'text-rose-600'
-                        }`}
-                      >
-                        {(item.acv * 100).toFixed(0)}%
-                      </span>
-                      {item.used && (
-                        <div className="font-mono text-[10px] text-slate-800 font-bold">
-                          <div>{item.score.toFixed(2).replace('.', ',')}/{item.maxScore.toFixed(2).replace('.', ',')}</div>
-                          {isViewerSimMode && item.isScoreChanged ? (
-                            <span
-                              className={`mt-0.5 inline-block text-[9px] font-black px-1.5 py-0.1 rounded ${
-                                item.scoreDelta > 0
+                      <div className="text-right">
+                        <span className="text-[10px] text-slate-400 block">Acv & Skor</span>
+                        <span
+                          className={`font-mono font-black ${isAchieved ? 'text-emerald-600' : isAlmost ? 'text-amber-600' : 'text-rose-600'
+                            }`}
+                        >
+                          {(item.acv * 100).toFixed(0)}%
+                        </span>
+                        {item.used && (
+                          <div className="font-mono text-[10px] text-slate-800 font-bold">
+                            <div>{item.score.toFixed(2).replace('.', ',')}/{item.maxScore.toFixed(2).replace('.', ',')}</div>
+                            {isViewerSimMode && item.isScoreChanged ? (
+                              <span
+                                className={`mt-0.5 inline-block text-[9px] font-black px-1.5 py-0.1 rounded ${item.scoreDelta > 0
                                   ? 'bg-emerald-100 text-emerald-800'
                                   : 'bg-rose-100 text-rose-800'
-                              }`}
-                              title={`Skor Master: ${item.masterScore?.toFixed(2)} → Simulasi: ${item.score?.toFixed(2)}`}
-                            >
-                              Δ {item.scoreDelta > 0 ? '+' : ''}{item.scoreDelta.toFixed(2).replace('.', ',')} pt
-                            </span>
-                          ) : (
-                            item.scoreGap > 0.0005 && (
-                              <span className="mt-0.5 inline-block text-[9px] text-amber-800 font-bold">
-                                Potensi +{item.scoreGap.toFixed(2).replace('.', ',')} pt
+                                  }`}
+                                title={`Skor Master: ${item.masterScore?.toFixed(2)} → Simulasi: ${item.score?.toFixed(2)}`}
+                              >
+                                Δ {item.scoreDelta > 0 ? '+' : ''}{item.scoreDelta.toFixed(2).replace('.', ',')} pt
                               </span>
-                            )
-                          )}
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Action Buttons on Mobile */}
-                  <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                    {item.target > 0 && (
-                      <button
-                        type="button"
-                        onClick={(e) => toggleSubPanel(e, item.row, 'timestand')}
-                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border cursor-pointer ${
-                          activeSubPanel === 'timestand'
-                            ? 'bg-[#003D79] text-white border-[#003D79]'
-                            : 'bg-amber-50 text-[#003D79] border-amber-300'
-                        }`}
-                      >
-                        <Calendar className="w-3 h-3 text-[#FFB81C]" />
-                        <span>{activeSubPanel === 'timestand' ? 'Tutup Jadwal HK' : `Jadwal ${effectiveWorkdays} HK`}</span>
-                      </button>
-                    )}
-
-                    <button
-                      type="button"
-                      onClick={(e) => toggleStrategyRow(e, item.row)}
-                      className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border cursor-pointer ${
-                        stratOpen
-                          ? 'bg-[#003D79] text-white border-[#003D79]'
-                          : 'bg-blue-50/80 text-[#003D79] border-blue-200'
-                      }`}
-                    >
-                      <Lightbulb className={`w-3 h-3 ${stratOpen ? 'text-[#FFB81C]' : 'text-[#003D79]'}`} />
-                      <span>{stratOpen ? 'Tutup Strategi' : 'Lihat Strategi'}</span>
-                    </button>
-
-                    {canInlineEdit ? (
-                      <button
-                        type="button"
-                        onClick={(e) => handleOpenFullEditor(e, item)}
-                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border cursor-pointer ${
-                          !item.used
-                            ? 'bg-slate-100 text-slate-700 border-slate-300'
-                            : 'bg-white text-[#003D79] border-slate-300'
-                        }`}
-                      >
-                        <Edit3 className="w-3 h-3 text-[#FFB81C]" />
-                        <span>{!item.used ? 'Info (0%)' : (isViewerSimMode ? 'Simulasi' : 'Edit')}</span>
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          if (onActivateViewerSimMode) onActivateViewerSimMode();
-                          handleOpenFullEditor(e, item);
-                        }}
-                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer border ${
-                          !item.used
-                            ? 'bg-slate-100 text-slate-600 border-slate-300'
-                            : 'bg-amber-50 hover:bg-amber-100 text-[#00254D] border-amber-300'
-                        }`}
-                      >
-                        <Edit3 className="w-3 h-3 text-[#FFB81C]" />
-                        <span>{!item.used ? 'Info (0%)' : 'Simulasi Capaian'}</span>
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Collapsible Strategy Content on Mobile */}
-                  {stratOpen && (
-                    <div className="p-3 rounded-xl bg-blue-50/50 border border-blue-200/80 space-y-2 text-xs">
-                      <div className="text-[11px] text-slate-700 leading-relaxed space-y-1">
-                        {resolvedStrategy.tacticalList.map((line, lIdx) => (
-                          <p key={lIdx} className="flex items-start gap-1.5">
-                            <span className="text-[#003D79] font-bold shrink-0">•</span>
-                            <span>{line}</span>
-                          </p>
-                        ))}
+                            ) : (
+                              item.scoreGap > 0.0005 && (
+                                <span className="mt-0.5 inline-block text-[9px] text-amber-800 font-bold">
+                                  Potensi +{item.scoreGap.toFixed(2).replace('.', ',')} pt
+                                </span>
+                              )
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  )}
 
-                  {/* Per-Metric Timestand Schedule on Mobile */}
-                  {activeSubPanel === 'timestand' && (
-                    <div className="pt-1">
-                      {renderPerMetricTimestandSchedule(item, displayNumber, unit, chaseInfo)}
-                    </div>
-                  )}
+                    {/* Action Buttons on Mobile */}
+                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                      {item.target > 0 && (
+                        <button
+                          type="button"
+                          onClick={(e) => toggleSubPanel(e, item.row, 'timestand')}
+                          className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border cursor-pointer ${activeSubPanel === 'timestand'
+                            ? 'bg-[#003D79] text-white border-[#003D79]'
+                            : 'bg-amber-50 text-[#003D79] border-amber-300'
+                            }`}
+                        >
+                          <Calendar className="w-3 h-3 text-[#FFB81C]" />
+                          <span>{activeSubPanel === 'timestand' ? 'Tutup Jadwal HK' : `Jadwal ${effectiveWorkdays} HK`}</span>
+                        </button>
+                      )}
 
-                  {/* Full Editor on Mobile */}
-                  {isEditingRow && (
-                    <div className="pt-1">
-                      {renderFullWidthEditorPanel(item, displayNumber, unit, resolvedStrategy)}
+                      <button
+                        type="button"
+                        onClick={(e) => toggleStrategyRow(e, item.row)}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border cursor-pointer ${stratOpen
+                          ? 'bg-[#003D79] text-white border-[#003D79]'
+                          : 'bg-blue-50/80 text-[#003D79] border-blue-200'
+                          }`}
+                      >
+                        <Lightbulb className={`w-3 h-3 ${stratOpen ? 'text-[#FFB81C]' : 'text-[#003D79]'}`} />
+                        <span>{stratOpen ? 'Tutup Strategi' : 'Lihat Strategi'}</span>
+                      </button>
+
+                      {canInlineEdit ? (
+                        <button
+                          type="button"
+                          onClick={(e) => handleOpenFullEditor(e, item)}
+                          className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold border cursor-pointer ${!item.used
+                            ? 'bg-slate-100 text-slate-700 border-slate-300'
+                            : 'bg-white text-[#003D79] border-slate-300'
+                            }`}
+                        >
+                          <Edit3 className="w-3 h-3 text-[#FFB81C]" />
+                          <span>{!item.used ? 'Info (0%)' : (isViewerSimMode ? 'Simulasi' : 'Edit')}</span>
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            if (onActivateViewerSimMode) onActivateViewerSimMode();
+                            handleOpenFullEditor(e, item);
+                          }}
+                          className={`inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold cursor-pointer border ${!item.used
+                            ? 'bg-slate-100 text-slate-600 border-slate-300'
+                            : 'bg-amber-50 hover:bg-amber-100 text-[#00254D] border-amber-300'
+                            }`}
+                        >
+                          <Edit3 className="w-3 h-3 text-[#FFB81C]" />
+                          <span>{!item.used ? 'Info (0%)' : 'Simulasi Capaian'}</span>
+                        </button>
+                      )}
                     </div>
-                  )}
-                </div>
+
+                    {/* Collapsible Strategy Content on Mobile */}
+                    {stratOpen && (
+                      <div className="p-3 rounded-xl bg-blue-50/50 border border-blue-200/80 space-y-2 text-xs">
+                        <div className="text-[11px] text-slate-700 leading-relaxed space-y-1">
+                          {resolvedStrategy.tacticalList.map((line, lIdx) => (
+                            <p key={lIdx} className="flex items-start gap-1.5">
+                              <span className="text-[#003D79] font-bold shrink-0">•</span>
+                              <span>{line}</span>
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Per-Metric Timestand Schedule on Mobile */}
+                    {activeSubPanel === 'timestand' && (
+                      <div className="pt-1">
+                        {renderPerMetricTimestandSchedule(item, displayNumber, unit, chaseInfo)}
+                      </div>
+                    )}
+
+                    {/* Full Editor on Mobile */}
+                    {isEditingRow && (
+                      <div className="pt-1">
+                        {renderFullWidthEditorPanel(item, displayNumber, unit, resolvedStrategy)}
+                      </div>
+                    )}
+                  </div>
+                )}
               </React.Fragment>
             );
           })
@@ -1575,15 +1827,30 @@ export function MetricsTable({
               </tr>
             ) : (
               filteredMetrics.map((item, idx) => {
-                const displayNumber = idx + 1;
+                const displayNumber = getStandardNumber(item.row, idx);
                 const prevItem = idx > 0 ? filteredMetrics[idx - 1] : null;
+
                 const isNewCategorySection = sortMode === 'excel' && (!prevItem || prevItem.category !== item.category);
-                const isSameParentMetricAsPrev =
+                const isSubGroupCat = hasSubGroups(item.category);
+                const isNewSubGroupSection =
                   sortMode === 'excel' &&
-                  prevItem &&
-                  prevItem.category === item.category &&
-                  prevItem.metric === item.metric &&
-                  Boolean(item.subMetric);
+                  isSubGroupCat &&
+                  (!prevItem || prevItem.category !== item.category || prevItem.metric !== item.metric);
+
+                const subGroupKey = `${item.category}__${item.metric}`;
+                const isCatClosed = isCategoryCollapsed(item.category);
+                const isSGClosed = isSubGroupCollapsed(item.category, item.metric);
+
+                const sgSummary = subGroupSummaries[subGroupKey] || {
+                  totalItems: 0,
+                  usedItems: 0,
+                  totalBobot: 0,
+                  totalScore: 0,
+                  totalMaxScore: 0,
+                  totalGap: 0,
+                  achievedCount: 0,
+                  hasBobot: false
+                };
 
                 const catSum = categorySummary?.[item.category] || {
                   category: item.category,
@@ -1591,6 +1858,78 @@ export function MetricsTable({
                   actualScore: 0,
                   gapScore: 0
                 };
+
+                const catMetricsCount = categoryMetricsCount[item.category] || 0;
+
+                // If Category is collapsed on desktop:
+                if (sortMode === 'excel' && isCatClosed) {
+                  if (isNewCategorySection) {
+                    return (
+                      <React.Fragment key={`cat-${item.category}`}>
+                        <tr
+                          id={`cat-section-${item.category}`}
+                          onClick={() => toggleCategory(item.category)}
+                          className={`border-y-2 border-slate-300 font-extrabold scroll-mt-6 cursor-pointer select-none hover:brightness-95 transition-all group ${getCatBanner(item.category)}`}
+                          title={`Klik untuk membuka seluruh baris kategori ${item.category}`}
+                        >
+                          <td className="py-2.5 px-3 text-center">
+                            <div className="flex items-center justify-center">
+                              <span className="p-1 rounded-md bg-white/40 text-slate-900 shadow-2xs group-hover:bg-white/70">
+                                <ChevronRight className="w-4 h-4 font-black" />
+                              </span>
+                            </div>
+                          </td>
+                          <td colSpan="2" className="py-2.5 px-3">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="text-xs sm:text-sm font-black uppercase tracking-wide">
+                                KATEGORI: {item.category}
+                              </span>
+                              <InfoTooltip type="category" id={item.category} align="left" iconSize="w-3.5 h-3.5" />
+                              <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-slate-700 border border-slate-200/80">
+                                Nilai Max: {catSum.maxScore} Poin
+                              </span>
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-white">
+                                {catMetricsCount} Metrik
+                              </span>
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-300">
+                                (Diminimize — Klik untuk Buka)
+                              </span>
+                            </div>
+                          </td>
+                          <td className="py-2.5 px-2.5 text-right font-mono text-xs font-bold">
+                            100%
+                          </td>
+                          <td colSpan="3" className="py-2.5 px-3 text-right text-[11px] font-semibold">
+                            <span>
+                              Pencapaian Kategori: <strong>{catSum.achievementPct || 0}%</strong>
+                            </span>
+                            {catSum.gapScore > 0 ? (
+                              <span className="ml-2 px-2 py-0.5 rounded bg-rose-100 text-rose-800 font-bold">
+                                Poin Hilang: -{catSum.gapScore.toFixed(2).replace('.', ',')} poin
+                              </span>
+                            ) : (
+                              <span className="ml-2 px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">
+                                ✓ Penuh ({catSum.maxScore} Poin)
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-3 text-right font-mono text-xs sm:text-sm font-black">
+                            {catSum.actualScore?.toFixed(2).replace('.', ',')}{' '}
+                            <span className="text-[11px] font-normal opacity-75">/ {catSum.maxScore}</span>
+                          </td>
+                          <td className="py-2.5 px-3 text-[11px] font-semibold">
+                            <span className="font-bold underline decoration-slate-400 underline-offset-2">
+                              ▶ Klik untuk Buka Kategori
+                            </span>
+                          </td>
+                        </tr>
+                      </React.Fragment>
+                    );
+                  }
+                  return null;
+                }
+
+                const skipMetricRow = sortMode === 'excel' && isSubGroupCat && isSGClosed;
 
                 const info = getMetricKnowledge(item);
                 const unit = info.unit || '';
@@ -1619,19 +1958,23 @@ export function MetricsTable({
 
                 return (
                   <React.Fragment key={item.row}>
-                    {/* CATEGORY HEADER ROW */}
+                    {/* LEVEL 1: CATEGORY HEADER ROW (OPEN) */}
                     {isNewCategorySection && (
                       <tr
                         id={`cat-section-${item.category}`}
-                        className={`border-y-2 border-slate-200 font-extrabold scroll-mt-6 ${
-                          getCatBanner(item.category)
-                        }`}
+                        onClick={() => toggleCategory(item.category)}
+                        className={`border-y-2 border-slate-300 font-extrabold scroll-mt-6 cursor-pointer select-none hover:brightness-95 transition-all group ${getCatBanner(item.category)}`}
+                        title={`Klik untuk menutup / minimize kategori ${item.category}`}
                       >
-                        <td className="py-2.5 px-3 text-center font-mono text-xs opacity-70">
-                          •
+                        <td className="py-2.5 px-3 text-center">
+                          <div className="flex items-center justify-center">
+                            <span className="p-1 rounded-md bg-white/40 text-slate-900 shadow-2xs group-hover:bg-white/70">
+                              <ChevronDown className="w-4 h-4 font-black" />
+                            </span>
+                          </div>
                         </td>
                         <td colSpan="2" className="py-2.5 px-3">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 flex-wrap">
                             <span className="text-xs sm:text-sm font-black uppercase tracking-wide">
                               KATEGORI: {item.category}
                             </span>
@@ -1639,9 +1982,12 @@ export function MetricsTable({
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-slate-700 border border-slate-200/80">
                               Nilai Max: {catSum.maxScore} Poin
                             </span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-800 text-white">
+                              {catMetricsCount} Metrik
+                            </span>
                           </div>
                         </td>
-                        <td className="py-2.5 px-2.5 text-right font-mono text-xs">
+                        <td className="py-2.5 px-2.5 text-right font-mono text-xs font-bold">
                           100%
                         </td>
                         <td colSpan="3" className="py-2.5 px-3 text-right text-[11px] font-semibold">
@@ -1659,79 +2005,192 @@ export function MetricsTable({
                           )}
                         </td>
                         <td className="py-2.5 px-3 text-right font-mono text-xs sm:text-sm font-black">
-                          {catSum.actualScore?.toFixed(2).replace('.', ',')} <span className="text-[11px] font-normal opacity-75">/ {catSum.maxScore}</span>
+                          {catSum.actualScore?.toFixed(2).replace('.', ',')}{' '}
+                          <span className="text-[11px] font-normal opacity-75">/ {catSum.maxScore}</span>
                         </td>
                         <td className="py-2.5 px-3 text-[11px] font-semibold opacity-85">
-                          Skor Kategori: {catSum.actualScore?.toFixed(2).replace('.', ',')} dari {catSum.maxScore} Poin
+                          <div className="flex items-center justify-between">
+                            <span className="underline decoration-slate-400">▼ Minimize Kategori</span>
+                            <span className="text-[10px] opacity-75">{catSum.actualScore?.toFixed(2).replace('.', ',')} / {catSum.maxScore} pt</span>
+                          </div>
                         </td>
                       </tr>
                     )}
 
-                    {/* METRIC ROW */}
-                    <tr
-                      className={`hover:bg-slate-50/90 transition-colors group ${
-                        isEditingRow || activeSubPanel ? 'bg-blue-50/30 border-l-4 border-l-[#003D79]' : ''
-                      } ${!item.used ? 'bg-slate-50/40 text-slate-500' : item.scoreGap >= 1.0 ? 'bg-amber-50/15' : ''}`}
-                    >
-                      {/* 1. Sequential Number (1, 2, 3...) */}
-                      <td className="py-3 px-3 text-center font-mono font-extrabold text-[#003D79] text-xs">
-                        {displayNumber}
-                      </td>
-
-                      {/* 2. Category Badge */}
-                      <td className="py-3 px-3">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] border inline-block ${
-                            getCatBadge(item.category)
-                          }`}
-                        >
-                          {item.category}
-                        </span>
-                      </td>
-
-                      {/* 3. Metrik & Sub-Metrik */}
-                      <td className="py-3 px-3">
-                        <div className="min-w-0">
-                          {item.subMetric && item.subMetric !== item.metric ? (
-                            <>
-                              <div className="flex items-center gap-1.5">
-                                <span
-                                  className={`text-[10px] uppercase tracking-wider px-1.5 py-0.2 rounded ${
-                                    isSameParentMetricAsPrev
-                                      ? 'bg-slate-100 text-slate-500 font-bold'
-                                      : getCatTag(item.category)
-                                  }`}
-                                >
-                                  {item.metric}
+                    {/* LEVEL 2: SUB-GROUP HEADER ROW */}
+                    {isNewSubGroupSection && (
+                      <tr
+                        id={`subgroup-section-${item.category}-${item.metric}`}
+                        onClick={() => toggleSubGroup(item.category, item.metric)}
+                        className="bg-slate-100/95 hover:bg-blue-50/80 transition-colors border-y border-slate-200/90 cursor-pointer select-none group"
+                        title={isSGClosed ? `Klik untuk membuka ${sgSummary.totalItems} sub-metrik ${item.metric}` : `Klik untuk menutup / minimize sub-metrik ${item.metric}`}
+                      >
+                        <td className="py-2 px-3 text-center">
+                          <div className="flex items-center justify-center">
+                            {isSGClosed ? (
+                              <span className="p-0.5 rounded bg-white text-[#003D79] border border-slate-300 shadow-2xs group-hover:border-[#003D79]">
+                                <ChevronRight className="w-3.5 h-3.5" />
+                              </span>
+                            ) : (
+                              <span className="p-0.5 rounded bg-[#003D79] text-white shadow-2xs">
+                                <ChevronDown className="w-3.5 h-3.5 text-[#FFB81C]" />
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-2 px-3">
+                          <span className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider block">
+                            SUB-GROUP
+                          </span>
+                        </td>
+                        <td className="py-2 px-3">
+                          <div className="flex items-center gap-2">
+                            <span className="font-extrabold text-xs sm:text-sm text-[#003D79] uppercase tracking-wide">
+                              {item.metric}
+                            </span>
+                            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-blue-100 text-[#003D79] border border-blue-200/80">
+                              {sgSummary.totalItems} Sub-Metrik
+                            </span>
+                            {!sgSummary.hasBobot && (
+                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                                Bobot 0%
+                              </span>
+                            )}
+                            {isSGClosed && (
+                              <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-slate-200 text-slate-700">
+                                (Diminimize — Klik Buka)
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-2 px-2.5 text-right font-mono font-bold text-xs text-slate-700">
+                          {(sgSummary.totalBobot * 100).toFixed(1).replace('.0', '')}%
+                        </td>
+                        <td className="py-2 px-3 text-right text-[11px] font-semibold text-slate-600">
+                          {sgSummary.hasBobot ? (
+                            <span className={sgSummary.achievedCount === sgSummary.usedItems ? 'text-emerald-700 font-bold' : 'text-slate-700 font-bold'}>
+                              {sgSummary.achievedCount}/{sgSummary.usedItems} Capai Target
+                            </span>
+                          ) : (
+                            <span className="text-slate-400 font-normal">Hanya Monitoring</span>
+                          )}
+                        </td>
+                        <td className="py-2 px-3 text-right text-[11px] bg-blue-50/20">
+                          {sgSummary.hasBobot && sgSummary.totalGap > 0 ? (
+                            <span className="text-rose-700 font-bold">
+                              {sgSummary.usedItems - sgSummary.achievedCount} Sub-Metrik Perlu Dikejar
+                            </span>
+                          ) : (
+                            <span className="text-emerald-700 font-bold">
+                              {sgSummary.hasBobot ? '✓ Semua Target Tercapai' : '–'}
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-2 px-3">
+                          <div className="flex items-center justify-between text-xs font-semibold text-slate-600">
+                            <span>{sgSummary.achievedCount}/{sgSummary.totalItems} Tercapai</span>
+                            {sgSummary.hasBobot && (
+                              <span className="text-[10px] text-slate-400 font-mono">
+                                {sgSummary.usedItems > 0 ? `${((sgSummary.achievedCount / sgSummary.usedItems) * 100).toFixed(0)}%` : '0%'}
+                              </span>
+                            )}
+                          </div>
+                        </td>
+                        <td className="py-2 px-3 text-right font-mono bg-amber-50/20">
+                          {sgSummary.hasBobot ? (
+                            <div>
+                              <p className="font-bold text-xs text-slate-900">
+                                {sgSummary.totalScore.toFixed(2).replace('.', ',')}{' '}
+                                <span className="text-[10px] text-slate-400 font-normal">
+                                  / {sgSummary.totalMaxScore.toFixed(2).replace('.', ',')}
                                 </span>
+                              </p>
+                              {sgSummary.totalGap > 0.0005 && (
+                                <span className="text-[9px] font-bold text-[#996000] bg-[#FFB81C]/20 px-1 py-0.2 rounded inline-block mt-0.5">
+                                  +{sgSummary.totalGap.toFixed(2).replace('.', ',')} pt
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-slate-400 text-[10px] font-normal">–</span>
+                          )}
+                        </td>
+                        <td className="py-2 px-3 text-xs">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-bold text-[#003D79] group-hover:underline">
+                              {isSGClosed ? `▶ Buka ${sgSummary.totalItems} Sub-Metrik` : '▼ Minimize Sub-Metrik'}
+                            </span>
+                            <span className="text-[10px] text-slate-400">
+                              {isSGClosed ? 'Tertutup' : 'Terbuka'}
+                            </span>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+
+                    {/* LEVEL 3: METRIC ROW */}
+                    {!skipMetricRow && (
+                      <tr
+                        className={`hover:bg-slate-50/90 transition-colors group ${isEditingRow || activeSubPanel ? 'bg-blue-50/30 border-l-4 border-l-[#003D79]' : ''
+                          } ${!item.used ? 'bg-slate-50/40 text-slate-500' : item.scoreGap >= 1.0 ? 'bg-amber-50/15' : ''}`}
+                      >
+                        {/* 1. Sequential Number (No. 1 to 74) */}
+                        <td className="py-3 px-3 text-center font-mono font-extrabold text-[#003D79] text-xs">
+                          {displayNumber}
+                        </td>
+
+                        {/* 2. Category Badge */}
+                        <td className="py-3 px-3">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[10px] border inline-block ${getCatBadge(item.category)
+                              }`}
+                          >
+                            {item.category}
+                          </span>
+                        </td>
+
+                        {/* 3. Metrik & Sub-Metrik (Indented for Level 3) */}
+                        <td className="py-3 px-3">
+                          {isSubGroupCat ? (
+                            <div className="min-w-0 pl-3 sm:pl-5 border-l-2 border-[#003D79]/25 ml-1">
+                              <div className="flex items-center gap-1.5">
+                                <p className={`font-bold leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
+                                  {item.subMetric || item.name}
+                                </p>
                                 {item.isQuality && (
                                   <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-orange-50 text-orange-700 border border-orange-200">
                                     Kualitas (↓)
                                   </span>
                                 )}
-                              </div>
-                              <div className="flex items-center gap-1.5 mt-0.5">
-                                <p className={`font-bold leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
-                                  {item.subMetric}
-                                </p>
                                 <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
                               </div>
-                            </>
-                          ) : (
-                            <div className="flex items-center gap-1.5">
-                              <p className={`font-bold leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
-                                {item.metric || item.name}
+
+                              <p className="text-[10px] text-slate-400 mt-0.5">
+                                Sub-Metrik dari <strong className="text-slate-600 font-semibold">{item.metric}</strong> • Ref Row #{item.row}
+                                {unit && <span> • Satuan: {unit}</span>}
                               </p>
-                              <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
+                            </div>
+                          ) : (
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <p className={`font-bold leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
+                                  {item.metric || item.name}
+                                </p>
+                                {item.isQuality && (
+                                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded bg-orange-50 text-orange-700 border border-orange-200">
+                                    Kualitas (↓)
+                                  </span>
+                                )}
+                                <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
+                              </div>
+
+                              <p className="text-[10px] text-slate-400 mt-0.5">
+                                Nilai Max Kat: <strong>{CATEGORY_MULTIPLIERS[item.category]}</strong>
+                                {unit && <span> • Satuan: {unit}</span>}
+                              </p>
                             </div>
                           )}
-
-                          <p className="text-[10px] text-slate-400 mt-0.5">
-                            Nilai Max Kat: <strong>{CATEGORY_MULTIPLIERS[item.category]}</strong>
-                            {unit && <span> • Satuan: {unit}</span>}
-                          </p>
-                        </div>
-                      </td>
+                        </td>
 
                       {/* 4. Bobot */}
                       <td className="py-3 px-2.5 text-right font-mono">
@@ -1841,11 +2300,10 @@ export function MetricsTable({
                                 <button
                                   type="button"
                                   onClick={(e) => toggleSubPanel(e, item.row, 'timestand')}
-                                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-sans font-bold border transition-colors cursor-pointer ${
-                                    activeSubPanel === 'timestand'
-                                      ? 'bg-[#003D79] text-white border-[#003D79]'
-                                      : 'bg-white hover:bg-blue-50 text-[#003D79] border-blue-200'
-                                  }`}
+                                  className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-sans font-bold border transition-colors cursor-pointer ${activeSubPanel === 'timestand'
+                                    ? 'bg-[#003D79] text-white border-[#003D79]'
+                                    : 'bg-white hover:bg-blue-50 text-[#003D79] border-blue-200'
+                                    }`}
                                   title="Lihat jadwal kejaran per tanggal khusus metrik ini"
                                 >
                                   <Calendar className="w-2.5 h-2.5 text-[#FFB81C]" />
@@ -1862,15 +2320,14 @@ export function MetricsTable({
                         <div className="space-y-1">
                           <div className="flex items-center justify-between text-xs">
                             <span
-                              className={`font-black font-mono ${
-                                !item.used
-                                  ? 'text-slate-400'
-                                  : isAchieved
-                                    ? 'text-emerald-600'
-                                    : isAlmost
-                                      ? 'text-amber-600'
-                                      : 'text-rose-600'
-                              }`}
+                              className={`font-black font-mono ${!item.used
+                                ? 'text-slate-400'
+                                : isAchieved
+                                  ? 'text-emerald-600'
+                                  : isAlmost
+                                    ? 'text-amber-600'
+                                    : 'text-rose-600'
+                                }`}
                             >
                               {(item.acv * 100).toFixed(0)}%
                             </span>
@@ -1880,15 +2337,14 @@ export function MetricsTable({
                           </div>
                           <div className="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all duration-500 ${
-                                !item.used
-                                  ? 'bg-slate-300'
-                                  : isAchieved
-                                    ? 'bg-emerald-500'
-                                    : isAlmost
-                                      ? 'bg-[#FFB81C]'
-                                      : 'bg-rose-500'
-                              }`}
+                              className={`h-full rounded-full transition-all duration-500 ${!item.used
+                                ? 'bg-slate-300'
+                                : isAchieved
+                                  ? 'bg-emerald-500'
+                                  : isAlmost
+                                    ? 'bg-[#FFB81C]'
+                                    : 'bg-rose-500'
+                                }`}
                               style={{ width: `${Math.min(100, item.maxAcv * 100)}%` }}
                             ></div>
                           </div>
@@ -1928,11 +2384,10 @@ export function MetricsTable({
                             {isViewerSimMode && item.isScoreChanged ? (
                               <div className="mt-1 flex flex-col items-end">
                                 <span
-                                  className={`inline-flex items-center gap-1 font-mono font-black text-[10px] px-1.5 py-0.2 rounded ${
-                                    item.scoreDelta > 0
-                                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                                      : 'bg-rose-100 text-rose-800 border border-rose-300'
-                                  }`}
+                                  className={`inline-flex items-center gap-1 font-mono font-black text-[10px] px-1.5 py-0.2 rounded ${item.scoreDelta > 0
+                                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                                    : 'bg-rose-100 text-rose-800 border border-rose-300'
+                                    }`}
                                   title={`Skor Master: ${item.masterScore?.toFixed(2)} → Simulasi: ${item.score?.toFixed(2)} (${item.scoreDelta > 0 ? '+' : ''}${item.scoreDelta?.toFixed(2)} pt)`}
                                 >
                                   <span>Δ {item.scoreDelta > 0 ? '+' : ''}{item.scoreDelta.toFixed(2).replace('.', ',')} pt</span>
@@ -1974,11 +2429,10 @@ export function MetricsTable({
                             <button
                               type="button"
                               onClick={(e) => toggleStrategyRow(e, item.row)}
-                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${
-                                stratOpen
-                                  ? 'bg-[#003D79] text-white border-[#003D79] shadow-2xs'
-                                  : 'bg-blue-50/80 hover:bg-blue-100 text-[#003D79] border-blue-200'
-                              }`}
+                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-all cursor-pointer ${stratOpen
+                                ? 'bg-[#003D79] text-white border-[#003D79] shadow-2xs'
+                                : 'bg-blue-50/80 hover:bg-blue-100 text-[#003D79] border-blue-200'
+                                }`}
                             >
                               <Lightbulb className={`w-3 h-3 ${stratOpen ? 'text-[#FFB81C]' : 'text-[#003D79]'}`} />
                               <span>{stratOpen ? 'Tutup Strategi' : 'Lihat Strategi'}</span>
@@ -1989,13 +2443,12 @@ export function MetricsTable({
                               <button
                                 type="button"
                                 onClick={(e) => handleOpenFullEditor(e, item)}
-                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${
-                                  isEditingRow
-                                    ? 'bg-[#FFB81C] text-[#00254D] border-[#FFB81C]'
-                                    : !item.used
-                                      ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
-                                      : 'bg-white hover:bg-[#003D79] text-[#003D79] hover:text-white border-slate-300'
-                                }`}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold border transition-colors cursor-pointer ${isEditingRow
+                                  ? 'bg-[#FFB81C] text-[#00254D] border-[#FFB81C]'
+                                  : !item.used
+                                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                                    : 'bg-white hover:bg-[#003D79] text-[#003D79] hover:text-white border-slate-300'
+                                  }`}
                                 title={!item.used ? 'Metrik ini berbobot 0% (hanya monitoring)' : 'Buka panel simulasi capaian atau target'}
                               >
                                 <Edit3 className="w-3 h-3" />
@@ -2013,11 +2466,10 @@ export function MetricsTable({
                                   if (onActivateViewerSimMode) onActivateViewerSimMode();
                                   handleOpenFullEditor(e, item);
                                 }}
-                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer border ${
-                                  !item.used
-                                    ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
-                                    : 'bg-amber-50 hover:bg-amber-100 text-[#00254D] border border-[#FFB81C] shadow-2xs'
-                                }`}
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold cursor-pointer border ${!item.used
+                                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
+                                  : 'bg-amber-50 hover:bg-amber-100 text-[#00254D] border border-[#FFB81C] shadow-2xs'
+                                  }`}
                                 title={!item.used ? 'Metrik ini berbobot 0% (tidak mempengaruhi skor)' : 'Klik untuk mensimulasikan peningkatan capaian agar skor cabang naik'}
                               >
                                 <Edit3 className="w-3 h-3 text-[#FFB81C]" />
@@ -2028,11 +2480,10 @@ export function MetricsTable({
                             <button
                               type="button"
                               onClick={(e) => toggleSubPanel(e, item.row, 'rumus')}
-                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer ${
-                                activeSubPanel === 'rumus'
-                                  ? 'bg-slate-700 text-white'
-                                  : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
-                              }`}
+                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold transition-colors cursor-pointer ${activeSubPanel === 'rumus'
+                                ? 'bg-slate-700 text-white'
+                                : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                                }`}
                             >
                               <span>{activeSubPanel === 'rumus' ? 'Tutup Rumus' : 'Detail Rumus'}</span>
                             </button>
@@ -2064,9 +2515,10 @@ export function MetricsTable({
                         </div>
                       </td>
                     </tr>
+                    )}
 
                     {/* FULL-WIDTH EDITOR PANEL (Target, Formula Preview & Wide Strategy Textarea) */}
-                    {isEditingRow && (
+                    {!skipMetricRow && isEditingRow && (
                       <tr className="bg-blue-50/50 border-b-2 border-[#003D79]">
                         <td colSpan="9" className="p-4">
                           {renderFullWidthEditorPanel(item, displayNumber, unit, resolvedStrategy)}
@@ -2075,7 +2527,7 @@ export function MetricsTable({
                     )}
 
                     {/* PER-METRIC TIMESTAND DAILY SCHEDULE ROW (Directly below this metric!) */}
-                    {activeSubPanel === 'timestand' && (
+                    {!skipMetricRow && activeSubPanel === 'timestand' && (
                       <tr className="bg-amber-50/30 border-b-2 border-[#003D79]">
                         <td colSpan="9" className="p-4">
                           {renderPerMetricTimestandSchedule(item, displayNumber, unit, chaseInfo)}
@@ -2084,11 +2536,11 @@ export function MetricsTable({
                     )}
 
                     {/* INLINE EXPANDED ACCORDION ROW: DETAIL RUMUS & IMPACT ANALYSIS */}
-                    {activeSubPanel === 'rumus' && (
+                    {!skipMetricRow && activeSubPanel === 'rumus' && (
                       <tr className="bg-linear-to-r from-blue-50/80 via-slate-50 to-amber-50/40 border-b-2 border-[#003D79]">
                         <td colSpan="9" className="p-5">
                           <div className="space-y-4 text-xs">
-                            
+
                             {/* Top Dynamic Impact Banner */}
                             <div className="p-3.5 rounded-xl bg-white border border-blue-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                               <div className="flex items-start gap-2.5">
