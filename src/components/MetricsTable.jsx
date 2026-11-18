@@ -40,6 +40,7 @@ import {
   formatShortDateId
 } from '../utils/googleCalendar';
 import { getCategoryTheme, CATEGORY_THEMES } from '../utils/categoryColors';
+import { InfoTooltip } from './InfoTooltip';
 
 export function MetricsTable({
   metrics = [],
@@ -610,8 +611,9 @@ export function MetricsTable({
         <div className="bg-linear-to-r from-[#00254D] via-[#003D79] to-[#004B94] text-white px-5 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <Edit3 className="w-4 h-4 text-[#FFB81C]" />
-            <h4 className="font-extrabold text-sm sm:text-base">
-              Panel Simulasi Capaian, Target & Strategi — No. #{displayNumber} [{item.category}] {item.name}
+            <h4 className="font-extrabold text-sm sm:text-base flex items-center gap-2">
+              <span>Panel Simulasi Capaian, Target & Strategi — No. #{displayNumber} [{item.category}] {item.name}</span>
+              <InfoTooltip type="metric" item={item} align="left" iconSize="w-4 h-4" />
             </h4>
           </div>
           <button
@@ -1247,6 +1249,7 @@ export function MetricsTable({
                   >
                     <div className="flex items-center gap-1.5">
                       <span className="uppercase tracking-wide font-black">KATEGORI: {item.category}</span>
+                      <InfoTooltip type="category" id={item.category} align="left" iconSize="w-3 h-3" />
                       <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-white/80 text-slate-700">
                         Max {catSum.maxScore}
                       </span>
@@ -1280,9 +1283,12 @@ export function MetricsTable({
                             </span>
                           )}
                         </div>
-                        <p className="font-bold text-slate-900 text-xs mt-0.5 leading-snug">
-                          {item.subMetric && item.subMetric !== item.metric ? item.subMetric : (item.metric || item.name)}
-                        </p>
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <p className="font-bold text-slate-900 text-xs leading-snug">
+                            {item.subMetric && item.subMetric !== item.metric ? item.subMetric : (item.metric || item.name)}
+                          </p>
+                          <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
+                        </div>
                       </div>
                     </div>
 
@@ -1492,24 +1498,36 @@ export function MetricsTable({
               </th>
 
               <th scope="col" className="py-3 px-3 w-24">
-                Kategori
+                <span>Kategori</span>
               </th>
 
               <th scope="col" className="py-3 px-3 min-w-[205px]">
-                Metrik & Sub-Metrik
+                <div className="flex items-center gap-1">
+                  <span>Metrik & Sub-Metrik</span>
+                  <InfoTooltip title="Metrik & Sub-Metrik Scorecard" description="Daftar 74 indikator capaian kinerja cabang Bank Mandiri, dikelompokkan ke dalam 7 kategori bisnis." align="left" iconSize="w-3 h-3" />
+                </div>
               </th>
 
               <th scope="col" className="py-3 px-2.5 text-right w-18">
-                Bobot
+                <div className="flex items-center justify-end gap-1">
+                  <span>Bobot</span>
+                  <InfoTooltip type="term" term="Bobot" align="center" iconSize="w-3 h-3" />
+                </div>
               </th>
 
               <th scope="col" className="py-3 px-3 text-right w-32">
-                Realisasi & Selisih
+                <div className="flex items-center justify-end gap-1">
+                  <span>Realisasi & Selisih</span>
+                  <InfoTooltip type="term" term="Realisasi" align="center" iconSize="w-3 h-3" />
+                </div>
               </th>
 
               <th scope="col" className="py-3 px-3 text-right min-w-[225px] bg-blue-50/50">
                 <div className="flex flex-col items-end">
-                  <span className="text-[#003D79]">Target & Timestand / Metrik</span>
+                  <div className="flex items-center justify-end gap-1 text-[#003D79]">
+                    <span>Target & Timestand / Metrik</span>
+                    <InfoTooltip type="term" term="HK" align="right" iconSize="w-3 h-3" />
+                  </div>
                   <span className="text-[9px] text-[#003D79] font-semibold normal-case">
                     ({effectiveWorkdays} HK • {periodLabel})
                   </span>
@@ -1523,6 +1541,7 @@ export function MetricsTable({
               >
                 <div className="flex items-center gap-1">
                   <span>Acv / Max Acv</span>
+                  <InfoTooltip type="term" term="Acv" align="center" iconSize="w-3 h-3" />
                   <ArrowUpDown className="w-3 h-3 text-slate-400" />
                 </div>
               </th>
@@ -1534,6 +1553,7 @@ export function MetricsTable({
               >
                 <div className="flex items-center justify-end gap-1 text-[#003D79]">
                   <span>Skor / +Potensi</span>
+                  <InfoTooltip type="term" term="Potensi" align="right" iconSize="w-3 h-3" />
                   <ArrowUpDown className="w-3 h-3 text-[#FFB81C]" />
                 </div>
               </th>
@@ -1615,6 +1635,7 @@ export function MetricsTable({
                             <span className="text-xs sm:text-sm font-black uppercase tracking-wide">
                               KATEGORI: {item.category}
                             </span>
+                            <InfoTooltip type="category" id={item.category} align="left" iconSize="w-3.5 h-3.5" />
                             <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-white/80 text-slate-700 border border-slate-200/80">
                               Nilai Max: {catSum.maxScore} Poin
                             </span>
@@ -1689,14 +1710,20 @@ export function MetricsTable({
                                   </span>
                                 )}
                               </div>
-                              <p className={`font-bold mt-0.5 leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
-                                {item.subMetric}
-                              </p>
+                              <div className="flex items-center gap-1.5 mt-0.5">
+                                <p className={`font-bold leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
+                                  {item.subMetric}
+                                </p>
+                                <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
+                              </div>
                             </>
                           ) : (
-                            <p className={`font-bold leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
-                              {item.metric || item.name}
-                            </p>
+                            <div className="flex items-center gap-1.5">
+                              <p className={`font-bold leading-snug ${item.used ? 'text-slate-900' : 'text-slate-600'}`}>
+                                {item.metric || item.name}
+                              </p>
+                              <InfoTooltip type="metric" item={item} align="left" iconSize="w-3.5 h-3.5" />
+                            </div>
                           )}
 
                           <p className="text-[10px] text-slate-400 mt-0.5">

@@ -3,6 +3,188 @@
  * Khusus untuk Bank Mandiri KC Jakarta Pondok Indah Office 3 (Kode: 10125)
  */
 
+export const categoryKnowledge = {
+  DPK: {
+    name: 'Dana Pihak Ketiga',
+    shortName: 'DPK',
+    maxScore: 30,
+    definition: 'Total dana simpanan masyarakat dan badan usaha yang dihimpun dalam bentuk Tabungan, Giro, dan Deposito.',
+    importance: 'Kategori berbobot terbesar (30 dari 100 poin). Menjadi pilar likuiditas bank dan sumber dana murah (CASA) untuk menekan Cost of Funds (CoF).',
+    tacticalTip: 'Fokus pada retensi saldo giro korporat dan pembukaan rekening payroll tabungan karyawan tenant gedung.'
+  },
+  Kredit: {
+    name: 'Penyaluran Kredit & Pembiayaan',
+    shortName: 'Kredit',
+    maxScore: 20,
+    definition: 'Portofolio pinjaman produktif dan konsumtif yang disalurkan cabang (KPR, Kartu Kredit, KSM/Payroll, Autoloan, KUR/KUM).',
+    importance: 'Penyumbang 20 dari 100 poin dan sumber pendapatan bunga bersih (NII). Kualitas kredit (Kol 2 & NPL) harus dijaga ketat agar tidak menggerus laba cabang.',
+    tacticalTip: 'Genjot booking KPR dan KSM pegawai payroll, serta lakukan penagihan intensif sebelum kredit menunggak.'
+  },
+  Livin: {
+    name: 'Digital Retail Banking (Livin\' by Mandiri)',
+    shortName: 'Livin\'',
+    maxScore: 15,
+    definition: 'Ekosistem perbankan digital untuk nasabah individu/ritel melalui aplikasi mobile Livin\' by Mandiri (logo kuning).',
+    importance: 'Penyumbang 15 dari 100 poin. Mengukur pertumbuhan nasabah baru (New UREG), nasabah aktif transaksi (USAK Finansial), dan Fee Based Income (FBI).',
+    tacticalTip: 'Ajak setiap nasabah baru atau yang datang ke CS untuk mengaktivasi dan melakukan minimal 1 transaksi finansial di Livin\'.'
+  },
+  Kopra: {
+    name: 'Digital Wholesale Banking (Kopra by Mandiri)',
+    shortName: 'Kopra',
+    maxScore: 10,
+    definition: 'Platform digital single-access terpadu untuk nasabah korporasi, institusi komersial, dan pelaku bisnis SME/UMKM.',
+    importance: 'Penyumbang 10 dari 100 poin. Mengukur adopsi pengguna bisnis, cash management, dan perputaran dana (GTV) pelaku usaha.',
+    tacticalTip: 'Onboarding tenant dan supplier korporasi di sekitar gedung untuk menggunakan Kopra Cash Management.'
+  },
+  Acquiring: {
+    name: 'Merchant & Penerimaan Pembayaran',
+    shortName: 'Acquiring',
+    maxScore: 15,
+    definition: 'Penerimaan transaksi belanja non-tunai di merchant melalui mesin EDC (Electronic Data Capture) dan Livin\' Merchant (QRIS).',
+    importance: 'Penyumbang 15 dari 100 poin. Mengukur akuisisi merchant baru, volume belanja (Sales Volume), fee transaksi (FBI), dan saldo mengendap di rekening penampungan pedagang.',
+    tacticalTip: 'Pasang mesin EDC di tenant ritel ramai transaksi dan pastikan merchant aktif memproses settlement ke rekening Mandiri.'
+  },
+  GMM: {
+    name: 'Gerakan Mandiri Melayani',
+    shortName: 'GMM',
+    maxScore: 5,
+    definition: 'Program internal budaya kerja di mana seluruh pegawai cabang (tanpa terkecuali) aktif berpartisipasi memasarkan produk perbankan Mandiri.',
+    importance: 'Penyumbang 5 dari 100 poin. Mengukur persentase pegawai cabang yang berhasil berkontribusi dalam referral Livin, transaksi, dan merchant.',
+    tacticalTip: 'Pastikan 100% pegawai cabang memiliki minimal 1 referral transaksi atau akuisisi per bulan agar skor penuh 5 poin tercapai.'
+  },
+  Ekosistem: {
+    name: 'Ekosistem Wholesale & Rantai Pasok',
+    shortName: 'Ekosistem',
+    maxScore: 5,
+    definition: 'Integrasi bisnis antara nasabah korporasi jangkar dengan mitra rantai pasoknya (vendor, supplier, distributor, dan karyawan) di area cabang.',
+    importance: 'Penyumbang 5 dari 100 poin. Mencerminkan dominasi dan penetrasi pasar Bank Mandiri terhadap total potensi bisnis di wilayah kerja region.',
+    tacticalTip: 'Jalin kerja sama dengan pengelola gedung dan kantor cabang korporasi untuk mengunci seluruh rantai transaksi ekosistem.'
+  }
+};
+
+export const glossaryTerms = {
+  HK: {
+    term: 'HK',
+    title: 'Hari Kerja Efektif (HK)',
+    definition: 'Jumlah hari operasional aktif bank (Senin – Jumat) pada rentang kalender bulan berjalan, setelah dikurangi hari libur nasional dan cuti bersama.',
+    purpose: 'Digunakan sebagai pembagi sisa target kekurangan untuk menghasilkan angka target kejaran realistis per hari operasional cabang.'
+  },
+  Bobot: {
+    term: 'Bobot',
+    title: 'Bobot Metrik (%)',
+    definition: 'Persentase porsi kontribusi suatu metrik terhadap nilai maksimal kategorinya.',
+    purpose: 'Contoh: Bobot 15% pada DPK (30 poin) bernilai maksimal 4,50 poin skor. Metrik Bobot 0% hanya berfungsi sebagai indikator monitoring operasional (tidak menyumbang skor).'
+  },
+  Realisasi: {
+    term: 'Realisasi',
+    title: 'Realisasi Aktual',
+    definition: 'Angka capaian riil atau nominal aktual yang berhasil dicatatkan oleh cabang pada tanggal posisi laporan pelaporan.',
+    purpose: 'Menjadi pembilang (numerator) dalam rumus pencapaian target kinerja cabang.'
+  },
+  Target: {
+    term: 'Target',
+    title: 'Target KPI (RKAP)',
+    definition: 'Tolok ukur kuota sasaran kinerja cabang yang ditetapkan oleh Kantor Pusat / Konseptor dalam Rencana Kerja dan Anggaran Perusahaan (RKAP).',
+    purpose: 'Menjadi penyebut (denominator) dalam rumus pencapaian. Jika target dinaikkan tanpa kenaikan realisasi, pencapaian akan mengecil.'
+  },
+  Acv: {
+    term: 'Acv',
+    title: 'Achievement / Pencapaian (%)',
+    definition: 'Persentase perbandingan antara Realisasi terhadap Target (Realisasi ÷ Target × 100%).',
+    purpose: 'Untuk metrik pertumbuhan (growth), makin tinggi realisasi maka Acv makin besar. Untuk metrik kualitas (Kol 2 & NPL), rumusnya terbalik (makin rendah realisasi, Acv makin tinggi).'
+  },
+  MaxAcv: {
+    term: 'Max Acv',
+    title: 'Batas Maksimal Pencapaian (100%)',
+    definition: 'Batas pengakuan pencapaian maksimal 100% (1,0) untuk perhitungan skor pada sistem scorecard Mandiri.',
+    purpose: 'Surplus capaian di atas 100% tetap diakui sebagai prestasi volume, namun skor yang diberikan tetap dibatasi maksimal pada bobot penuh metrik tersebut.'
+  },
+  Skor: {
+    term: 'Skor',
+    title: 'Skor Kinerja (Poin)',
+    definition: 'Poin nilai scorecard yang diperoleh cabang dari metrik tersebut (Max Acv × Bobot × Nilai Maksimal Kategori).',
+    purpose: 'Total seluruh skor metrik dijumlahkan menghasilkan Total Skor Cabang dalam skala 0 sampai 100 poin.'
+  },
+  Potensi: {
+    term: 'Potensi',
+    title: 'Potensi Poin Tambahan (+pt)',
+    definition: 'Sisa poin yang masih bisa diraih cabang jika metrik tersebut berhasil dikejar hingga mencapai 100% target (Nilai Maksimal Metrik − Skor Saat Ini).',
+    purpose: 'Membantu branch manager memprioritaskan metrik mana yang memiliki cadangan poin terbesar untuk mendongkrak ranking cabang.'
+  },
+  MtD: {
+    term: 'MtD',
+    title: 'Month-to-Date (MtD)',
+    definition: 'Perhitungan akumulasi atau rata-rata saldo transaksi yang dihitung sejak tanggal 1 pada bulan berjalan sampai dengan tanggal posisi pelaporan.',
+    purpose: 'Mencerminkan performa kinerja cabang sepanjang bulan yang sedang berjalan.'
+  },
+  YtD: {
+    term: 'YtD',
+    title: 'Year-to-Date (YtD)',
+    definition: 'Perhitungan akumulasi pencapaian kinerja yang dihitung sejak awal tahun (1 Januari) sampai dengan tanggal posisi pelaporan.',
+    purpose: 'Digunakan untuk metrik tahunan seperti booking kredit baru dan volume transaksi merchant.'
+  },
+  Endbal: {
+    term: 'Endbal',
+    title: 'Ending Balance (Saldo Akhir)',
+    definition: 'Total saldo dana simpanan atau pinjaman tepat pada saat penutupan hari kerja tanggal pelaporan.',
+    purpose: 'Memberikan gambaran posisi neraca riil cabang pada akhir hari.'
+  },
+  Avgbal: {
+    term: 'Avgbal',
+    title: 'Average Balance (Saldo Rata-Rata)',
+    definition: 'Rata-rata saldo harian selama rentang periode berjalan (saldo harian dijumlahkan lalu dibagi jumlah hari).',
+    purpose: 'Mencerminkan dana mengendap yang stabil dan produktif, bebas dari manipulasi saldo sesaat (window dressing) di akhir bulan.'
+  },
+  CASA: {
+    term: 'CASA',
+    title: 'Current Account & Savings Account (Dana Murah)',
+    definition: 'Porsi dana simpanan yang berasal dari Tabungan dan Giro.',
+    purpose: 'Sangat vital bagi bank karena beban bunga CASA jauh lebih rendah daripada Deposito, sehingga menurunkan Cost of Funds (biaya dana) cabang.'
+  },
+  Kol2: {
+    term: 'Kol 2',
+    title: 'Kolektibilitas 2 (Dalam Perhatian Khusus)',
+    definition: 'Pinjaman kredit yang mengalami keterlambatan pembayaran pokok dan/atau bunga antara 1 hingga 90 hari.',
+    purpose: 'Early warning sistem kualitas kredit. Harus segera ditagih dan dilakukan restrukturisasi sebelum tergelincir menjadi kredit macet (NPL).'
+  },
+  NPL: {
+    term: 'NPL',
+    title: 'Non-Performing Loan (Kredit Macet)',
+    definition: 'Kredit bermasalah dengan tunggakan pembayaran melampaui 90 hari (mencakup Kolektibilitas 3 Kurang Lancar, Kol 4 Diragukan, dan Kol 5 Macet).',
+    purpose: 'Wajib dijaga serendah mungkin (maksimum batas toleransi bank) karena memicu pembentukan cadangan kerugian (CKPN) yang menggerus laba cabang.'
+  },
+  UREG: {
+    term: 'UREG',
+    title: 'User Registered',
+    definition: 'Jumlah nasabah yang telah berhasil melakukan pendaftaran akun di platform perbankan digital Mandiri (Livin\' atau Kopra).',
+    purpose: 'Indikator penetrasi awal digitalisasi nasabah ritel dan korporasi cabang.'
+  },
+  USAK: {
+    term: 'USAK',
+    title: 'User Aktif',
+    definition: 'Nasabah terdaftar yang secara aktif melakukan minimal transaksi finansial rutin dalam periode pelaporan.',
+    purpose: 'Memastikan nasabah yang diakuisisi benar-benar menggunakan aplikasi Mandiri untuk bertransaksi sehari-hari.'
+  },
+  FBI: {
+    term: 'FBI',
+    title: 'Fee Based Income',
+    definition: 'Pendapatan non-bunga yang diperoleh bank dari imbal jasa biaya administrasi, provisi kredit, transaksi digital, dan komisi produk.',
+    purpose: 'Sumber profitabilitas sehat penopang laba operasional cabang di luar pendapatan bunga kredit.'
+  },
+  GTV: {
+    term: 'GTV',
+    title: 'Gross Transaction Value',
+    definition: 'Total nilai nominal perputaran uang dari seluruh transaksi finansial yang diproses melalui sistem Kopra Wholesale Mandiri.',
+    purpose: 'Mengukur seberapa besar arus transaksi bisnis korporasi dan pelaku usaha yang mengalir melalui rekening Mandiri.'
+  },
+  SV: {
+    term: 'SV',
+    title: 'Sales Volume (Volume Belanja)',
+    definition: 'Total nilai nominal perputaran uang transaksi belanja nasabah yang diproses melalui mesin EDC atau QRIS merchant kelolaan cabang.',
+    purpose: 'Mengindikasikan keaktifan merchant dan potensi fee transaksi serta dana mengendap di rekening penampungan.'
+  }
+};
+
 export const metricKnowledge = {
   // ==================== DPK ====================
   "Avgbal DPK MtD": {
@@ -735,4 +917,25 @@ export function formatBankingNumber(val, unit = '', isPct = false) {
     }).format(num);
   }
   return new Intl.NumberFormat('id-ID').format(num);
+}
+
+/**
+ * Get category knowledge details (name, definition, maxScore, importance, tips)
+ */
+export function getCategoryKnowledge(cat) {
+  if (!cat) return null;
+  const clean = String(cat).trim();
+  return categoryKnowledge[clean] || categoryKnowledge[clean.replace(/[^a-zA-Z]/g, '')] || null;
+}
+
+/**
+ * Get glossary term definition
+ */
+export function getGlossaryTerm(term) {
+  if (!term) return null;
+  const clean = String(term).trim();
+  // Exact match or case-insensitive match
+  if (glossaryTerms[clean]) return glossaryTerms[clean];
+  const foundKey = Object.keys(glossaryTerms).find(k => k.toLowerCase() === clean.toLowerCase());
+  return foundKey ? glossaryTerms[foundKey] : null;
 }

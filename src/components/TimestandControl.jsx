@@ -16,6 +16,7 @@ import {
   formatDateId,
   formatShortDateId
 } from '../utils/googleCalendar';
+import { InfoTooltip } from './InfoTooltip';
 
 const MONTH_NAMES = [
   'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
@@ -250,8 +251,9 @@ export function TimestandControl({
               <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#003D79]">
                 Pengaturan Timestand Hari Kerja Efektif
               </span>
-              <span className="px-2 py-0.5 rounded-md bg-[#FFB81C]/30 border border-[#FFB81C] text-[#00254D] text-xs font-extrabold">
-                {activeSummary.effectiveWorkdays} Hari Kerja Efektif (HK)
+              <span className="px-2 py-0.5 rounded-md bg-[#FFB81C]/30 border border-[#FFB81C] text-[#00254D] text-xs font-extrabold inline-flex items-center gap-1">
+                <span>{activeSummary.effectiveWorkdays} Hari Kerja Efektif (HK)</span>
+                <InfoTooltip type="term" term="HK" align="left" iconSize="w-3 h-3" />
               </span>
               <span className="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-bold">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>

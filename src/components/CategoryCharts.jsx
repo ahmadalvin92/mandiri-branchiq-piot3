@@ -24,6 +24,7 @@ import {
 import { CAT_ORDER } from '../utils/excelParser';
 import { formatBankingNumber, getMetricKnowledge } from '../utils/knowledgeBase';
 import { getCategoryTheme } from '../utils/categoryColors';
+import { InfoTooltip } from './InfoTooltip';
 
 export function CategoryCharts({
   categorySummary,
@@ -403,6 +404,7 @@ export function CategoryCharts({
                       <span className={`px-1.5 py-0.2 rounded text-[10px] ${theme.badge} shrink-0`}>
                         {c.category}
                       </span>
+                      <InfoTooltip type="category" id={c.category} align="left" iconSize="w-3 h-3" />
                       {rank && (
                         <span className="text-[9px] sm:text-[10px] font-bold px-1.5 py-0.1 rounded bg-slate-100 text-[#003D79] border border-slate-200 shrink-0">
                           #{rank}
