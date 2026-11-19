@@ -4,6 +4,8 @@
  * and localStorage fallback for instant reactivity.
  */
 
+import { supabase } from './supabaseClient';
+
 export const DEFAULT_PASSWORD = 'mandiri123';
 export const STORAGE_KEY_DB = 'branchiq_master_db_v2';
 
@@ -150,14 +152,76 @@ export function getInitialDbState() {
 }
 
 export async function fetchServerDb() {
+  // 1. Coba ambil dari Supabase Cloud Database terlebih dahulu
+  if (supabase) {
+    try {
+      const [usersRes, targetsRes, stratsRes] = await Promise.all([
+        supabase.from('users').select('*'),
+        supabase.from('master_targets').select('*'),
+        supabase.from('master_strategies').select('*')
+      ]);
+
+      if (!usersRes.error && usersRes.data && usersRes.data.length > 0) {
+        let users = usersRes.data.map(u => ({
+          username: u.username,
+          displayName: u.display_name,
+          password: u.password,
+          role: u.role,
+          jabatan: u.jabatan,
+          createdAt: u.created_at,
+          updatedAt: u.updated_at
+        }));
+        users = ensureRequiredUsers(users);
+
+        const masterTargets = {};
+        if (targetsRes.data) {
+          targetsRes.data.forEach(t => {
+            masterTargets[t.key] = {
+              target: Number(t.target_value),
+              updatedBy: t.updated_by,
+              updatedAt: t.updated_at
+            };
+          });
+        }
+
+        const masterStrategies = {};
+        if (stratsRes.data) {
+          stratsRes.data.forEach(s => {
+            masterStrategies[s.key] = {
+              strategyText: s.strategy_text,
+              scope: s.scope,
+              tacticalActions: typeof s.tactical_actions === 'string' ? JSON.parse(s.tactical_actions || '[]') : (s.tactical_actions || []),
+              updatedBy: s.updated_by,
+              updatedAt: s.updated_at
+            };
+          });
+        }
+
+        const cloudDb = {
+          users,
+          masterTargets,
+          masterStrategies,
+          viewerSimulations: [],
+          timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG }
+        };
+        localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(cloudDb));
+        return cloudDb;
+      }
+    } catch (e) {
+      console.warn('Supabase DB fetch info:', e?.message || e);
+    }
+  }
+
+  // 2. Fallback ke endpoint API dev server lokal
   try {
     const res = await fetch('/api/db', { cache: 'no-store' });
-    if (!res.ok) throw new Error('Server DB unavailable');
-    const data = await res.json();
-    if (data && Array.isArray(data.users)) {
-      data.users = ensureRequiredUsers(data.users);
-      localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(data));
-      return data;
+    if (res.ok) {
+      const data = await res.json();
+      if (data && Array.isArray(data.users)) {
+        data.users = ensureRequiredUsers(data.users);
+        localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(data));
+        return data;
+      }
     }
   } catch (e) {
     // Fallback to localStorage if offline/static build
@@ -166,11 +230,69 @@ export async function fetchServerDb() {
 }
 
 export async function persistDbState(newDb) {
+  // 1. Simpan ke localStorage lokal
   try {
     localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(newDb));
   } catch (e) {
     console.warn('Could not save to localStorage:', e);
   }
+
+  // 2. Simpan ke Supabase Cloud
+  if (supabase) {
+    try {
+      if (Array.isArray(newDb.users)) {
+        await supabase.from('users').upsert(
+          newDb.users.map(u => ({
+            username: u.username,
+            display_name: u.displayName || u.username,
+            password: u.password || DEFAULT_PASSWORD,
+            role: u.role || 'viewer',
+            jabatan: u.jabatan || 'Pegawai Cabang',
+            updated_at: new Date().toISOString()
+          }))
+        );
+      }
+      if (newDb.masterTargets) {
+        const targetRows = Object.entries(newDb.masterTargets).map(([key, val]) => {
+          const parts = key.split('_');
+          return {
+            key,
+            branch_code: parts[0] || '10125',
+            row_id: Number(parts[1]) || 0,
+            target_value: Number(val.target || 0),
+            updated_by: val.updatedBy || 'michael',
+            updated_at: val.updatedAt || new Date().toISOString()
+          };
+        });
+        if (targetRows.length > 0) {
+          await supabase.from('master_targets').upsert(targetRows);
+        }
+      }
+      if (newDb.masterStrategies) {
+        const stratRows = Object.entries(newDb.masterStrategies).map(([key, val]) => {
+          const branchCode = key.startsWith('b') ? key.split('~')[0].slice(1) : 'all';
+          const rowId = Number(key.split('~')[1]) || 0;
+          return {
+            key,
+            branch_code: branchCode,
+            row_id: rowId,
+            scope: val.scope || (branchCode === 'all' ? 'all' : 'branch'),
+            strategy_text: val.strategyText || '',
+            tactical_actions: val.tacticalActions || [],
+            updated_by: val.updatedBy || 'michael',
+            updated_at: val.updatedAt || new Date().toISOString()
+          };
+        });
+        if (stratRows.length > 0) {
+          await supabase.from('master_strategies').upsert(stratRows);
+        }
+      }
+    } catch (e) {
+      console.warn('Supabase cloud persist info:', e?.message || e);
+    }
+  }
+
+  // 3. Sync ke local dev server
   try {
     await fetch('/api/db/sync', {
       method: 'POST',

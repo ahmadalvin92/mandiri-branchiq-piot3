@@ -43,6 +43,7 @@ import {
 import {
   DEFAULT_SNAPSHOT_META,
   getExcelHistoryMetaList,
+  syncCloudExcelHistory,
   saveExcelSnapshotToHistory,
   loadExcelSnapshotPayload,
   deleteExcelSnapshotFromHistory,
@@ -90,7 +91,16 @@ export function App() {
   const [customFileName, setCustomFileName] = useState('');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [excelHistoryList, setExcelHistoryList] = useState(() => getExcelHistoryMetaList());
-  const [activeSnapshotId, setActiveSnapshotId] = useState(DEFAULT_SNAPSHOT_META.id);
+  const [activeSnapshotId, setActiveSnapshotId] = useState(() => {
+    try {
+      const stored = localStorage.getItem('branchiq_active_snapshot_id');
+      const list = getExcelHistoryMetaList();
+      if (stored && list.some(x => x.id === stored)) {
+        return stored;
+      }
+    } catch (e) {}
+    return DEFAULT_SNAPSHOT_META.id;
+  });
 
   // Filters & Search — default filterUnderTarget = false so ALL Excel rows (DPK..GMM..Ekosistem) appear in exact order
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -102,17 +112,22 @@ export function App() {
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
 
-  // Load Server DB and Google Calendar Holidays on mount
+  // Load Server DB, Google Calendar Holidays, and Cloud Excel History on mount
   useEffect(() => {
     fetchServerDb().then((loaded) => {
       if (loaded) setDbState(loaded);
     });
 
     handleSyncGoogleCalendar();
+
+    syncCloudExcelHistory().then((cloudList) => {
+      if (cloudList && cloudList.length > 0) {
+        setExcelHistoryList(cloudList);
+      }
+    });
   }, []);
 
-  // Automatically fetch sample excel on mount to cache dbData for seamless branch switching
-  useEffect(() => {
+  const handleFetchDefaultExcel = () => {
     fetch('/sample_branchiq.xlsx')
       .then(res => res.arrayBuffer())
       .then(buffer => parseBranchIQWorkbook(buffer))
@@ -129,6 +144,54 @@ export function App() {
       .catch(err => {
         console.warn('Could not pre-fetch sample_branchiq.xlsx, using static default:', err);
       });
+  };
+
+  // Automatically fetch sample excel or load active snapshot on mount
+  useEffect(() => {
+    const targetId = (() => {
+      try {
+        const stored = localStorage.getItem('branchiq_active_snapshot_id');
+        const list = getExcelHistoryMetaList();
+        if (stored && list.some(x => x.id === stored)) return stored;
+      } catch (e) {}
+      return DEFAULT_SNAPSHOT_META.id;
+    })();
+
+    if (targetId && targetId !== DEFAULT_SNAPSHOT_META.id) {
+      loadExcelSnapshotPayload(targetId).then(payload => {
+        if (payload && payload.dbData) {
+          setCachedDbData(payload.dbData);
+          setBranchesList(payload.branches || defaultBranches);
+          setMetricDefs(payload.metricDefs || defaultMetricDefs);
+          if (payload.allRankings && payload.allRankings.length > 0) {
+            setAllRankings(payload.allRankings);
+          }
+          const currentCode = rawBranchData.branchInfo?.code || '10125';
+          const targetCode = payload.branches?.some(b => String(b.code) === String(currentCode))
+            ? currentCode
+            : (payload.branches?.[0]?.code || '10125');
+          const calculated = calculateBranchScore(
+            targetCode,
+            payload.dbData,
+            payload.metricDefs || defaultMetricDefs,
+            payload.branches || defaultBranches,
+            payload.realizationDate || '16 November 2026',
+            payload.allRankings || allRankings
+          );
+          setRawBranchData(calculated);
+          setIsCustomFileLoaded(true);
+          const meta = excelHistoryList.find(x => x.id === targetId);
+          if (meta) setCustomFileName(meta.fileName);
+          setActiveSnapshotId(targetId);
+        } else {
+          handleFetchDefaultExcel();
+        }
+      }).catch(() => {
+        handleFetchDefaultExcel();
+      });
+    } else {
+      handleFetchDefaultExcel();
+    }
   }, []);
 
   const updateAndPersistDb = (updater) => {
@@ -504,6 +567,9 @@ export function App() {
 
     setExcelHistoryList(saved.list);
     setActiveSnapshotId(saved.meta.id);
+    try {
+      localStorage.setItem('branchiq_active_snapshot_id', saved.meta.id);
+    } catch (e) {}
 
     setCachedDbData(parsedWithDate.dbData);
     setBranchesList(parsedWithDate.branches);
@@ -543,6 +609,9 @@ export function App() {
     }
 
     setActiveSnapshotId(snapshotMeta.id);
+    try {
+      localStorage.setItem('branchiq_active_snapshot_id', snapshotMeta.id);
+    } catch (e) {}
     setCachedDbData(payload.dbData);
     setBranchesList(payload.branches || defaultBranches);
     setMetricDefs(payload.metricDefs || defaultMetricDefs);
@@ -595,6 +664,12 @@ export function App() {
       setIsCustomFileLoaded(false);
       setCustomFileName('');
       setActiveSnapshotId(DEFAULT_SNAPSHOT_META.id);
+    try {
+      localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
+    } catch (e) {}
+      try {
+        localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
+      } catch (e) {}
 
       const calculated = calculateBranchScore(
         '10125',
@@ -621,6 +696,9 @@ export function App() {
     setIsCustomFileLoaded(false);
     setCustomFileName('');
     setActiveSnapshotId(DEFAULT_SNAPSHOT_META.id);
+    try {
+      localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
+    } catch (e) {}
   };
 
   // Print executive summary briefing

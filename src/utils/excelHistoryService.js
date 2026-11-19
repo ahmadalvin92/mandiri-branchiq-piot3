@@ -1,31 +1,47 @@
 /**
- * Excel Daily History Snapshot Service (IndexedDB + localStorage Metadata)
- * Dilengkapi Smart Storage Quota & Auto-Replace (FIFO) saat pemakaian mencapai 80% dari 500 MB (400 MB)
- * atau saat meng-upload file dengan Tanggal Posisi yang sama.
+ * Excel Daily History Snapshot Service (Supabase Cloud + IndexedDB Local Cache + localStorage Meta)
+ * Mendukung sinkronisasi multi-device: ketika Superadmin mengunggah Excel, data langsung tersimpan
+ * di Supabase Cloud dan otomatis muncul di seluruh laptop pengguna lain secara real-time.
  */
 
-const META_STORAGE_KEY = 'branchiq_excel_history_meta_v1';
+import { parseBranchIQWorkbook } from './excelParser';
+import { supabase } from './supabaseClient';
+
+const META_STORAGE_KEY = 'branchiq_excel_history_meta_v2';
 const IDB_NAME = 'BranchIQExcelHistoryDB';
 const IDB_STORE = 'snapshots';
 
-// Batas kapasitas Vercel / Storage: 500 MB, dengan Auto-Replace pada ambang 80% (400 MB)
 export const MAX_STORAGE_BYTES = 500 * 1024 * 1024; // 500 MB
 export const AUTO_REPLACE_THRESHOLD_RATIO = 0.80; // 80%
 export const AUTO_REPLACE_THRESHOLD_BYTES = Math.floor(MAX_STORAGE_BYTES * AUTO_REPLACE_THRESHOLD_RATIO); // 400 MB
-export const MAX_HISTORY_SNAPSHOTS = 30; // Maksimal 30 posisi harian terakhir
+export const MAX_HISTORY_SNAPSHOTS = 30;
 
 export const DEFAULT_SNAPSHOT_META = {
+  id: 'default_r05_16nov2026',
+  fileName: 'BranchIQ Score R05 16 November 2026 update 18.11.26 Kirim.xlsx',
+  realizationDate: '16 November 2026',
+  label: 'Posisi 16 November 2026 (Baseline R05 Terkini)',
+  uploadedAt: '2026-11-18T08:00:00.000Z',
+  uploadedBy: 'michael',
+  score10125: 85.65,
+  rank10125: 41,
+  totalBranches: 164,
+  sizeBytes: 1350000,
+  isDefault: true
+};
+
+export const BASELINE_13NOV_META = {
   id: 'default_r05_13nov2026',
   fileName: 'BranchIQ_Score_R05_13_November_2026_update_16.11.26_Kirim.xlsx',
   realizationDate: '13 November 2026',
-  label: 'Posisi 13 November 2026 (Baseline R05)',
+  label: 'Posisi 13 November 2026 (Baseline R05 Sebelumnya)',
   uploadedAt: '2026-11-16T08:00:00.000Z',
   uploadedBy: 'michael',
   score10125: 85.53,
   rank10125: 43,
   totalBranches: 163,
-  sizeBytes: 1250000, // ~1.20 MB baseline dataset
-  isDefault: true
+  sizeBytes: 1250000,
+  isDefault: false
 };
 
 function openHistoryIdb() {
@@ -71,16 +87,35 @@ export function getExcelHistoryMetaList() {
   try {
     const raw = localStorage.getItem(META_STORAGE_KEY);
     if (raw) {
-      const parsed = JSON.parse(raw);
+      let parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        const hasDefault = parsed.some(x => x.id === DEFAULT_SNAPSHOT_META.id);
-        return hasDefault ? parsed : [...parsed, DEFAULT_SNAPSHOT_META];
+        let cleaned = parsed.map(item => {
+          if (item.id === 'default_r05_13nov2026') {
+            return { ...item, isDefault: false, label: 'Posisi 13 November 2026 (Baseline R05 Sebelumnya)' };
+          }
+          if (item.realizationDate === '16 November 2026' && item.id !== DEFAULT_SNAPSHOT_META.id) {
+            return null; // Gunakan baseline 16 Nov resmi
+          }
+          return item;
+        }).filter(Boolean);
+
+        const has16Nov = cleaned.some(x => x.id === DEFAULT_SNAPSHOT_META.id);
+        if (!has16Nov) {
+          cleaned = [DEFAULT_SNAPSHOT_META, ...cleaned];
+        }
+
+        const has13Nov = cleaned.some(x => x.id === 'default_r05_13nov2026' || x.realizationDate === '13 November 2026');
+        if (!has13Nov) {
+          cleaned.push(BASELINE_13NOV_META);
+        }
+
+        return cleaned;
       }
     }
   } catch (e) {
     console.warn('Gagal membaca metadata riwayat Excel:', e);
   }
-  return [DEFAULT_SNAPSHOT_META];
+  return [DEFAULT_SNAPSHOT_META, BASELINE_13NOV_META];
 }
 
 export function saveExcelHistoryMetaList(list) {
@@ -92,8 +127,47 @@ export function saveExcelHistoryMetaList(list) {
 }
 
 /**
- * Hitung total pemakaian memori riwayat saat ini terhadap kuota 500 MB (dan ambang 80% = 400 MB)
+ * Sinkronisasi metadata dari Supabase Cloud (agar laptop lain otomatis melihat snapshot baru)
  */
+export async function syncCloudExcelHistory() {
+  if (!supabase) return getExcelHistoryMetaList();
+  try {
+    const { data, error } = await supabase
+      .from('excel_snapshots')
+      .select('id, file_name, realization_date, label, uploaded_by, score_10125, rank_10125, total_branches, size_bytes, is_default, created_at')
+      .order('created_at', { ascending: false });
+
+    if (!error && Array.isArray(data) && data.length > 0) {
+      const cloudMetas = data.map(row => ({
+        id: row.id,
+        fileName: row.file_name,
+        realizationDate: row.realization_date,
+        label: row.label,
+        uploadedAt: row.created_at,
+        uploadedBy: row.uploaded_by,
+        score10125: Number(row.score_10125),
+        rank10125: Number(row.rank_10125),
+        totalBranches: Number(row.total_branches),
+        sizeBytes: Number(row.size_bytes),
+        isDefault: Boolean(row.is_default)
+      }));
+
+      const localList = getExcelHistoryMetaList();
+      const map = new Map();
+      cloudMetas.forEach(m => map.set(m.id, m));
+      localList.forEach(m => {
+        if (!map.has(m.id)) map.set(m.id, m);
+      });
+      const merged = Array.from(map.values());
+      saveExcelHistoryMetaList(merged);
+      return merged;
+    }
+  } catch (e) {
+    console.warn('Supabase cloud history sync info:', e?.message || e);
+  }
+  return getExcelHistoryMetaList();
+}
+
 export function getStorageQuotaStats(list = null) {
   const items = Array.isArray(list) ? list : getExcelHistoryMetaList();
   const usedBytes = items.reduce((sum, item) => sum + (Number(item.sizeBytes) || 1200000), 0);
@@ -115,12 +189,6 @@ export function getStorageQuotaStats(list = null) {
   };
 }
 
-/**
- * Simpan snapshot Excel baru dengan mekanisme Auto-Replace otomatis:
- * 1. Jika ada snapshot lama dengan Tanggal Posisi (realizationDate) yang sama, otomatis di-replace agar tidak duplikat.
- * 2. Jika total ukuran memori + snapshot baru mencapai >= 80% dari 500 MB (400 MB) atau jumlah snapshot > MAX_HISTORY_SNAPSHOTS,
- *    otomatis menghapus (auto-replace) snapshot paling lama (FIFO) sampai memori kembali aman di bawah 80%.
- */
 export async function saveExcelSnapshotToHistory({
   fileName,
   realizationDate,
@@ -139,7 +207,6 @@ export async function saveExcelSnapshotToHistory({
     allRankings: parsedWorkbook.allRankings
   };
 
-  // Hitung ukuran byte payload secara akurat
   let sizeBytes = 1500000;
   try {
     const serialized = JSON.stringify(payloadObj);
@@ -148,38 +215,39 @@ export async function saveExcelSnapshotToHistory({
     sizeBytes = 1500000;
   }
 
-  let workingList = [...getExcelHistoryMetaList()];
+  const currentList = getExcelHistoryMetaList();
+  let workingList = [...currentList];
   const replacedItems = [];
 
-  // 1. Auto-Replace jika Tanggal Posisi Realisasi sama persis (kecuali baseline default)
   const cleanDate = String(realizationDate || '').trim().toLowerCase();
   if (cleanDate) {
-    const duplicates = workingList.filter(
+    const duplicateIdx = workingList.findIndex(
       x => !x.isDefault && String(x.realizationDate || '').trim().toLowerCase() === cleanDate
     );
-    for (const dup of duplicates) {
+    if (duplicateIdx !== -1) {
+      const dup = workingList[duplicateIdx];
       await deleteFromIdb(dup.id);
+      if (supabase) {
+        try { await supabase.from('excel_snapshots').delete().eq('id', dup.id); } catch (e) {}
+      }
       replacedItems.push(dup.realizationDate);
+      workingList = workingList.filter(x => x.id !== dup.id);
     }
-    workingList = workingList.filter(
-      x => x.isDefault || String(x.realizationDate || '').trim().toLowerCase() !== cleanDate
-    );
   }
 
-  // 2. Auto-Replace (FIFO: hapus yang paling tua dulu) jika memori mencapai >= 80% (400 MB) atau melebihi batas jumlah snapshot
-  const calcTotalBytes = (arr) => arr.reduce((s, item) => s + (Number(item.sizeBytes) || 1200000), 0);
-
   while (
-    workingList.filter(x => !x.isDefault).length > 0 &&
-    (calcTotalBytes(workingList) + sizeBytes >= AUTO_REPLACE_THRESHOLD_BYTES ||
+    workingList.length > 0 &&
+    (getStorageQuotaStats([...workingList, { sizeBytes }]).usedBytes >= AUTO_REPLACE_THRESHOLD_BYTES ||
       workingList.length >= MAX_HISTORY_SNAPSHOTS)
   ) {
-    // Cari snapshot non-default paling tua (di urutan paling bawah sebelum default)
     const nonDefaults = workingList.filter(x => !x.isDefault);
     const oldest = nonDefaults[nonDefaults.length - 1];
     if (!oldest) break;
 
     await deleteFromIdb(oldest.id);
+    if (supabase) {
+      try { await supabase.from('excel_snapshots').delete().eq('id', oldest.id); } catch (e) {}
+    }
     replacedItems.push(oldest.realizationDate || oldest.fileName);
     workingList = workingList.filter(x => x.id !== oldest.id);
   }
@@ -191,30 +259,47 @@ export async function saveExcelSnapshotToHistory({
     label: customLabel || `Posisi ${realizationDate || 'Terbaru'} (${fileName})`,
     uploadedAt: new Date().toISOString(),
     uploadedBy,
-    score10125: rank10125Obj?.totalScore ?? 85.53,
-    rank10125: rank10125Obj?.totalRank ?? 43,
-    totalBranches: parsedWorkbook?.branches?.length || 163,
+    score10125: rank10125Obj?.totalScore ?? 85.65,
+    rank10125: rank10125Obj?.totalRank ?? 41,
+    totalBranches: parsedWorkbook?.branches?.length || 164,
     sizeBytes,
     autoReplacedCount: replacedItems.length,
     isDefault: false
   };
 
-  // Simpan payload ke IndexedDB
+  // 1. Simpan ke IndexedDB lokal untuk kecepatan instan
   try {
     const db = await openHistoryIdb();
     await new Promise((resolve, reject) => {
       const tx = db.transaction(IDB_STORE, 'readwrite');
       const store = tx.objectStore(IDB_STORE);
-      store.put({
-        id,
-        meta,
-        payload: payloadObj
-      });
+      store.put({ id, meta, payload: payloadObj });
       tx.oncomplete = () => resolve();
       tx.onerror = () => reject(tx.error);
     });
   } catch (e) {
     console.warn('Gagal menyimpan payload Excel ke IndexedDB:', e);
+  }
+
+  // 2. Simpan ke Supabase Cloud (agar otomatis muncul di laptop semua rekan)
+  if (supabase) {
+    try {
+      await supabase.from('excel_snapshots').upsert({
+        id,
+        file_name: meta.fileName,
+        realization_date: meta.realizationDate,
+        label: meta.label,
+        uploaded_by: meta.uploadedBy,
+        score_10125: meta.score10125,
+        rank_10125: meta.rank10125,
+        total_branches: meta.totalBranches,
+        size_bytes: meta.sizeBytes,
+        is_default: false,
+        payload_json: payloadObj
+      });
+    } catch (errCloud) {
+      console.warn('Supabase cloud snapshot sync info:', errCloud?.message || errCloud);
+    }
   }
 
   const nextList = [meta, ...workingList.filter(x => x.id !== id)];
@@ -227,19 +312,62 @@ export async function loadExcelSnapshotPayload(snapshotId) {
   if (!snapshotId || snapshotId === DEFAULT_SNAPSHOT_META.id) {
     return null;
   }
+  if (snapshotId === 'default_r05_13nov2026') {
+    try {
+      const res = await fetch('/sample_branchiq_13nov.xlsx');
+      if (res.ok) {
+        const buffer = await res.arrayBuffer();
+        const parsed = await parseBranchIQWorkbook(buffer);
+        return {
+          branches: parsed.branches,
+          dbData: parsed.dbData,
+          metricDefs: parsed.metricDefs,
+          realizationDate: '13 November 2026',
+          allRankings: parsed.allRankings
+        };
+      }
+    } catch (e) {
+      console.warn('Failed to load sample_branchiq_13nov.xlsx:', e);
+    }
+  }
+
+  // 1. Coba baca dari IndexedDB lokal
   try {
     const db = await openHistoryIdb();
-    return await new Promise((resolve, reject) => {
+    const localResult = await new Promise((resolve) => {
       const tx = db.transaction(IDB_STORE, 'readonly');
       const store = tx.objectStore(IDB_STORE);
       const req = store.get(snapshotId);
       req.onsuccess = () => resolve(req.result?.payload || null);
-      req.onerror = () => reject(req.error);
+      req.onerror = () => resolve(null);
     });
+    if (localResult) return localResult;
   } catch (e) {
-    console.warn('Gagal memuat snapshot Excel dari IndexedDB:', e);
-    return null;
+    console.warn('IndexedDB read error:', e);
   }
+
+  // 2. Jika tidak ada di lokal (misal di laptop lain), ambil dari Supabase Cloud
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from('excel_snapshots')
+        .select('payload_json')
+        .eq('id', snapshotId)
+        .single();
+      if (!error && data?.payload_json) {
+        try {
+          const db = await openHistoryIdb();
+          const tx = db.transaction(IDB_STORE, 'readwrite');
+          tx.objectStore(IDB_STORE).put({ id: snapshotId, payload: data.payload_json });
+        } catch (eCache) {}
+        return data.payload_json;
+      }
+    } catch (errCloud) {
+      console.warn('Supabase read payload info:', errCloud?.message || errCloud);
+    }
+  }
+
+  return null;
 }
 
 export async function deleteExcelSnapshotFromHistory(snapshotId) {
@@ -247,14 +375,16 @@ export async function deleteExcelSnapshotFromHistory(snapshotId) {
     return getExcelHistoryMetaList();
   }
   await deleteFromIdb(snapshotId);
+  if (supabase) {
+    try {
+      await supabase.from('excel_snapshots').delete().eq('id', snapshotId);
+    } catch (e) {}
+  }
   const nextList = getExcelHistoryMetaList().filter(x => x.id !== snapshotId);
   saveExcelHistoryMetaList(nextList);
   return nextList;
 }
 
-/**
- * Hapus seluruh riwayat lama dan hanya sisakan posisi paling baru + baseline default
- */
 export async function pruneOldSnapshotsKeepLatest(activeSnapshotId) {
   const currentList = getExcelHistoryMetaList();
   const nonDefaults = currentList.filter(x => !x.isDefault);
@@ -267,6 +397,9 @@ export async function pruneOldSnapshotsKeepLatest(activeSnapshotId) {
   const toDelete = nonDefaults.filter(x => x.id !== keepId);
   for (const item of toDelete) {
     await deleteFromIdb(item.id);
+    if (supabase) {
+      try { await supabase.from('excel_snapshots').delete().eq('id', item.id); } catch (e) {}
+    }
   }
 
   const nextList = currentList.filter(x => x.isDefault || x.id === keepId);
