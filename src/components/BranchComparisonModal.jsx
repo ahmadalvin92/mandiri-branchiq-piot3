@@ -90,6 +90,17 @@ export function BranchComparisonModal({
     return Array.from(set).sort();
   }, [allRankings]);
 
+  // Count branches per grade
+  const gradeCounts = useMemo(() => {
+    const map = {};
+    allRankings.forEach(r => {
+      if (r.grade) {
+        map[r.grade] = (map[r.grade] || 0) + 1;
+      }
+    });
+    return map;
+  }, [allRankings]);
+
   // Filtered & Sorted Rankings for Tab 1
   const filteredRankings = useMemo(() => {
     return allRankings
@@ -125,8 +136,16 @@ export function BranchComparisonModal({
       .sort((a, b) => {
         let valA, valB;
         if (sortBy === 'totalRank') {
-          valA = a.totalRank;
-          valB = b.totalRank;
+          if (selectedGrade !== 'all') {
+            valA = a.gradeRank || a.totalRank;
+            valB = b.gradeRank || b.totalRank;
+          } else {
+            valA = a.totalRank;
+            valB = b.totalRank;
+          }
+        } else if (sortBy === 'gradeRank') {
+          valA = a.gradeRank || a.totalRank;
+          valB = b.gradeRank || b.totalRank;
         } else if (sortBy === 'totalScore') {
           valA = a.totalScore;
           valB = b.totalScore;
@@ -259,7 +278,21 @@ export function BranchComparisonModal({
             <div className="flex items-center gap-3 text-[11px] text-white/75">
               <span>Posisi di Area: <strong className="text-white font-bold">#{activeBranch.areaRank || '-'}</strong>/{activeBranch.totalInArea || '-'}</span>
               <span>•</span>
-              <span>Posisi di Kelas {activeBranch.grade}: <strong className="text-white font-bold">#{activeBranch.gradeRank || '-'}</strong>/{activeBranch.totalInGrade || '-'}</span>
+              <button
+                onClick={() => {
+                  setActiveTab('leaderboard');
+                  if (activeBranch.grade) {
+                    setSelectedGrade(activeBranch.grade);
+                  }
+                }}
+                className="hover:underline text-left cursor-pointer transition-colors hover:text-[#FFE5A3] inline-flex items-center gap-1.5 group"
+                title={`Klik untuk memfilter peringkat sesama Kelas ${activeBranch.grade}`}
+              >
+                <span>Posisi di Kelas {activeBranch.grade}: <strong className="text-white font-bold group-hover:text-[#FFE5A3]">#{activeBranch.gradeRank || '-'}</strong>/{activeBranch.totalInGrade || '-'}</span>
+                <span className="bg-[#FFB81C] text-[#00254D] text-[9px] font-black px-1.5 py-0.2 rounded group-hover:bg-white transition-colors">
+                  Filter Kelas
+                </span>
+              </button>
               <span>•</span>
               <span>Juara 1 Region: <strong className="text-[#FFE5A3]">{top1Branch.name} ({top1Branch.totalScore})</strong></span>
             </div>
@@ -278,8 +311,10 @@ export function BranchComparisonModal({
               }`}
             >
               <Trophy className={`w-4 h-4 ${activeTab === 'leaderboard' ? 'text-[#FFB81C] fill-[#FFB81C]' : ''}`} />
-              <span>Leaderboard Ranking 164 Cabang</span>
-              <span className="ml-1 px-1.5 py-0.2 rounded-full bg-slate-200 text-slate-700 text-[10px]">
+              <span>Leaderboard Ranking {selectedGrade !== 'all' ? `Kelas ${selectedGrade}` : '164 Cabang'}</span>
+              <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                selectedGrade !== 'all' ? 'bg-[#003D79] text-white' : 'bg-slate-200 text-slate-700'
+              }`}>
                 {filteredRankings.length}
               </span>
             </button>
@@ -318,8 +353,113 @@ export function BranchComparisonModal({
         <div className="flex-1 overflow-y-auto p-4 sm:p-5">
           {activeTab === 'leaderboard' ? (
             /* TAB 1: LEADERBOARD 164 CABANG */
-            <div className="space-y-4">
+            <div className="space-y-3.5">
               
+              {/* Quick Filter Sesuai Kelas Ranking Buttons */}
+              <div className="bg-linear-to-r from-slate-50 via-blue-50/30 to-slate-50 p-3 rounded-xl border border-slate-200/90 shadow-2xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-2">
+                  <div className="flex items-center gap-1.5 text-xs font-black text-slate-800">
+                    <Award className="w-4 h-4 text-[#003D79]" />
+                    <span>Filter Sesuai Kelas Ranking:</span>
+                  </div>
+                  {selectedGrade !== 'all' && (
+                    <button
+                      onClick={() => setSelectedGrade('all')}
+                      className="text-xs text-[#003D79] hover:underline font-bold self-start sm:self-auto cursor-pointer"
+                    >
+                      ← Tampilkan Semua Kelas ({allRankings.length})
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <button
+                    onClick={() => setSelectedGrade('all')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                      selectedGrade === 'all'
+                        ? 'bg-[#003D79] text-white shadow-xs'
+                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                    }`}
+                  >
+                    <span>Semua Kelas</span>
+                    <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                      selectedGrade === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                    }`}>
+                      {allRankings.length}
+                    </span>
+                  </button>
+
+                  {/* Active branch's class shortcut button */}
+                  {activeBranch.grade && (
+                    <button
+                      onClick={() => setSelectedGrade(activeBranch.grade)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        selectedGrade === activeBranch.grade
+                          ? 'bg-amber-500 text-slate-950 shadow-xs ring-2 ring-amber-300 font-black'
+                          : 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
+                      }`}
+                      title={`Tampilkan hanya sesama Kelas ${activeBranch.grade} (Kelas Cabang Aktif)`}
+                    >
+                      <span>⭐ Kelas Cabang Anda ({activeBranch.grade})</span>
+                      <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-200/90 text-amber-950 font-black">
+                        {gradeCounts[activeBranch.grade] || 0}
+                      </span>
+                    </button>
+                  )}
+
+                  {/* Distinct Grade Buttons */}
+                  {gradeOptions.map(g => {
+                    if (g === activeBranch.grade) return null; // already shown in prominent shortcut
+                    const isSelected = selectedGrade === g;
+                    return (
+                      <button
+                        key={g}
+                        onClick={() => setSelectedGrade(g)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                          isSelected
+                            ? 'bg-[#003D79] text-white shadow-xs'
+                            : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                        }`}
+                      >
+                        <span>Kelas {g}</span>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                          isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                        }`}>
+                          {gradeCounts[g] || 0}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Active Grade Filter Info Banner */}
+              {selectedGrade !== 'all' && (
+                <div className="bg-amber-50/90 border border-amber-300 rounded-xl px-3.5 py-2.5 flex flex-wrap items-center justify-between gap-2 text-xs text-amber-950 shadow-2xs">
+                  <div className="flex items-center gap-2">
+                    <Trophy className="w-4 h-4 text-amber-600 shrink-0" />
+                    <span>
+                      Menampilkan <strong>Ranking Khusus Kelas {selectedGrade}</strong> (Total <strong>{filteredRankings.length}</strong> Cabang).
+                      {activeBranch.grade === selectedGrade ? (
+                        <span className="ml-1.5 font-medium">
+                          Cabang Anda (<strong>{activeBranch.name}</strong>) berada di peringkat <strong className="text-[#00254D] bg-amber-200/80 px-1.5 py-0.5 rounded font-black">#{activeBranch.gradeRank}</strong> dari {activeBranch.totalInGrade} cabang se-kelas.
+                        </span>
+                      ) : (
+                        <span className="ml-1.5 text-amber-800">
+                          (Cabang aktif Anda adalah Kelas <strong>{activeBranch.grade}</strong>)
+                        </span>
+                      )}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => setSelectedGrade('all')}
+                    className="text-[#003D79] hover:underline font-bold text-[11px] cursor-pointer"
+                  >
+                    Reset ke Semua Kelas
+                  </button>
+                </div>
+              )}
+
               {/* Search & Filters Toolbar */}
               <div className="bg-slate-50 p-3 sm:p-3.5 rounded-xl border border-slate-200/90 flex flex-col md:flex-row md:items-center justify-between gap-3">
                 {/* Search box */}
@@ -362,12 +502,16 @@ export function BranchComparisonModal({
                   <select
                     value={selectedGrade}
                     onChange={(e) => setSelectedGrade(e.target.value)}
-                    className="bg-white text-xs text-slate-700 font-semibold px-2.5 py-2 rounded-lg border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-[#003D79]/20 cursor-pointer"
+                    className={`text-xs font-semibold px-2.5 py-2 rounded-lg border focus:outline-hidden focus:ring-2 focus:ring-[#003D79]/20 cursor-pointer ${
+                      selectedGrade !== 'all'
+                        ? 'bg-amber-50 text-amber-900 border-amber-300 font-bold'
+                        : 'bg-white text-slate-700 border-slate-300'
+                    }`}
                   >
-                    <option value="all">Semua Kelas Unit</option>
+                    <option value="all">Semua Kelas Unit ({allRankings.length})</option>
                     {gradeOptions.map(g => (
                       <option key={g} value={g}>
-                        Kelas {g}
+                        Kelas {g} ({gradeCounts[g] || 0} cabang)
                       </option>
                     ))}
                   </select>
@@ -441,28 +585,29 @@ export function BranchComparisonModal({
                 </div>
               </div>
 
-              {/* Table of 164 branches */}
+              {/* Table of branches */}
               <div className="border border-slate-200 rounded-xl overflow-hidden shadow-2xs">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto max-h-[60vh] overflow-y-auto">
                   <table className="w-full text-left border-collapse text-xs">
-                    <thead>
-                      <tr className="bg-slate-100/90 text-slate-600 font-bold border-b border-slate-200 select-none">
+                    <thead className="sticky top-0 z-10 bg-slate-100 shadow-xs">
+                      <tr className="bg-slate-100 text-slate-600 font-bold border-b border-slate-200 select-none">
                         <th className="py-2.5 px-3 w-10 text-center">Bandingkan</th>
                         <th 
                           onClick={() => {
                             if (sortBy === 'totalRank') setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                             else { setSortBy('totalRank'); setSortOrder('asc'); }
                           }}
-                          className="py-2.5 px-3 w-16 text-center cursor-pointer hover:bg-slate-200/70 transition-colors"
+                          className="py-2.5 px-3 w-20 text-center cursor-pointer hover:bg-slate-200/70 transition-colors"
+                          title={selectedGrade !== 'all' ? `Urutkan Peringkat Kelas ${selectedGrade}` : 'Urutkan Peringkat Region'}
                         >
                           <div className="flex items-center justify-center gap-1">
-                            <span>Rank</span>
+                            <span>{selectedGrade !== 'all' ? `Rank Kls ${selectedGrade}` : 'Rank'}</span>
                             <ArrowUpDown className="w-3 h-3 text-slate-400" />
                           </div>
                         </th>
                         <th className="py-2.5 px-3 min-w-[200px]">Cabang & Pimpinan</th>
                         <th className="py-2.5 px-3 w-28">Area</th>
-                        <th className="py-2.5 px-3 w-16 text-center">Kelas</th>
+                        <th className="py-2.5 px-3 w-20 text-center" title="Kelas Unit & Peringkat se-Kelas">Kelas</th>
                         <th 
                           onClick={() => {
                             if (sortBy === 'totalScore') setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
@@ -495,35 +640,39 @@ export function BranchComparisonModal({
                         filteredRankings.map((branch) => {
                           const isActive = branch.code === activeBranchCode;
                           const isChecked = selectedForComparison.includes(branch.code);
+                          const isGradeFiltered = selectedGrade !== 'all';
+                          const displayRank = isGradeFiltered ? (branch.gradeRank || branch.totalRank) : branch.totalRank;
 
                           // Rank badge color
-                          let rankBadge = (
-                            <span className="font-extrabold text-slate-600">
-                              #{branch.totalRank}
-                            </span>
-                          );
-                          if (branch.totalRank === 1) {
+                          let rankBadge;
+                          if (displayRank === 1) {
                             rankBadge = (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-slate-900 font-black shadow-2xs">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-slate-900 font-black shadow-2xs text-xs">
                                 👑 #1
                               </span>
                             );
-                          } else if (branch.totalRank === 2) {
+                          } else if (displayRank === 2) {
                             rankBadge = (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-200 text-slate-800 font-extrabold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-200 text-slate-800 font-extrabold text-xs">
                                 🥈 #2
                               </span>
                             );
-                          } else if (branch.totalRank === 3) {
+                          } else if (displayRank === 3) {
                             rankBadge = (
-                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-700/20 text-amber-900 font-extrabold">
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-700/20 text-amber-900 font-extrabold text-xs">
                                 🥉 #3
                               </span>
                             );
-                          } else if (branch.totalRank <= 10) {
+                          } else if (displayRank <= 10) {
                             rankBadge = (
-                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[#003D79]/10 text-[#003D79] font-black">
-                                #{branch.totalRank}
+                              <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-[#003D79]/10 text-[#003D79] font-black text-xs">
+                                #{displayRank}
+                              </span>
+                            );
+                          } else {
+                            rankBadge = (
+                              <span className="font-extrabold text-slate-600 text-xs">
+                                #{displayRank}
                               </span>
                             );
                           }
@@ -556,7 +705,20 @@ export function BranchComparisonModal({
 
                               {/* Rank */}
                               <td className="py-2.5 px-3 text-center">
-                                {rankBadge}
+                                <div className="flex flex-col items-center">
+                                  {rankBadge}
+                                  {isGradeFiltered ? (
+                                    <span className="text-[10px] text-slate-400 font-semibold mt-0.5" title={`Peringkat #${branch.totalRank} dari 164 cabang se-Region`}>
+                                      Reg #{branch.totalRank}
+                                    </span>
+                                  ) : (
+                                    branch.gradeRank && (
+                                      <span className="text-[9px] text-slate-400 font-medium mt-0.2" title={`Peringkat #${branch.gradeRank} dari ${branch.totalInGrade} cabang di Kelas ${branch.grade}`}>
+                                        Kls #{branch.gradeRank}
+                                      </span>
+                                    )
+                                  )}
+                                </div>
                               </td>
 
                               {/* Branch Name & Code & Head */}
@@ -588,8 +750,19 @@ export function BranchComparisonModal({
                               </td>
 
                               {/* Grade */}
-                              <td className="py-2.5 px-3 text-center font-bold text-slate-700 text-[11px]">
-                                {branch.grade}
+                              <td className="py-2.5 px-3 text-center">
+                                <button
+                                  onClick={() => setSelectedGrade(branch.grade)}
+                                  className="inline-flex flex-col items-center px-1.5 py-0.5 rounded hover:bg-slate-200/70 cursor-pointer transition-colors group"
+                                  title={`Klik untuk filter ranking hanya Kelas ${branch.grade}`}
+                                >
+                                  <span className="font-bold text-[#003D79] text-[11px] group-hover:underline">
+                                    {branch.grade}
+                                  </span>
+                                  <span className="text-[10px] text-slate-400 font-semibold mt-0.2">
+                                    #{branch.gradeRank}/{branch.totalInGrade}
+                                  </span>
+                                </button>
                               </td>
 
                               {/* Total Score */}
@@ -745,9 +918,12 @@ export function BranchComparisonModal({
                       {/* Rank & Score Box */}
                       <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                         <div>
-                          <div className="text-[10px] uppercase font-bold text-slate-400">Peringkat</div>
+                          <div className="text-[10px] uppercase font-bold text-slate-400">Peringkat Region</div>
                           <div className="text-xl font-black text-[#003D79] mt-0.5">
                             #{b.totalRank} <span className="text-xs text-slate-400 font-medium">/ 164</span>
+                          </div>
+                          <div className="text-[11px] font-bold text-amber-800 mt-1">
+                            Kelas {b.grade}: <strong className="font-black text-slate-800">#{b.gradeRank || '-'}</strong> <span className="text-slate-400 font-normal">/ {b.totalInGrade || '-'}</span>
                           </div>
                         </div>
 
@@ -951,7 +1127,11 @@ export function BranchComparisonModal({
         <div className="bg-slate-50 border-t border-slate-200 px-5 py-3 flex items-center justify-between text-xs shrink-0">
           <div className="text-slate-500 flex items-center gap-1.5">
             <Building2 className="w-4 h-4 text-slate-400" />
-            <span>Total 164 Kantor Cabang Pembantu (KCP) / Kantor Cabang (KC) se-Region V Jakarta 3</span>
+            <span>
+              {selectedGrade !== 'all' 
+                ? `Menampilkan ${filteredRankings.length} cabang Kelas ${selectedGrade} (dari total 164 Kantor Cabang se-Region V Jakarta 3)`
+                : 'Total 164 Kantor Cabang Pembantu (KCP) / Kantor Cabang (KC) se-Region V Jakarta 3'}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
