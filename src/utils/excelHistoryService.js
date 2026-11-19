@@ -4,8 +4,8 @@
  * di Supabase Cloud dan otomatis muncul di seluruh laptop pengguna lain secara real-time.
  */
 
-import { parseBranchIQWorkbook } from './excelParser';
-import { supabase } from './supabaseClient';
+import { parseBranchIQWorkbook } from './excelParser.js';
+import { supabase } from './supabaseClient.js';
 
 const META_STORAGE_KEY = 'branchiq_excel_history_meta_v2';
 const IDB_NAME = 'BranchIQExcelHistoryDB';
@@ -90,26 +90,32 @@ export function getExcelHistoryMetaList() {
       let parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
         let cleaned = parsed.map(item => {
-          if (item.id === 'default_r05_13nov2026') {
-            return { ...item, isDefault: false, label: 'Posisi 13 November 2026 (Baseline R05 Sebelumnya)' };
+          if (item.id === 'default_r05_13nov2026' || item.realizationDate === '13 November 2026') {
+            return BASELINE_13NOV_META;
           }
-          if (item.realizationDate === '16 November 2026' && item.id !== DEFAULT_SNAPSHOT_META.id) {
-            return null; // Gunakan baseline 16 Nov resmi
+          if (item.realizationDate === '16 November 2026' || item.id === 'default_baseline_16nov_r05' || item.id === DEFAULT_SNAPSHOT_META.id) {
+            return null; // Digantikan tepat satu DEFAULT_SNAPSHOT_META resmi
           }
           return item;
         }).filter(Boolean);
 
-        const has16Nov = cleaned.some(x => x.id === DEFAULT_SNAPSHOT_META.id);
-        if (!has16Nov) {
-          cleaned = [DEFAULT_SNAPSHOT_META, ...cleaned];
-        }
+        // De-duplicate items
+        const uniqueItems = [];
+        const seen = new Set();
+        cleaned.forEach(item => {
+          if (!seen.has(item.id) && !seen.has(item.realizationDate)) {
+            seen.add(item.id);
+            seen.add(item.realizationDate);
+            uniqueItems.push(item);
+          }
+        });
 
-        const has13Nov = cleaned.some(x => x.id === 'default_r05_13nov2026' || x.realizationDate === '13 November 2026');
-        if (!has13Nov) {
-          cleaned.push(BASELINE_13NOV_META);
-        }
-
-        return cleaned;
+        const finalList = [
+          DEFAULT_SNAPSHOT_META, 
+          ...uniqueItems.filter(x => x.id !== BASELINE_13NOV_META.id), 
+          BASELINE_13NOV_META
+        ];
+        return finalList;
       }
     }
   } catch (e) {
@@ -137,7 +143,7 @@ export async function syncCloudExcelHistory() {
       .select('id, file_name, realization_date, label, uploaded_by, score_10125, rank_10125, total_branches, size_bytes, is_default, created_at')
       .order('created_at', { ascending: false });
 
-    if (!error && Array.isArray(data) && data.length > 0) {
+    if (!error && Array.isArray(data)) {
       const cloudMetas = data.map(row => ({
         id: row.id,
         fileName: row.file_name,
@@ -150,14 +156,38 @@ export async function syncCloudExcelHistory() {
         totalBranches: Number(row.total_branches),
         sizeBytes: Number(row.size_bytes),
         isDefault: Boolean(row.is_default)
-      }));
+      })).filter(m => {
+        // Jangan duplikasi baseline 16 Nov atau 13 Nov bawaan
+        if (m.realizationDate === '16 November 2026' || m.id === 'default_baseline_16nov_r05') return false;
+        if (m.realizationDate === '13 November 2026' || m.id === BASELINE_13NOV_META.id) return false;
+        return true;
+      });
 
-      const localList = getExcelHistoryMetaList();
+      const localList = getExcelHistoryMetaList().filter(m => {
+        if (m.id === 'default_baseline_16nov_r05') return false;
+        if (m.realizationDate === '16 November 2026' && m.id !== DEFAULT_SNAPSHOT_META.id) return false;
+        return true;
+      });
+
       const map = new Map();
-      cloudMetas.forEach(m => map.set(m.id, m));
-      localList.forEach(m => {
+      // Selalu tepat satu snapshot resmi 16 Nov
+      map.set(DEFAULT_SNAPSHOT_META.id, DEFAULT_SNAPSHOT_META);
+
+      // Masukkan item baru dari cloud (upload Superadmin)
+      cloudMetas.forEach(m => {
         if (!map.has(m.id)) map.set(m.id, m);
       });
+
+      // Masukkan item lokal lain jika ada
+      localList.forEach(m => {
+        if (m.id !== DEFAULT_SNAPSHOT_META.id && m.id !== BASELINE_13NOV_META.id && !map.has(m.id)) {
+          map.set(m.id, m);
+        }
+      });
+
+      // Selalu letakkan cadangan 13 Nov
+      map.set(BASELINE_13NOV_META.id, BASELINE_13NOV_META);
+
       const merged = Array.from(map.values());
       saveExcelHistoryMetaList(merged);
       return merged;
