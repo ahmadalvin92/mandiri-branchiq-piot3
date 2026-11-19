@@ -7,8 +7,8 @@
     "nonMicro": true,
     "areaCode": "101",
     "areaName": "Area Pondok Indah",
-    "totalRank": 43,
-    "totalScore": 85.53
+    "totalRank": 41,
+    "totalScore": 85.65
   },
   "rankingInfo": {
     "code": "10125",
@@ -18,52 +18,52 @@
     "nonMicro": true,
     "areaCode": "101",
     "areaName": "Area Pondok Indah",
-    "totalScore": 85.53,
-    "totalRaw": 85.533,
-    "totalRank": 43,
+    "totalScore": 85.65,
+    "totalRaw": 85.6515,
+    "totalRank": 41,
     "categoryScores": {
       "DPK": {
-        "score": 26.4,
-        "rawScore": 26.4,
-        "rank": 68
+        "score": 26.37,
+        "rawScore": 26.37,
+        "rank": 74
       },
       "Kredit": {
-        "score": 17.27,
-        "rawScore": 17.268,
+        "score": 17.28,
+        "rawScore": 17.284,
         "rank": 6
       },
       "Livin": {
         "score": 11.07,
         "rawScore": 11.07,
-        "rank": 82
+        "rank": 85
       },
       "Kopra": {
-        "score": 9.5,
-        "rawScore": 9.5,
-        "rank": 35
+        "score": 9.58,
+        "rawScore": 9.58,
+        "rank": 33
       },
       "Acquiring": {
-        "score": 11.29,
-        "rawScore": 11.295,
-        "rank": 126
+        "score": 11.35,
+        "rawScore": 11.3475,
+        "rank": 125
       },
       "GMM": {
         "score": 5,
         "rawScore": 5,
-        "rank": 43
+        "rank": 41
       },
       "Ekosistem": {
         "score": 5,
         "rawScore": 5,
-        "rank": 34
+        "rank": 29
       }
     },
     "areaRank": 6,
     "totalInArea": 15,
-    "gradeRank": 17,
+    "gradeRank": 14,
     "totalInGrade": 57
   },
-  "realizationDate": "13 November 2026",
+  "realizationDate": "16 November 2026",
   "calculatedMetrics": [
     {
       "row": 9,
@@ -85,14 +85,14 @@
       "scored": false,
       "isPct": false,
       "used": false,
-      "real": 2410.72851,
+      "real": 2390.265595,
       "target": 2496.320521,
-      "acv": 0.9657,
-      "maxAcv": 0.9657,
+      "acv": 0.9575,
+      "maxAcv": 0.9575,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": -85.592011
+      "nominalGap": -106.054926
     },
     {
       "row": 10,
@@ -114,14 +114,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 155.783217,
+      "real": 2284.178618,
       "target": 163.1734,
-      "acv": 0.95,
-      "maxAcv": 0.95,
-      "score": 1.425,
+      "acv": 14,
+      "maxAcv": 1,
+      "score": 1.5,
       "maxScore": 1.5,
-      "scoreGap": 0.075,
-      "nominalGap": -7.390182
+      "scoreGap": 0,
+      "nominalGap": 2121.005218
     },
     {
       "row": 11,
@@ -143,14 +143,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 396.715109,
+      "real": 395.000728,
       "target": 562.234218,
-      "acv": 0.71,
-      "maxAcv": 0.71,
-      "score": 3.195,
+      "acv": 0.7,
+      "maxAcv": 0.7,
+      "score": 3.15,
       "maxScore": 4.5,
-      "scoreGap": 1.305,
-      "nominalGap": -165.51911
+      "scoreGap": 1.35,
+      "nominalGap": -167.233491
     },
     {
       "row": 12,
@@ -172,14 +172,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 389.821736,
+      "real": 386.467819,
       "target": 541.701988,
-      "acv": 0.72,
-      "maxAcv": 0.72,
-      "score": 2.16,
+      "acv": 0.71,
+      "maxAcv": 0.71,
+      "score": 2.13,
       "maxScore": 3,
-      "scoreGap": 0.84,
-      "nominalGap": -151.880252
+      "scoreGap": 0.87,
+      "nominalGap": -155.234169
     },
     {
       "row": 13,
@@ -201,14 +201,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 384.389903,
+      "real": 381.24184,
       "target": 435.723617,
-      "acv": 0.88,
-      "maxAcv": 0.88,
-      "score": 2.64,
+      "acv": 0.87,
+      "maxAcv": 0.87,
+      "score": 2.61,
       "maxScore": 3,
-      "scoreGap": 0.36,
-      "nominalGap": -51.333714
+      "scoreGap": 0.39,
+      "nominalGap": -54.481778
     },
     {
       "row": 14,
@@ -230,14 +230,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1682,
+      "real": 1693,
       "target": 1954,
-      "acv": 0.86,
-      "maxAcv": 0.86,
-      "score": 3.87,
+      "acv": 0.87,
+      "maxAcv": 0.87,
+      "score": 3.915,
       "maxScore": 4.5,
-      "scoreGap": 0.63,
-      "nominalGap": -272
+      "scoreGap": 0.585,
+      "nominalGap": -261
     },
     {
       "row": 15,
@@ -259,14 +259,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1631.061062,
+      "real": 1612.231725,
       "target": 1695.930484,
-      "acv": 0.96,
-      "maxAcv": 0.96,
-      "score": 2.88,
+      "acv": 0.95,
+      "maxAcv": 0.95,
+      "score": 2.85,
       "maxScore": 3,
-      "scoreGap": 0.12,
-      "nominalGap": -64.869423
+      "scoreGap": 0.15,
+      "nominalGap": -83.698759
     },
     {
       "row": 16,
@@ -288,14 +288,14 @@
       "scored": true,
       "isPct": false,
       "used": false,
-      "real": 465.003635,
+      "real": 463.198561,
       "target": 0,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": 465.003635
+      "nominalGap": 463.198561
     },
     {
       "row": 17,
@@ -317,14 +317,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1257.77227,
+      "real": 1246.912999,
       "target": 1530.758579,
-      "acv": 0.82,
-      "maxAcv": 0.82,
-      "score": 1.23,
+      "acv": 0.81,
+      "maxAcv": 0.81,
+      "score": 1.215,
       "maxScore": 1.5,
-      "scoreGap": 0.27,
-      "nominalGap": -272.986309
+      "scoreGap": 0.285,
+      "nominalGap": -283.84558
     },
     {
       "row": 18,
@@ -346,14 +346,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 269.791515,
+      "real": 267.764657,
       "target": 256.736842,
-      "acv": 1.05,
+      "acv": 1.04,
       "maxAcv": 1,
       "score": 4.5,
       "maxScore": 4.5,
       "scoreGap": 0,
-      "nominalGap": 13.054672
+      "nominalGap": 11.027815
     },
     {
       "row": 19,
@@ -404,14 +404,14 @@
       "scored": false,
       "isPct": false,
       "used": false,
-      "real": 119.570231,
+      "real": 119.415548,
       "target": 0,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": 119.570231
+      "nominalGap": 119.415548
     },
     {
       "row": 22,
@@ -462,14 +462,14 @@
       "scored": false,
       "isPct": true,
       "used": false,
-      "real": 0.022267,
+      "real": 0.017175,
       "target": 0,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": -0.022267
+      "nominalGap": -0.017175
     },
     {
       "row": 24,
@@ -491,14 +491,14 @@
       "scored": false,
       "isPct": true,
       "used": false,
-      "real": 0.029752,
+      "real": 0.02979,
       "target": 0,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": -0.029752
+      "nominalGap": -0.02979
     },
     {
       "row": 25,
@@ -520,14 +520,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 69.98213,
+      "real": 69.499938,
       "target": 40.168591,
-      "acv": 1.74,
+      "acv": 1.73,
       "maxAcv": 1,
       "score": 2.4,
       "maxScore": 2.4,
       "scoreGap": 0,
-      "nominalGap": 29.813539
+      "nominalGap": 29.331346
     },
     {
       "row": 26,
@@ -549,14 +549,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 449.09171,
-      "target": 234.571137,
+      "real": 0.449092,
+      "target": 0.234571,
       "acv": 1.91,
       "maxAcv": 1,
       "score": 4,
       "maxScore": 4,
       "scoreGap": 0,
-      "nominalGap": 214.520573
+      "nominalGap": 0.214521
     },
     {
       "row": 27,
@@ -752,14 +752,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 14.374026,
+      "real": 14.71283,
       "target": 11.893509,
-      "acv": 1.21,
+      "acv": 1.24,
       "maxAcv": 1,
       "score": 0.8,
       "maxScore": 0.8,
       "scoreGap": 0,
-      "nominalGap": 2.480517
+      "nominalGap": 2.819321
     },
     {
       "row": 34,
@@ -781,14 +781,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 0.69,
+      "real": 0.7,
       "target": 1.43,
-      "acv": 0.48,
-      "maxAcv": 0.48,
-      "score": 0.768,
+      "acv": 0.49,
+      "maxAcv": 0.49,
+      "score": 0.784,
       "maxScore": 1.6,
-      "scoreGap": 0.832,
-      "nominalGap": -0.74
+      "scoreGap": 0.816,
+      "nominalGap": -0.73
     },
     {
       "row": 35,
@@ -810,14 +810,14 @@
       "scored": true,
       "isPct": true,
       "used": true,
-      "real": 0.008909,
+      "real": 0.009729,
       "target": 0.013738,
-      "acv": 1.35,
+      "acv": 1.29,
       "maxAcv": 1,
       "score": 0.4,
       "maxScore": 0.4,
       "scoreGap": 0,
-      "nominalGap": 0.004829
+      "nominalGap": 0.004009
     },
     {
       "row": 36,
@@ -839,14 +839,14 @@
       "scored": true,
       "isPct": true,
       "used": true,
-      "real": 0.7268,
+      "real": 0.7101,
       "target": 1.122965,
-      "acv": 1.35,
+      "acv": 1.37,
       "maxAcv": 1,
       "score": 0.2,
       "maxScore": 0.2,
       "scoreGap": 0,
-      "nominalGap": 0.396165
+      "nominalGap": 0.412865
     },
     {
       "row": 37,
@@ -1100,14 +1100,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 31.032112,
+      "real": 31.020818,
       "target": 30.583715,
       "acv": 1.01,
       "maxAcv": 1,
       "score": 2,
       "maxScore": 2,
       "scoreGap": 0,
-      "nominalGap": 0.448397
+      "nominalGap": 0.437103
     },
     {
       "row": 46,
@@ -1158,14 +1158,14 @@
       "scored": true,
       "isPct": true,
       "used": true,
-      "real": 0.044372,
+      "real": 0.02419,
       "target": 0.050113,
-      "acv": 1.11,
+      "acv": 1.52,
       "maxAcv": 1,
       "score": 1,
       "maxScore": 1,
       "scoreGap": 0,
-      "nominalGap": 0.005741
+      "nominalGap": 0.025923
     },
     {
       "row": 48,
@@ -1187,14 +1187,14 @@
       "scored": true,
       "isPct": true,
       "used": true,
-      "real": 0.11127,
+      "real": 0.11131,
       "target": 0.054313,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0.5,
       "scoreGap": 0.5,
-      "nominalGap": -0.056957
+      "nominalGap": -0.056997
     },
     {
       "row": 50,
@@ -1216,14 +1216,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1873,
+      "real": 1892,
       "target": 3308,
       "acv": 0.57,
       "maxAcv": 0.57,
       "score": 3.42,
       "maxScore": 6,
       "scoreGap": 2.58,
-      "nominalGap": -1435
+      "nominalGap": -1416
     },
     {
       "row": 51,
@@ -1245,14 +1245,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 3873,
+      "real": 3897,
       "target": 5546,
       "acv": 0.7,
       "maxAcv": 0.7,
       "score": 3.15,
       "maxScore": 4.5,
       "scoreGap": 1.35,
-      "nominalGap": -1673
+      "nominalGap": -1649
     },
     {
       "row": 52,
@@ -1274,14 +1274,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 2823,
+      "real": 2844,
       "target": 2771,
-      "acv": 1.02,
+      "acv": 1.03,
       "maxAcv": 1,
       "score": 4.5,
       "maxScore": 4.5,
       "scoreGap": 0,
-      "nominalGap": 52
+      "nominalGap": 73
     },
     {
       "row": 53,
@@ -1303,14 +1303,14 @@
       "scored": true,
       "isPct": false,
       "used": false,
-      "real": 2903,
+      "real": 2925,
       "target": 0,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": 2903
+      "nominalGap": 2925
     },
     {
       "row": 54,
@@ -1332,14 +1332,14 @@
       "scored": true,
       "isPct": false,
       "used": false,
-      "real": 580223,
+      "real": 585739,
       "target": 0,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": 580223
+      "nominalGap": 585739
     },
     {
       "row": 55,
@@ -1361,14 +1361,14 @@
       "scored": true,
       "isPct": false,
       "used": false,
-      "real": 441.067258,
+      "real": 443.555266,
       "target": 0,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": 441.067258
+      "nominalGap": 443.555266
     },
     {
       "row": 57,
@@ -1419,14 +1419,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 140,
+      "real": 147,
       "target": 98,
-      "acv": 1.43,
+      "acv": 1.5,
       "maxAcv": 1,
       "score": 1.5,
       "maxScore": 1.5,
       "scoreGap": 0,
-      "nominalGap": 42
+      "nominalGap": 49
     },
     {
       "row": 59,
@@ -1448,14 +1448,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 126,
+      "real": 133,
       "target": 169,
-      "acv": 0.75,
-      "maxAcv": 0.75,
-      "score": 1.5,
+      "acv": 0.79,
+      "maxAcv": 0.79,
+      "score": 1.58,
       "maxScore": 2,
-      "scoreGap": 0.5,
-      "nominalGap": -43
+      "scoreGap": 0.42,
+      "nominalGap": -36
     },
     {
       "row": 60,
@@ -1535,14 +1535,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 4828.503525,
+      "real": 4842.092321,
       "target": 4673.487708,
-      "acv": 1.03,
+      "acv": 1.04,
       "maxAcv": 1,
       "score": 2.5,
       "maxScore": 2.5,
       "scoreGap": 0,
-      "nominalGap": 155.015817
+      "nominalGap": 168.604613
     },
     {
       "row": 63,
@@ -1680,14 +1680,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 14607.198294,
+      "real": 14755.612876,
       "target": 51307.149842,
-      "acv": 0.28,
-      "maxAcv": 0.28,
-      "score": 0.63,
+      "acv": 0.29,
+      "maxAcv": 0.29,
+      "score": 0.6525,
       "maxScore": 2.25,
-      "scoreGap": 1.62,
-      "nominalGap": -36699.951548
+      "scoreGap": 1.5975,
+      "nominalGap": -36551.536966
     },
     {
       "row": 69,
@@ -1709,14 +1709,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 131.251002,
+      "real": 132.541956,
       "target": 387.099481,
       "acv": 0.34,
       "maxAcv": 0.34,
       "score": 0.51,
       "maxScore": 1.5,
       "scoreGap": 0.99,
-      "nominalGap": -255.848479
+      "nominalGap": -254.557525
     },
     {
       "row": 70,
@@ -1738,14 +1738,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 11753.942415,
+      "real": 11747.517912,
       "target": 9256.147904,
       "acv": 1.27,
       "maxAcv": 1,
       "score": 1.5,
       "maxScore": 1.5,
       "scoreGap": 0,
-      "nominalGap": 2497.794511
+      "nominalGap": 2491.370008
     },
     {
       "row": 71,
@@ -1796,14 +1796,14 @@
       "scored": true,
       "isPct": false,
       "used": false,
-      "real": 506,
+      "real": 507,
       "target": 394,
-      "acv": 1.28,
+      "acv": 1.29,
       "maxAcv": 1,
       "score": 0,
       "maxScore": 0,
       "scoreGap": 0,
-      "nominalGap": 112
+      "nominalGap": 113
     },
     {
       "row": 73,
@@ -1825,14 +1825,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 91,
+      "real": 88,
       "target": 77,
-      "acv": 1.18,
+      "acv": 1.14,
       "maxAcv": 1,
       "score": 2.25,
       "maxScore": 2.25,
       "scoreGap": 0,
-      "nominalGap": 14
+      "nominalGap": 11
     },
     {
       "row": 74,
@@ -1854,14 +1854,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 405,
+      "real": 406,
       "target": 369,
       "acv": 1.1,
       "maxAcv": 1,
       "score": 0.75,
       "maxScore": 0.75,
       "scoreGap": 0,
-      "nominalGap": 36
+      "nominalGap": 37
     },
     {
       "row": 75,
@@ -1912,14 +1912,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 8574.365882,
+      "real": 8656.4613,
       "target": 7680.568071,
-      "acv": 1.12,
+      "acv": 1.13,
       "maxAcv": 1,
       "score": 1.5,
       "maxScore": 1.5,
       "scoreGap": 0,
-      "nominalGap": 893.797811
+      "nominalGap": 975.893229
     },
     {
       "row": 77,
@@ -1941,14 +1941,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 2.541045,
+      "real": 2.601622,
       "target": 2.6503,
-      "acv": 0.96,
-      "maxAcv": 0.96,
-      "score": 1.44,
+      "acv": 0.98,
+      "maxAcv": 0.98,
+      "score": 1.47,
       "maxScore": 1.5,
-      "scoreGap": 0.06,
-      "nominalGap": -0.109255
+      "scoreGap": 0.03,
+      "nominalGap": -0.048678
     },
     {
       "row": 78,
@@ -1970,14 +1970,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 769.432767,
+      "real": 789.514741,
       "target": 2522.671421,
       "acv": 0.31,
       "maxAcv": 0.31,
       "score": 0.465,
       "maxScore": 1.5,
       "scoreGap": 1.035,
-      "nominalGap": -1753.238654
+      "nominalGap": -1733.15668
     },
     {
       "row": 80,
@@ -2160,8 +2160,8 @@
       "metric": "Porsi DPK Ekosistem Terhadap DPK Region",
       "subMetric": "",
       "name": "Porsi DPK Ekosistem Terhadap DPK Region",
-      "bobot": 1,
-      "bobotN": 1,
+      "bobot": 0.5,
+      "bobotN": 0.5,
       "bobotO": null,
       "maxCategoryScore": 5,
       "realColIdx": 379,
@@ -2173,14 +2173,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 28.254354,
+      "real": 28.262571,
       "target": 19.184318,
       "acv": 1.47,
       "maxAcv": 1,
-      "score": 5,
-      "maxScore": 5,
+      "score": 2.5,
+      "maxScore": 2.5,
       "scoreGap": 0,
-      "nominalGap": 9.070036
+      "nominalGap": 9.078253
     },
     {
       "row": 88,
@@ -2189,8 +2189,8 @@
       "metric": "Porsi Kredit Retail Ekosistem Terhadap Kredit Retail Region",
       "subMetric": "",
       "name": "Porsi Kredit Retail Ekosistem Terhadap Kredit Retail Region",
-      "bobot": 0,
-      "bobotN": 0,
+      "bobot": 0.5,
+      "bobotN": 0.5,
       "bobotO": null,
       "maxCategoryScore": 5,
       "realColIdx": 384,
@@ -2201,15 +2201,15 @@
       "rndAcv": true,
       "scored": true,
       "isPct": false,
-      "used": false,
-      "real": 77.373719,
-      "target": 0,
-      "acv": 0,
-      "maxAcv": 0,
-      "score": 0,
-      "maxScore": 0,
+      "used": true,
+      "real": 76.380089,
+      "target": 46.242359,
+      "acv": 1.65,
+      "maxAcv": 1,
+      "score": 2.5,
+      "maxScore": 2.5,
       "scoreGap": 0,
-      "nominalGap": 77.373719
+      "nominalGap": 30.137729
     }
   ],
   "categorySummary": {
@@ -2217,27 +2217,27 @@
       "category": "DPK",
       "categoryRow": 8,
       "maxScore": 30,
-      "actualScore": 26.4,
-      "rawScore": 26.4,
-      "nominalScore": 26.4,
-      "gapScore": 3.6,
+      "actualScore": 26.37,
+      "rawScore": 26.37,
+      "nominalScore": 26.37,
+      "gapScore": 3.63,
       "metricsCount": 9,
       "totalRowsCount": 11,
-      "underTargetCount": 7,
-      "achievementPct": 88
+      "underTargetCount": 6,
+      "achievementPct": 87.9
     },
     "Kredit": {
       "category": "Kredit",
       "categoryRow": 20,
       "maxScore": 20,
-      "actualScore": 17.27,
-      "rawScore": 17.268,
-      "nominalScore": 17.268,
-      "gapScore": 2.73,
+      "actualScore": 17.28,
+      "rawScore": 17.284,
+      "nominalScore": 17.284,
+      "gapScore": 2.72,
       "metricsCount": 14,
       "totalRowsCount": 28,
       "underTargetCount": 4,
-      "achievementPct": 86.3
+      "achievementPct": 86.4
     },
     "Livin": {
       "category": "Livin",
@@ -2256,27 +2256,27 @@
       "category": "Kopra",
       "categoryRow": 56,
       "maxScore": 10,
-      "actualScore": 9.5,
-      "rawScore": 9.5,
-      "nominalScore": 9.5,
-      "gapScore": 0.5,
+      "actualScore": 9.58,
+      "rawScore": 9.58,
+      "nominalScore": 9.58,
+      "gapScore": 0.42,
       "metricsCount": 4,
       "totalRowsCount": 7,
       "underTargetCount": 1,
-      "achievementPct": 95
+      "achievementPct": 95.8
     },
     "Acquiring": {
       "category": "Acquiring",
       "categoryRow": 64,
       "maxScore": 15,
-      "actualScore": 11.29,
-      "rawScore": 11.295,
-      "nominalScore": 11.295,
-      "gapScore": 3.71,
+      "actualScore": 11.35,
+      "rawScore": 11.3475,
+      "nominalScore": 11.3475,
+      "gapScore": 3.65,
       "metricsCount": 9,
       "totalRowsCount": 14,
       "underTargetCount": 4,
-      "achievementPct": 75.3
+      "achievementPct": 75.7
     },
     "GMM": {
       "category": "GMM",
@@ -2299,16 +2299,16 @@
       "rawScore": 5,
       "nominalScore": 5,
       "gapScore": 0,
-      "metricsCount": 1,
+      "metricsCount": 2,
       "totalRowsCount": 2,
       "underTargetCount": 0,
       "achievementPct": 100
     }
   },
-  "totalScore": 85.53,
+  "totalScore": 85.65,
   "totalMaxScore": 100,
-  "totalGap": 14.47,
-  "underTargetCount": 18,
+  "totalGap": 14.35,
+  "underTargetCount": 17,
   "underTargetMetrics": [
     {
       "row": 50,
@@ -2330,14 +2330,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1873,
+      "real": 1892,
       "target": 3308,
       "acv": 0.57,
       "maxAcv": 0.57,
       "score": 3.42,
       "maxScore": 6,
       "scoreGap": 2.58,
-      "nominalGap": -1435
+      "nominalGap": -1416
     },
     {
       "row": 68,
@@ -2359,43 +2359,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 14607.198294,
+      "real": 14755.612876,
       "target": 51307.149842,
-      "acv": 0.28,
-      "maxAcv": 0.28,
-      "score": 0.63,
+      "acv": 0.29,
+      "maxAcv": 0.29,
+      "score": 0.6525,
       "maxScore": 2.25,
-      "scoreGap": 1.62,
-      "nominalGap": -36699.951548
-    },
-    {
-      "row": 51,
-      "category": "Livin",
-      "categoryRow": 49,
-      "metric": "User Registered",
-      "subMetric": "UREG dengan funding Product",
-      "name": "User Registered - UREG dengan funding Product",
-      "bobot": 0.3,
-      "bobotN": 0.3,
-      "bobotO": null,
-      "maxCategoryScore": 15,
-      "realColIdx": 213,
-      "realDiv": 1,
-      "tgtColIdx": 214,
-      "tgtDiv": 1,
-      "isQuality": false,
-      "rndAcv": true,
-      "scored": true,
-      "isPct": false,
-      "used": true,
-      "real": 3873,
-      "target": 5546,
-      "acv": 0.7,
-      "maxAcv": 0.7,
-      "score": 3.15,
-      "maxScore": 4.5,
-      "scoreGap": 1.35,
-      "nominalGap": -1673
+      "scoreGap": 1.5975,
+      "nominalGap": -36551.536966
     },
     {
       "row": 11,
@@ -2417,14 +2388,43 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 396.715109,
+      "real": 395.000728,
       "target": 562.234218,
-      "acv": 0.71,
-      "maxAcv": 0.71,
-      "score": 3.195,
+      "acv": 0.7,
+      "maxAcv": 0.7,
+      "score": 3.15,
       "maxScore": 4.5,
-      "scoreGap": 1.305,
-      "nominalGap": -165.51911
+      "scoreGap": 1.35,
+      "nominalGap": -167.233491
+    },
+    {
+      "row": 51,
+      "category": "Livin",
+      "categoryRow": 49,
+      "metric": "User Registered",
+      "subMetric": "UREG dengan funding Product",
+      "name": "User Registered - UREG dengan funding Product",
+      "bobot": 0.3,
+      "bobotN": 0.3,
+      "bobotO": null,
+      "maxCategoryScore": 15,
+      "realColIdx": 213,
+      "realDiv": 1,
+      "tgtColIdx": 214,
+      "tgtDiv": 1,
+      "isQuality": false,
+      "rndAcv": true,
+      "scored": true,
+      "isPct": false,
+      "used": true,
+      "real": 3897,
+      "target": 5546,
+      "acv": 0.7,
+      "maxAcv": 0.7,
+      "score": 3.15,
+      "maxScore": 4.5,
+      "scoreGap": 1.35,
+      "nominalGap": -1649
     },
     {
       "row": 78,
@@ -2446,14 +2446,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 769.432767,
+      "real": 789.514741,
       "target": 2522.671421,
       "acv": 0.31,
       "maxAcv": 0.31,
       "score": 0.465,
       "maxScore": 1.5,
       "scoreGap": 1.035,
-      "nominalGap": -1753.238654
+      "nominalGap": -1733.15668
     },
     {
       "row": 69,
@@ -2475,14 +2475,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 131.251002,
+      "real": 132.541956,
       "target": 387.099481,
       "acv": 0.34,
       "maxAcv": 0.34,
       "score": 0.51,
       "maxScore": 1.5,
       "scoreGap": 0.99,
-      "nominalGap": -255.848479
+      "nominalGap": -254.557525
     },
     {
       "row": 30,
@@ -2533,14 +2533,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 389.821736,
+      "real": 386.467819,
       "target": 541.701988,
-      "acv": 0.72,
-      "maxAcv": 0.72,
-      "score": 2.16,
+      "acv": 0.71,
+      "maxAcv": 0.71,
+      "score": 2.13,
       "maxScore": 3,
-      "scoreGap": 0.84,
-      "nominalGap": -151.880252
+      "scoreGap": 0.87,
+      "nominalGap": -155.234169
     },
     {
       "row": 34,
@@ -2562,14 +2562,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 0.69,
+      "real": 0.7,
       "target": 1.43,
-      "acv": 0.48,
-      "maxAcv": 0.48,
-      "score": 0.768,
+      "acv": 0.49,
+      "maxAcv": 0.49,
+      "score": 0.784,
       "maxScore": 1.6,
-      "scoreGap": 0.832,
-      "nominalGap": -0.74
+      "scoreGap": 0.816,
+      "nominalGap": -0.73
     },
     {
       "row": 14,
@@ -2591,14 +2591,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1682,
+      "real": 1693,
       "target": 1954,
-      "acv": 0.86,
-      "maxAcv": 0.86,
-      "score": 3.87,
+      "acv": 0.87,
+      "maxAcv": 0.87,
+      "score": 3.915,
       "maxScore": 4.5,
-      "scoreGap": 0.63,
-      "nominalGap": -272
+      "scoreGap": 0.585,
+      "nominalGap": -261
     },
     {
       "row": 48,
@@ -2620,14 +2620,14 @@
       "scored": true,
       "isPct": true,
       "used": true,
-      "real": 0.11127,
+      "real": 0.11131,
       "target": 0.054313,
       "acv": 0,
       "maxAcv": 0,
       "score": 0,
       "maxScore": 0.5,
       "scoreGap": 0.5,
-      "nominalGap": -0.056957
+      "nominalGap": -0.056997
     },
     {
       "row": 59,
@@ -2649,14 +2649,43 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 126,
+      "real": 133,
       "target": 169,
-      "acv": 0.75,
-      "maxAcv": 0.75,
-      "score": 1.5,
+      "acv": 0.79,
+      "maxAcv": 0.79,
+      "score": 1.58,
       "maxScore": 2,
-      "scoreGap": 0.5,
-      "nominalGap": -43
+      "scoreGap": 0.42,
+      "nominalGap": -36
+    },
+    {
+      "row": 13,
+      "category": "DPK",
+      "categoryRow": 8,
+      "metric": "Endbal 3P",
+      "subMetric": "",
+      "name": "Endbal 3P",
+      "bobot": 0.1,
+      "bobotN": 0.1,
+      "bobotO": null,
+      "maxCategoryScore": 30,
+      "realColIdx": 50,
+      "realDiv": 1,
+      "tgtColIdx": 51,
+      "tgtDiv": 1,
+      "isQuality": false,
+      "rndAcv": true,
+      "scored": true,
+      "isPct": false,
+      "used": true,
+      "real": 381.24184,
+      "target": 435.723617,
+      "acv": 0.87,
+      "maxAcv": 0.87,
+      "score": 2.61,
+      "maxScore": 3,
+      "scoreGap": 0.39,
+      "nominalGap": -54.481778
     },
     {
       "row": 29,
@@ -2688,35 +2717,6 @@
       "nominalGap": -2.524087
     },
     {
-      "row": 13,
-      "category": "DPK",
-      "categoryRow": 8,
-      "metric": "Endbal 3P",
-      "subMetric": "",
-      "name": "Endbal 3P",
-      "bobot": 0.1,
-      "bobotN": 0.1,
-      "bobotO": null,
-      "maxCategoryScore": 30,
-      "realColIdx": 50,
-      "realDiv": 1,
-      "tgtColIdx": 51,
-      "tgtDiv": 1,
-      "isQuality": false,
-      "rndAcv": true,
-      "scored": true,
-      "isPct": false,
-      "used": true,
-      "real": 384.389903,
-      "target": 435.723617,
-      "acv": 0.88,
-      "maxAcv": 0.88,
-      "score": 2.64,
-      "maxScore": 3,
-      "scoreGap": 0.36,
-      "nominalGap": -51.333714
-    },
-    {
       "row": 17,
       "category": "DPK",
       "categoryRow": 8,
@@ -2736,14 +2736,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1257.77227,
+      "real": 1246.912999,
       "target": 1530.758579,
-      "acv": 0.82,
-      "maxAcv": 0.82,
-      "score": 1.23,
+      "acv": 0.81,
+      "maxAcv": 0.81,
+      "score": 1.215,
       "maxScore": 1.5,
-      "scoreGap": 0.27,
-      "nominalGap": -272.986309
+      "scoreGap": 0.285,
+      "nominalGap": -283.84558
     },
     {
       "row": 15,
@@ -2765,43 +2765,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 1631.061062,
+      "real": 1612.231725,
       "target": 1695.930484,
-      "acv": 0.96,
-      "maxAcv": 0.96,
-      "score": 2.88,
-      "maxScore": 3,
-      "scoreGap": 0.12,
-      "nominalGap": -64.869423
-    },
-    {
-      "row": 10,
-      "category": "DPK",
-      "categoryRow": 8,
-      "metric": "Endbal DPK",
-      "subMetric": "",
-      "name": "Endbal DPK",
-      "bobot": 0.05,
-      "bobotN": 0.05,
-      "bobotO": null,
-      "maxCategoryScore": 30,
-      "realColIdx": 10,
-      "realDiv": 1,
-      "tgtColIdx": 11,
-      "tgtDiv": 1,
-      "isQuality": false,
-      "rndAcv": true,
-      "scored": true,
-      "isPct": false,
-      "used": true,
-      "real": 155.783217,
-      "target": 163.1734,
       "acv": 0.95,
       "maxAcv": 0.95,
-      "score": 1.425,
-      "maxScore": 1.5,
-      "scoreGap": 0.075,
-      "nominalGap": -7.390182
+      "score": 2.85,
+      "maxScore": 3,
+      "scoreGap": 0.15,
+      "nominalGap": -83.698759
     },
     {
       "row": 77,
@@ -2823,14 +2794,14 @@
       "scored": true,
       "isPct": false,
       "used": true,
-      "real": 2.541045,
+      "real": 2.601622,
       "target": 2.6503,
-      "acv": 0.96,
-      "maxAcv": 0.96,
-      "score": 1.44,
+      "acv": 0.98,
+      "maxAcv": 0.98,
+      "score": 1.47,
       "maxScore": 1.5,
-      "scoreGap": 0.06,
-      "nominalGap": -0.109255
+      "scoreGap": 0.03,
+      "nominalGap": -0.048678
     }
   ]
 }
