@@ -305,7 +305,7 @@ for (const code of Object.keys(dbRows)) {
     name: bInfo.name,
     head: bInfo.head,
     grade: bInfo.grade,
-     nonMicro: scored.nonMicro,
+    nonMicro: scored.nonMicro,
     areaCode,
     areaName,
     totalScore: scored.totalScore,

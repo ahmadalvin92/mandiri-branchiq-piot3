@@ -1,21 +1,21 @@
 import React, { useState, useMemo } from 'react';
-import { 
-  Trophy, 
-  X, 
-  Search, 
-  Filter, 
-  ArrowUpDown, 
-  CheckSquare, 
-  Square, 
-  TrendingUp, 
-  TrendingDown, 
-  Award, 
-  Building2, 
-  User, 
-  SlidersHorizontal, 
-  Download, 
-  Sparkles, 
-  Check, 
+import {
+  Trophy,
+  X,
+  Search,
+  Filter,
+  ArrowUpDown,
+  CheckSquare,
+  Square,
+  TrendingUp,
+  TrendingDown,
+  Award,
+  Building2,
+  User,
+  SlidersHorizontal,
+  Download,
+  Sparkles,
+  Check,
   ArrowRight,
   ExternalLink,
   ChevronRight,
@@ -227,11 +227,11 @@ export function BranchComparisonModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/60 backdrop-blur-xs animate-fade-in">
-      <div 
+      <div
         className="bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-6xl max-h-[92vh] flex flex-col overflow-hidden animate-scale-up"
         onClick={(e) => e.stopPropagation()}
       >
-        
+
         {/* Top Header */}
         <div className="bg-linear-to-r from-[#00254D] via-[#003D79] to-[#004B94] text-white px-5 py-4 shrink-0">
           <div className="flex items-center justify-between">
@@ -304,28 +304,25 @@ export function BranchComparisonModal({
           <div className="flex items-center gap-2">
             <button
               onClick={() => setActiveTab('leaderboard')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 font-bold text-xs rounded-t-xl transition-all cursor-pointer border-t border-x ${
-                activeTab === 'leaderboard'
-                  ? 'bg-white text-[#003D79] border-slate-200 -mb-px shadow-2xs'
-                  : 'bg-transparent text-slate-500 hover:text-slate-800 border-transparent'
-              }`}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 font-bold text-xs rounded-t-xl transition-all cursor-pointer border-t border-x ${activeTab === 'leaderboard'
+                ? 'bg-white text-[#003D79] border-slate-200 -mb-px shadow-2xs'
+                : 'bg-transparent text-slate-500 hover:text-slate-800 border-transparent'
+                }`}
             >
               <Trophy className={`w-4 h-4 ${activeTab === 'leaderboard' ? 'text-[#FFB81C] fill-[#FFB81C]' : ''}`} />
               <span>Leaderboard Ranking {selectedGrade !== 'all' ? `Kelas ${selectedGrade}` : '164 Cabang'}</span>
-              <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                selectedGrade !== 'all' ? 'bg-[#003D79] text-white' : 'bg-slate-200 text-slate-700'
-              }`}>
+              <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-bold ${selectedGrade !== 'all' ? 'bg-[#003D79] text-white' : 'bg-slate-200 text-slate-700'
+                }`}>
                 {filteredRankings.length}
               </span>
             </button>
 
             <button
               onClick={() => setActiveTab('comparison')}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 font-bold text-xs rounded-t-xl transition-all cursor-pointer border-t border-x ${
-                activeTab === 'comparison'
-                  ? 'bg-white text-[#003D79] border-slate-200 -mb-px shadow-2xs'
-                  : 'bg-transparent text-slate-500 hover:text-slate-800 border-transparent'
-              }`}
+              className={`inline-flex items-center gap-2 px-4 py-2.5 font-bold text-xs rounded-t-xl transition-all cursor-pointer border-t border-x ${activeTab === 'comparison'
+                ? 'bg-white text-[#003D79] border-slate-200 -mb-px shadow-2xs'
+                : 'bg-transparent text-slate-500 hover:text-slate-800 border-transparent'
+                }`}
             >
               <Scale className={`w-4 h-4 ${activeTab === 'comparison' ? 'text-[#003D79]' : ''}`} />
               <span>Matriks Komparasi Head-to-Head</span>
@@ -354,7 +351,7 @@ export function BranchComparisonModal({
           {activeTab === 'leaderboard' ? (
             /* TAB 1: LEADERBOARD 164 CABANG */
             <div className="space-y-3.5">
-              
+
               {/* Quick Filter Sesuai Kelas Ranking Buttons */}
               <div className="bg-linear-to-r from-slate-50 via-blue-50/30 to-slate-50 p-3 rounded-xl border border-slate-200/90 shadow-2xs">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5 mb-2">
@@ -375,16 +372,14 @@ export function BranchComparisonModal({
                 <div className="flex flex-wrap items-center gap-1.5">
                   <button
                     onClick={() => setSelectedGrade('all')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                      selectedGrade === 'all'
-                        ? 'bg-[#003D79] text-white shadow-xs'
-                        : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                    }`}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${selectedGrade === 'all'
+                      ? 'bg-[#003D79] text-white shadow-xs'
+                      : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                      }`}
                   >
                     <span>Semua Kelas</span>
-                    <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                      selectedGrade === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
-                    }`}>
+                    <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${selectedGrade === 'all' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                      }`}>
                       {allRankings.length}
                     </span>
                   </button>
@@ -393,11 +388,10 @@ export function BranchComparisonModal({
                   {activeBranch.grade && (
                     <button
                       onClick={() => setSelectedGrade(activeBranch.grade)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                        selectedGrade === activeBranch.grade
-                          ? 'bg-amber-500 text-slate-950 shadow-xs ring-2 ring-amber-300 font-black'
-                          : 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
-                      }`}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${selectedGrade === activeBranch.grade
+                        ? 'bg-amber-500 text-slate-950 shadow-xs ring-2 ring-amber-300 font-black'
+                        : 'bg-amber-50 text-amber-900 border border-amber-300 hover:bg-amber-100'
+                        }`}
                       title={`Tampilkan hanya sesama Kelas ${activeBranch.grade} (Kelas Cabang Aktif)`}
                     >
                       <span>⭐ Kelas Cabang Anda ({activeBranch.grade})</span>
@@ -415,16 +409,14 @@ export function BranchComparisonModal({
                       <button
                         key={g}
                         onClick={() => setSelectedGrade(g)}
-                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                          isSelected
-                            ? 'bg-[#003D79] text-white shadow-xs'
-                            : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                        }`}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${isSelected
+                          ? 'bg-[#003D79] text-white shadow-xs'
+                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                          }`}
                       >
                         <span>Kelas {g}</span>
-                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-                          isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
-                        }`}>
+                        <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600'
+                          }`}>
                           {gradeCounts[g] || 0}
                         </span>
                       </button>
@@ -473,7 +465,7 @@ export function BranchComparisonModal({
                     className="w-full bg-white text-xs pl-9 pr-8 py-2 rounded-lg border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-[#003D79]/20 focus:border-[#003D79] transition-colors"
                   />
                   {searchQuery && (
-                    <button 
+                    <button
                       onClick={() => setSearchQuery('')}
                       className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                     >
@@ -502,11 +494,10 @@ export function BranchComparisonModal({
                   <select
                     value={selectedGrade}
                     onChange={(e) => setSelectedGrade(e.target.value)}
-                    className={`text-xs font-semibold px-2.5 py-2 rounded-lg border focus:outline-hidden focus:ring-2 focus:ring-[#003D79]/20 cursor-pointer ${
-                      selectedGrade !== 'all'
-                        ? 'bg-amber-50 text-amber-900 border-amber-300 font-bold'
-                        : 'bg-white text-slate-700 border-slate-300'
-                    }`}
+                    className={`text-xs font-semibold px-2.5 py-2 rounded-lg border focus:outline-hidden focus:ring-2 focus:ring-[#003D79]/20 cursor-pointer ${selectedGrade !== 'all'
+                      ? 'bg-amber-50 text-amber-900 border-amber-300 font-bold'
+                      : 'bg-white text-slate-700 border-slate-300'
+                      }`}
                   >
                     <option value="all">Semua Kelas Unit ({allRankings.length})</option>
                     {gradeOptions.map(g => (
@@ -554,17 +545,16 @@ export function BranchComparisonModal({
                   </span>
                   <div className="flex items-center gap-1.5 flex-wrap">
                     {comparedBranchesData.map(b => (
-                      <span 
-                        key={b.code} 
-                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold ${
-                          b.code === activeBranchCode 
-                            ? 'bg-[#003D79] text-white' 
-                            : 'bg-white text-slate-700 border border-slate-200'
-                        }`}
+                      <span
+                        key={b.code}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-bold ${b.code === activeBranchCode
+                          ? 'bg-[#003D79] text-white'
+                          : 'bg-white text-slate-700 border border-slate-200'
+                          }`}
                       >
                         <span>#{b.totalRank} {b.name.split(' ')[0]}</span>
-                        <button 
-                          onClick={() => toggleComparisonSelection(b.code)} 
+                        <button
+                          onClick={() => toggleComparisonSelection(b.code)}
                           className="hover:opacity-75 cursor-pointer ml-0.5"
                         >
                           ×
@@ -592,7 +582,7 @@ export function BranchComparisonModal({
                     <thead className="sticky top-0 z-10 bg-slate-100 shadow-xs">
                       <tr className="bg-slate-100 text-slate-600 font-bold border-b border-slate-200 select-none">
                         <th className="py-2.5 px-3 w-10 text-center">Bandingkan</th>
-                        <th 
+                        <th
                           onClick={() => {
                             if (sortBy === 'totalRank') setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                             else { setSortBy('totalRank'); setSortOrder('asc'); }
@@ -608,7 +598,7 @@ export function BranchComparisonModal({
                         <th className="py-2.5 px-3 min-w-[200px]">Cabang & Pimpinan</th>
                         <th className="py-2.5 px-3 w-28">Area</th>
                         <th className="py-2.5 px-3 w-20 text-center" title="Kelas Unit & Peringkat se-Kelas">Kelas</th>
-                        <th 
+                        <th
                           onClick={() => {
                             if (sortBy === 'totalScore') setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
                             else { setSortBy('totalScore'); setSortOrder('desc'); }
@@ -678,15 +668,14 @@ export function BranchComparisonModal({
                           }
 
                           return (
-                            <tr 
+                            <tr
                               key={branch.code}
-                              className={`transition-colors ${
-                                isActive 
-                                  ? 'bg-amber-50/70 hover:bg-amber-100/50 font-medium' 
-                                  : isChecked 
-                                    ? 'bg-blue-50/50 hover:bg-blue-50' 
-                                    : 'hover:bg-slate-50'
-                              }`}
+                              className={`transition-colors ${isActive
+                                ? 'bg-amber-50/70 hover:bg-amber-100/50 font-medium'
+                                : isChecked
+                                  ? 'bg-blue-50/50 hover:bg-blue-50'
+                                  : 'hover:bg-slate-50'
+                                }`}
                             >
                               {/* Checkbox */}
                               <td className="py-2.5 px-3 text-center">
@@ -767,10 +756,9 @@ export function BranchComparisonModal({
 
                               {/* Total Score */}
                               <td className="py-2.5 px-3 text-right">
-                                <span className={`text-sm font-black ${
-                                  branch.totalScore >= 75 ? 'text-emerald-700' :
+                                <span className={`text-sm font-black ${branch.totalScore >= 75 ? 'text-emerald-700' :
                                   branch.totalScore >= 70 ? 'text-[#003D79]' : 'text-slate-700'
-                                }`}>
+                                  }`}>
                                   {branch.totalScore.toFixed(2).replace('.', ',')}
                                 </span>
                               </td>
@@ -834,14 +822,14 @@ export function BranchComparisonModal({
           ) : (
             /* TAB 2: MATRIKS KOMPARASI HEAD-TO-HEAD */
             <div className="space-y-6">
-              
+
               {/* Quick Preset Buttons */}
               <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
                 <span className="font-bold text-slate-700 flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-[#FFB81C]" />
                   <span>Preset Cepat Perbandingan:</span>
                 </span>
-                
+
                 <div className="flex flex-wrap items-center gap-2">
                   {/* Top 1 Region */}
                   {top1Branch && (
@@ -888,13 +876,12 @@ export function BranchComparisonModal({
                   const scoreDiff = Number((b.totalScore - activeBranch.totalScore).toFixed(2));
 
                   return (
-                    <div 
+                    <div
                       key={b.code}
-                      className={`rounded-2xl border p-4.5 relative overflow-hidden transition-all shadow-xs ${
-                        isActive 
-                          ? 'bg-linear-to-b from-[#003D79]/5 via-white to-white border-[#003D79]/40 ring-2 ring-[#003D79]/20' 
-                          : 'bg-white border-slate-200 hover:border-slate-300'
-                      }`}
+                      className={`rounded-2xl border p-4.5 relative overflow-hidden transition-all shadow-xs ${isActive
+                        ? 'bg-linear-to-b from-[#003D79]/5 via-white to-white border-[#003D79]/40 ring-2 ring-[#003D79]/20'
+                        : 'bg-white border-slate-200 hover:border-slate-300'
+                        }`}
                     >
                       {isActive && (
                         <div className="absolute top-0 right-0 bg-[#003D79] text-white text-[10px] font-black uppercase px-2.5 py-0.5 rounded-bl-lg">
@@ -1026,11 +1013,10 @@ export function BranchComparisonModal({
 
                                   {/* Progress bar */}
                                   <div className="w-24 mx-auto bg-slate-100 h-1.5 rounded-full mt-1.5 overflow-hidden">
-                                    <div 
-                                      className={`h-full rounded-full ${
-                                        pct >= 90 ? 'bg-emerald-500' :
+                                    <div
+                                      className={`h-full rounded-full ${pct >= 90 ? 'bg-emerald-500' :
                                         pct >= 70 ? 'bg-[#003D79]' : 'bg-amber-500'
-                                      }`}
+                                        }`}
                                       style={{ width: `${Math.min(100, pct)}%` }}
                                     ></div>
                                   </div>
@@ -1053,7 +1039,7 @@ export function BranchComparisonModal({
                           </tr>
                         );
                       })}
-                      
+
                       {/* Total row */}
                       <tr className="bg-slate-50 font-black text-slate-900 border-t-2 border-slate-300">
                         <td className="py-3 px-4 font-black text-base text-[#003D79]">
@@ -1090,7 +1076,7 @@ export function BranchComparisonModal({
                         Insight Strategis Komparasi vs {comparedBranchesData[1]?.name} (Juara/Benchmark)
                       </h4>
                       <p className="text-xs text-slate-600 mt-1">
-                        Untuk menyalip atau mengejar ketertinggalan poin dari <strong>{comparedBranchesData[1]?.name}</strong> (Skor: {comparedBranchesData[1]?.totalScore}), 
+                        Untuk menyalip atau mengejar ketertinggalan poin dari <strong>{comparedBranchesData[1]?.name}</strong> (Skor: {comparedBranchesData[1]?.totalScore}),
                         cabang Anda perlu memprioritaskan kategori berikut:
                       </p>
 
@@ -1128,7 +1114,7 @@ export function BranchComparisonModal({
           <div className="text-slate-500 flex items-center gap-1.5">
             <Building2 className="w-4 h-4 text-slate-400" />
             <span>
-              {selectedGrade !== 'all' 
+              {selectedGrade !== 'all'
                 ? `Menampilkan ${filteredRankings.length} cabang Kelas ${selectedGrade} (dari total 164 Kantor Cabang se-Region V Jakarta 3)`
                 : 'Total 164 Kantor Cabang Pembantu (KCP) / Kantor Cabang (KC) se-Region V Jakarta 3'}
             </span>

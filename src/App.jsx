@@ -98,7 +98,7 @@ export function App() {
       if (stored && list.some(x => x.id === stored)) {
         return stored;
       }
-    } catch (e) {}
+    } catch (e) { }
     return DEFAULT_SNAPSHOT_META.id;
   });
 
@@ -153,7 +153,7 @@ export function App() {
         const stored = localStorage.getItem('branchiq_active_snapshot_id');
         const list = getExcelHistoryMetaList();
         if (stored && list.some(x => x.id === stored)) return stored;
-      } catch (e) {}
+      } catch (e) { }
       return DEFAULT_SNAPSHOT_META.id;
     })();
 
@@ -569,7 +569,7 @@ export function App() {
     setActiveSnapshotId(saved.meta.id);
     try {
       localStorage.setItem('branchiq_active_snapshot_id', saved.meta.id);
-    } catch (e) {}
+    } catch (e) { }
 
     setCachedDbData(parsedWithDate.dbData);
     setBranchesList(parsedWithDate.branches);
@@ -611,7 +611,7 @@ export function App() {
     setActiveSnapshotId(snapshotMeta.id);
     try {
       localStorage.setItem('branchiq_active_snapshot_id', snapshotMeta.id);
-    } catch (e) {}
+    } catch (e) { }
     setCachedDbData(payload.dbData);
     setBranchesList(payload.branches || defaultBranches);
     setMetricDefs(payload.metricDefs || defaultMetricDefs);
@@ -664,12 +664,12 @@ export function App() {
       setIsCustomFileLoaded(false);
       setCustomFileName('');
       setActiveSnapshotId(DEFAULT_SNAPSHOT_META.id);
-    try {
-      localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
-    } catch (e) {}
       try {
         localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
-      } catch (e) {}
+      } catch (e) { }
+      try {
+        localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
+      } catch (e) { }
 
       const calculated = calculateBranchScore(
         '10125',
@@ -698,7 +698,7 @@ export function App() {
     setActiveSnapshotId(DEFAULT_SNAPSHOT_META.id);
     try {
       localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
-    } catch (e) {}
+    } catch (e) { }
   };
 
   // Print executive summary briefing
@@ -713,9 +713,9 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F4F7FA]">
-      
+
       {/* Printable Report Component (visible only when printing) */}
-      <PrintReport 
+      <PrintReport
         branchInfo={currentBranchData.branchInfo}
         realizationDate={currentBranchData.realizationDate}
         totalScore={currentBranchData.totalScore}
@@ -727,9 +727,9 @@ export function App() {
 
       {/* Screen View */}
       <div className="print:hidden flex-1 flex flex-col">
-        
+
         {/* Navigation & Header */}
-        <Header 
+        <Header
           branchInfo={currentBranchData.branchInfo}
           realizationDate={currentBranchData.realizationDate}
           branches={branchesList}
@@ -775,7 +775,7 @@ export function App() {
             <>
               {/* Executive Summary 4 KPI Cards + Rank Badge */}
               <section>
-                <ExecutiveSummary 
+                <ExecutiveSummary
                   totalScore={currentBranchData.totalScore}
                   totalGap={currentBranchData.totalGap}
                   categorySummary={currentBranchData.categorySummary}
@@ -793,7 +793,7 @@ export function App() {
 
               {/* Visual Comparison: Category Score Cards & Point Loss (Placed at Top) */}
               <section>
-                <CategoryCharts 
+                <CategoryCharts
                   categorySummary={currentBranchData.categorySummary}
                   metrics={currentBranchData.calculatedMetrics}
                   totalScore={currentBranchData.totalScore}
@@ -852,7 +852,7 @@ export function App() {
 
               {/* Detail Excel-Ordered Scorecard Table (DPK..GMM..Ekosistem) */}
               <section>
-                <MetricsTable 
+                <MetricsTable
                   metrics={currentBranchData.calculatedMetrics}
                   categorySummary={currentBranchData.categorySummary}
                   totalScore={currentBranchData.totalScore}
@@ -909,7 +909,7 @@ export function App() {
       </div>
 
       {/* Educational & Strategy Drawer */}
-      <MetricDetailDrawer 
+      <MetricDetailDrawer
         metric={selectedMetricForDetail}
         branchInfo={currentBranchData.branchInfo}
         onClose={() => setSelectedMetricForDetail(null)}
@@ -917,7 +917,7 @@ export function App() {
       />
 
       {/* What-If Simulator Modal */}
-      <WhatIfSimulator 
+      <WhatIfSimulator
         metrics={currentBranchData.calculatedMetrics}
         baselineTotalScore={currentBranchData.totalScore}
         branchInfo={currentBranchData.branchInfo}
@@ -931,7 +931,7 @@ export function App() {
       />
 
       {/* Excel File Upload & History Modal */}
-      <FileUploadModal 
+      <FileUploadModal
         isOpen={isUploadModalOpen}
         onClose={() => setIsUploadModalOpen(false)}
         onFileUpload={handleFileUpload}
@@ -946,7 +946,7 @@ export function App() {
       />
 
       {/* Leaderboard & Branch Comparison Modal */}
-      <BranchComparisonModal 
+      <BranchComparisonModal
         isOpen={isComparisonModalOpen}
         onClose={() => setIsComparisonModalOpen(false)}
         allRankings={allRankings}
@@ -974,11 +974,10 @@ export function App() {
                 </span>
                 <span className="text-slate-400 text-xs">/100</span>
                 <span
-                  className={`text-[10px] sm:text-xs font-black px-1.5 py-0.2 rounded ${
-                    currentBranchData.totalScore >= masterBranchData.totalScore
-                      ? 'bg-emerald-500 text-white'
-                      : 'bg-rose-500 text-white'
-                  }`}
+                  className={`text-[10px] sm:text-xs font-black px-1.5 py-0.2 rounded ${currentBranchData.totalScore >= masterBranchData.totalScore
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-rose-500 text-white'
+                    }`}
                 >
                   {currentBranchData.totalScore >= masterBranchData.totalScore ? '+' : ''}
                   {(currentBranchData.totalScore - masterBranchData.totalScore).toFixed(2).replace('.', ',')} pt
