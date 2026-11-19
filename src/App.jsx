@@ -954,6 +954,7 @@ export function App() {
         onSelectBranch={handleSelectBranch}
         allDbRows={cachedDbData || dbRowsData}
         metricDefs={metricDefs}
+        realizationDate={currentBranchData.realizationDate}
       />
 
       {/* Sticky Floating Simulation Bar (Always visible on screen while in Simulation Mode) */}

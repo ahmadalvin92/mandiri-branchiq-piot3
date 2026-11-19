@@ -31,7 +31,8 @@ export function BranchComparisonModal({
   activeBranchCode,
   onSelectBranch,
   allDbRows = {},
-  metricDefs = []
+  metricDefs = [],
+  realizationDate
 }) {
   const [activeTab, setActiveTab] = useState('leaderboard'); // 'leaderboard' or 'comparison'
   const [searchQuery, setSearchQuery] = useState('');
@@ -249,7 +250,7 @@ export function BranchComparisonModal({
                   </span>
                 </div>
                 <p className="text-xs text-white/70 mt-0.5">
-                  Region V / Jakarta 3 • Score Board Mandiri Melesat (Posisi 13 Nov 2026)
+                  Region V / Jakarta 3 • Score Board Mandiri Melesat (Posisi {realizationDate || '16 November 2026'})
                 </p>
               </div>
             </div>
