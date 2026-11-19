@@ -811,10 +811,9 @@ export function App() {
         </main>
 
         {/* Modern Clean Footer */}
-        <footer className="mt-auto border-t border-slate-200/80 bg-white/95 backdrop-blur-xs py-5 text-xs text-slate-500">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-3">
-            {/* Top Row: System Identity & Branch Info */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 border-b border-slate-100 pb-3 text-center sm:text-left">
+        <footer className="mt-auto border-t border-slate-200/80 bg-white/95 backdrop-blur-xs py-4 text-xs text-slate-500">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-center sm:text-left">
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-[#003D79]">PT Bank Mandiri (Persero) Tbk.</span>
                 <span className="text-slate-300">•</span>
@@ -825,28 +824,6 @@ export function App() {
                 <span className="mx-1.5 text-slate-300">•</span>
                 <span>{currentBranchData.branchInfo.name} ({currentBranchData.branchInfo.code})</span>
               </div>
-            </div>
-
-            {/* Bottom Row: Clean Credits with subtle portfolio link */}
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400 text-center sm:text-left">
-              <p>
-                Idea by <span className="font-semibold text-slate-600">Michael Daniel</span> <span className="text-slate-400 font-normal">(Branch Manager PIOT 3)</span>
-              </p>
-              <p>
-                Developed by{' '}
-                <a
-                  href="https://vinsky-techfolio.vercel.app/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="font-semibold text-slate-600 hover:text-[#003D79] transition-colors cursor-pointer hover:underline decoration-slate-300 underline-offset-2"
-                  title="Portfolio Ahmad Alvin Griffin"
-                >
-                  Ahmad Alvin Griffin
-                </a>
-                {' '}&{' '}
-                <span className="font-semibold text-slate-600">Amalia Sekar Arum</span>{' '}
-                <span className="text-slate-400 font-normal">(ODP 348)</span>
-              </p>
             </div>
           </div>
         </footer>
