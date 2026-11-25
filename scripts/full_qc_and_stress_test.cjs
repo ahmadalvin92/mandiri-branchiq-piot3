@@ -206,26 +206,21 @@ async function runBrowserE2EQC() {
   const viewerPage = await viewerCtx.newPage();
   const michaelPage = await michaelCtx.newPage();
 
-  const grantLnaPermissions = async (page, ctx, origin) => {
-    const cdp = await page.createCDPSession();
+  // Keep browser-level CDP session attached until browser.close(); detaching resets Browser.setPermission overrides in Chromium
+  const browserCdp = await browser.target().createCDPSession();
+  const targetOrigin = new URL(TARGET_URL).origin;
+  for (const ctx of [adminCtx, viewerCtx, michaelCtx]) {
     for (const name of ['local-network-access', 'local-network', 'loopback-network']) {
       try {
-        await cdp.send('Browser.setPermission', {
-          origin,
+        await browserCdp.send('Browser.setPermission', {
+          origin: targetOrigin,
           browserContextId: ctx.id,
           permission: { name },
           setting: 'granted'
         });
       } catch (e) {}
     }
-    await cdp.detach().catch(() => {});
-  };
-  const targetOrigin = new URL(TARGET_URL).origin;
-  await Promise.all([
-    grantLnaPermissions(adminPage, adminCtx, targetOrigin),
-    grantLnaPermissions(viewerPage, viewerCtx, targetOrigin),
-    grantLnaPermissions(michaelPage, michaelCtx, targetOrigin)
-  ]);
+  }
 
   await adminPage.setViewport({ width: 1440, height: 900 });
   await viewerPage.setViewport({ width: 1440, height: 900 });
