@@ -254,10 +254,6 @@ export function App() {
 
       if (shouldAdoptCloud && latestCloudId) {
         targetId = latestCloudId;
-        try {
-          localStorage.setItem('branchiq_active_snapshot_id', latestCloudId);
-          localStorage.setItem('branchiq_last_cloud_snapshot_id', latestCloudId);
-        } catch (e) {}
       } else if (isInitial) {
         targetId = (storedActiveId && effectiveList.some(x => x.id === storedActiveId))
           ? storedActiveId
@@ -268,9 +264,18 @@ export function App() {
         const payload = await loadExcelSnapshotPayload(targetId);
         if (payload && payload.dbData) {
           applySnapshotPayloadToState(targetId, payload, effectiveList);
+          if (latestCloudId && targetId === latestCloudId) {
+            try {
+              localStorage.setItem('branchiq_last_cloud_snapshot_id', latestCloudId);
+            } catch (e) {}
+          }
         } else if (isInitial) {
           handleFetchDefaultExcel();
         }
+      } else if (latestCloudId && targetId === latestCloudId && targetId === activeSnapshotIdRef.current) {
+        try {
+          localStorage.setItem('branchiq_last_cloud_snapshot_id', latestCloudId);
+        } catch (e) {}
       } else if (isInitial && targetId === DEFAULT_SNAPSHOT_META.id) {
         handleFetchDefaultExcel();
       }

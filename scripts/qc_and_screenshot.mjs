@@ -174,7 +174,7 @@ async function runQCAndCapture() {
   const simOpened = await page.evaluate(() => {
     // Find button to edit target or row
     const editBtns = Array.from(document.querySelectorAll('button'));
-    const targetBtn = editBtns.find(b => b.innerText && (b.innerText.includes('Edit Target / Strategi') || b.innerText.includes('Simulasi Target')));
+    const targetBtn = editBtns.find(b => b.innerText && (b.innerText.includes('Edit Master') || b.innerText.includes('Edit Target / Strategi') || b.innerText.includes('Simulasi Target')));
     if (targetBtn) {
       targetBtn.click();
       return true;
