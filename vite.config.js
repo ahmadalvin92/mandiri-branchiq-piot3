@@ -160,102 +160,106 @@ function parseGoogleICalHolidays(icsText) {
 }
 
 function branchIqApiPlugin() {
+  const middleware = async (req, res, next) => {
+    if (!req.url || !req.url.startsWith('/api/')) {
+      return next();
+    }
+
+    const sendJson = (status, payload) => {
+      res.statusCode = status;
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      res.end(JSON.stringify(payload));
+    };
+
+    const readBody = () =>
+      new Promise((resolve) => {
+        let body = '';
+        req.on('data', (chunk) => (body += chunk));
+        req.on('end', () => {
+          try {
+            resolve(body ? JSON.parse(body) : {});
+          } catch (e) {
+            resolve({});
+          }
+        });
+      });
+
+    const urlObj = new URL(req.url, 'http://localhost');
+    const pathname = urlObj.pathname;
+
+    try {
+      if (pathname === '/api/db' && req.method === 'GET') {
+        return sendJson(200, loadDb());
+      }
+
+      if (pathname === '/api/db/sync' && req.method === 'POST') {
+        const body = await readBody();
+        const current = loadDb();
+        const merged = {
+          users: Array.isArray(body.users) && body.users.length ? body.users : current.users,
+          masterTargets: body.masterTargets !== undefined ? body.masterTargets : current.masterTargets,
+          masterStrategies: body.masterStrategies !== undefined ? body.masterStrategies : current.masterStrategies,
+          viewerSimulations: Array.isArray(body.viewerSimulations) ? body.viewerSimulations : current.viewerSimulations,
+          timestandConfig: body.timestandConfig || current.timestandConfig
+        };
+        saveDb(merged);
+        return sendJson(200, { ok: true, db: merged });
+      }
+
+      if (pathname === '/api/google-calendar-holidays' && req.method === 'GET') {
+        const apiKey = urlObj.searchParams.get('apiKey') || process.env.VITE_GOOGLE_CALENDAR_API_KEY || '';
+        const calId = 'id.indonesian%23holiday%40group.v.calendar.google.com';
+
+        if (apiKey) {
+          try {
+            const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calId}/events?key=${encodeURIComponent(apiKey)}&singleEvents=true&maxResults=250`;
+            const rawJson = await fetchUrlText(apiUrl);
+            const parsed = JSON.parse(rawJson);
+            if (Array.isArray(parsed.items)) {
+              const holidays = parsed.items
+                .filter((item) => item.start?.date)
+                .map((item) => ({
+                  date: item.start.date,
+                  name: item.summary || 'Hari Libur Nasional',
+                  description: item.description || 'Google Calendar API',
+                  source: 'Google Calendar REST API v3 (id.indonesian#holiday@group.v.calendar.google.com)'
+                }));
+              return sendJson(200, {
+                ok: true,
+                calendarId: 'id.indonesian#holiday@group.v.calendar.google.com',
+                source: 'Google Calendar REST API v3',
+                holidays
+              });
+            }
+          } catch (err) {
+            // Fall through to Google Calendar public iCal feed
+          }
+        }
+
+        const icsUrl = `https://calendar.google.com/calendar/ical/${calId}/public/basic.ics`;
+        const icsText = await fetchUrlText(icsUrl);
+        const holidays = parseGoogleICalHolidays(icsText);
+        return sendJson(200, {
+          ok: true,
+          calendarId: 'id.indonesian#holiday@group.v.calendar.google.com',
+          source: 'Google Calendar Live Feed (id.indonesian#holiday@group.v.calendar.google.com)',
+          holidays
+        });
+      }
+
+      return sendJson(404, { error: 'Endpoint not found' });
+    } catch (err) {
+      return sendJson(500, { error: err.message || 'Internal Server Error' });
+    }
+  };
+
   return {
     name: 'branchiq-api-middleware',
     configureServer(server) {
-      server.middlewares.use(async (req, res, next) => {
-        if (!req.url || !req.url.startsWith('/api/')) {
-          return next();
-        }
-
-        const sendJson = (status, payload) => {
-          res.statusCode = status;
-          res.setHeader('Content-Type', 'application/json; charset=utf-8');
-          res.end(JSON.stringify(payload));
-        };
-
-        const readBody = () =>
-          new Promise((resolve) => {
-            let body = '';
-            req.on('data', (chunk) => (body += chunk));
-            req.on('end', () => {
-              try {
-                resolve(body ? JSON.parse(body) : {});
-              } catch (e) {
-                resolve({});
-              }
-            });
-          });
-
-        const urlObj = new URL(req.url, 'http://localhost');
-        const pathname = urlObj.pathname;
-
-        try {
-          if (pathname === '/api/db' && req.method === 'GET') {
-            return sendJson(200, loadDb());
-          }
-
-          if (pathname === '/api/db/sync' && req.method === 'POST') {
-            const body = await readBody();
-            const current = loadDb();
-            const merged = {
-              users: Array.isArray(body.users) && body.users.length ? body.users : current.users,
-              masterTargets: body.masterTargets !== undefined ? body.masterTargets : current.masterTargets,
-              masterStrategies: body.masterStrategies !== undefined ? body.masterStrategies : current.masterStrategies,
-              viewerSimulations: Array.isArray(body.viewerSimulations) ? body.viewerSimulations : current.viewerSimulations,
-              timestandConfig: body.timestandConfig || current.timestandConfig
-            };
-            saveDb(merged);
-            return sendJson(200, { ok: true, db: merged });
-          }
-
-          if (pathname === '/api/google-calendar-holidays' && req.method === 'GET') {
-            const apiKey = urlObj.searchParams.get('apiKey') || process.env.VITE_GOOGLE_CALENDAR_API_KEY || '';
-            const calId = 'id.indonesian%23holiday%40group.v.calendar.google.com';
-
-            if (apiKey) {
-              try {
-                const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calId}/events?key=${encodeURIComponent(apiKey)}&singleEvents=true&maxResults=250`;
-                const rawJson = await fetchUrlText(apiUrl);
-                const parsed = JSON.parse(rawJson);
-                if (Array.isArray(parsed.items)) {
-                  const holidays = parsed.items
-                    .filter((item) => item.start?.date)
-                    .map((item) => ({
-                      date: item.start.date,
-                      name: item.summary || 'Hari Libur Nasional',
-                      description: item.description || 'Google Calendar API',
-                      source: 'Google Calendar REST API v3 (id.indonesian#holiday@group.v.calendar.google.com)'
-                    }));
-                  return sendJson(200, {
-                    ok: true,
-                    calendarId: 'id.indonesian#holiday@group.v.calendar.google.com',
-                    source: 'Google Calendar REST API v3',
-                    holidays
-                  });
-                }
-              } catch (err) {
-                // Fall through to Google Calendar public iCal feed
-              }
-            }
-
-            // Live fetch from official Google Calendar public feed for id.indonesian#holiday@group.v.calendar.google.com
-            const icsUrl = `https://calendar.google.com/calendar/ical/${calId}/public/basic.ics`;
-            const icsText = await fetchUrlText(icsUrl);
-            const holidays = parseGoogleICalHolidays(icsText);
-            return sendJson(200, {
-              ok: true,
-              calendarId: 'id.indonesian#holiday@group.v.calendar.google.com',
-              source: 'Google Calendar Live Feed (id.indonesian#holiday@group.v.calendar.google.com)',
-              holidays
-            });
-          }
-
-          return sendJson(404, { error: 'Endpoint not found' });
-        } catch (err) {
-          return sendJson(500, { error: err.message || 'Internal Server Error' });
-        }
-      });
+      server.middlewares.use(middleware);
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use(middleware);
     }
   };
 }

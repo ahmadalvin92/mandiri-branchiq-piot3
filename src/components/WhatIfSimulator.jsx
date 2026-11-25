@@ -146,9 +146,9 @@ export function WhatIfSimulator({
     };
   }, [weightedMetrics, adjustments, baselineTotalScore]);
 
-  // Confetti trigger if score crosses 90
+  // Confetti trigger if score crosses 90 while modal is open
   useEffect(() => {
-    if (simulationResult.finalTotal >= 90.0 && !hasCelebrated90) {
+    if (isOpen && simulationResult.finalTotal >= 90.0 && !hasCelebrated90) {
       confetti({
         particleCount: 100,
         spread: 70,
@@ -157,7 +157,7 @@ export function WhatIfSimulator({
       });
       setHasCelebrated90(true);
     }
-  }, [simulationResult.finalTotal, hasCelebrated90]);
+  }, [isOpen, simulationResult.finalTotal, hasCelebrated90]);
 
   const handleSliderChange = useCallback((rowId, newVal) => {
     setAdjustments(prev => ({ ...prev, [rowId]: newVal }));

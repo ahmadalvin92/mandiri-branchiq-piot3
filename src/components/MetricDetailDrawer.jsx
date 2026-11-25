@@ -22,7 +22,10 @@ export function MetricDetailDrawer({
   metric,
   branchInfo = { code: '10125', name: 'Jakarta Pondok Indah Office 3', head: 'MICHAEL DANNIEL', grade: 'B.3' },
   onClose,
-  onOpenSimulatorForMetric
+  onOpenSimulatorForMetric,
+  masterStrategies = {},
+  viewerSimStrategies = {},
+  isViewerSimMode = false
 }) {
   if (!metric) return null;
 
@@ -30,8 +33,28 @@ export function MetricDetailDrawer({
   const unit = info.unit || '';
   const isAchieved = metric.acv >= 1.0;
   const isUnder = metric.scoreGap > 0;
-  const branchCode = branchInfo?.code || '10125';
+  const branchCode = String(branchInfo?.code || '10125');
   const branchName = branchInfo?.name || 'Jakarta Pondok Indah Office 3';
+
+  // Resolve active strategy (Viewer Sim -> Master Branch -> Master Global -> Default Knowledge Base)
+  const resolvedActions = (() => {
+    if (isViewerSimMode && viewerSimStrategies[metric.row]) {
+      return String(viewerSimStrategies[metric.row]).split('\n').filter(Boolean);
+    }
+    const bKey = `b${branchCode}~${metric.row}`;
+    const gKey = `g~${metric.row}`;
+    if (masterStrategies[bKey]?.text) {
+      return String(masterStrategies[bKey].text).split('\n').filter(Boolean);
+    }
+    if (masterStrategies[gKey]?.text) {
+      return String(masterStrategies[gKey].text).split('\n').filter(Boolean);
+    }
+    return info.tacticalAction || [
+      'Lakukan pemetaan (mapping) terhadap 10 tenant terbesar di Pondok Indah Office Tower 3 untuk program cross-selling intensif.',
+      'Adakan roadshow edukasi produk di lobby gedung pada jam makan siang dengan gimmick voucher merchant Pondok Indah Mall.',
+      'Susun daily tracking bersama Kepala Unit (MICHAEL DANNIEL) pada morning briefing untuk memonitor pipeline harian.'
+    ];
+  })();
 
   // Formulate dynamic impact sentence
   let dynamicSentence = '';
@@ -196,11 +219,7 @@ export function MetricDetailDrawer({
               </div>
 
               <div className="space-y-2.5">
-                {(info.tacticalAction || [
-                  "Lakukan pemetaan (mapping) terhadap 10 tenant terbesar di Pondok Indah Office Tower 3 untuk program cross-selling intensif.",
-                  "Adakan roadshow edukasi produk di lobby gedung pada jam makan siang dengan gimmick voucher merchant Pondok Indah Mall.",
-                  "Susun daily tracking bersama Kepala Unit (MICHAEL DANNIEL) pada morning briefing untuk memonitor pipeline harian."
-                ]).map((action, aIdx) => (
+                {resolvedActions.map((action, aIdx) => (
                   <div key={aIdx} className="flex items-start gap-2.5">
                     <span className="w-5 h-5 rounded-full bg-[#003D79] text-white flex items-center justify-center font-bold text-[10px] shrink-0 mt-0.5">
                       {aIdx + 1}

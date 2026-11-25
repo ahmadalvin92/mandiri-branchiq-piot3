@@ -138,7 +138,7 @@ export function Header({
                       className="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-amber-50 text-amber-800 text-[10px] sm:text-[11px] font-extrabold border border-amber-300 hover:bg-amber-100 cursor-pointer transition-colors"
                     >
                       <Trophy className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-amber-600 fill-amber-600" />
-                      <span>#{rankingInfo.totalRank}/164</span>
+                      <span>#{rankingInfo.totalRank}/{rankingInfo.totalBranches || allRankings.length || 164}</span>
                     </button>
                   )}
                 </div>
@@ -219,7 +219,7 @@ export function Header({
                 title="Buka Leaderboard 164 Cabang"
               >
                 <Trophy className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-white" />
-                <span>Rank #{rankingInfo?.totalRank || 43}</span>
+                <span>Rank #{rankingInfo?.totalRank || '-'}</span>
               </button>
 
               {/* Total Skor Simulasi Badge in Header Row */}

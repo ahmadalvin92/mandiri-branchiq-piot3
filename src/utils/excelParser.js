@@ -248,14 +248,23 @@ export function recalculateBranchWithOverrides(branchData, targetOverrides = {},
 
   const updatedMetrics = branchData.calculatedMetrics.map(m => {
     const branchRowKey = `${code}_${m.row}`;
-    const hasCustomTarget =
+    const rawTargetOverride =
       targetOverrides[branchRowKey] !== undefined
         ? targetOverrides[branchRowKey]
         : targetOverrides[m.row];
-    const hasCustomReal =
+    const hasCustomTarget =
+      rawTargetOverride !== null && typeof rawTargetOverride === 'object'
+        ? rawTargetOverride.target
+        : rawTargetOverride;
+
+    const rawRealOverride =
       realOverrides[branchRowKey] !== undefined
         ? realOverrides[branchRowKey]
         : realOverrides[m.row];
+    const hasCustomReal =
+      rawRealOverride !== null && typeof rawRealOverride === 'object'
+        ? rawRealOverride.real
+        : rawRealOverride;
 
     const effectiveTarget = hasCustomTarget !== undefined && hasCustomTarget !== null && !isNaN(Number(hasCustomTarget))
       ? Number(hasCustomTarget)

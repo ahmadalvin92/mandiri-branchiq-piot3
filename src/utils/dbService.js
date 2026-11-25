@@ -1,13 +1,18 @@
 /**
  * Database & RBAC Service for BranchIQ Mandiri
- * Synchronizes state with Backend API (/api/db & /api/db/sync -> data/branchiq_db.json)
- * and localStorage fallback for instant reactivity.
+ * Synchronizes state with Supabase Cloud Database (PostgreSQL + Realtime),
+ * Backend API fallback (/api/db), and localStorage cache.
  */
 
-import { supabase } from './supabaseClient';
+import { supabase } from './supabaseClient.js';
 
 export const DEFAULT_PASSWORD = 'mandiri123';
 export const STORAGE_KEY_DB = 'branchiq_master_db_v2';
+
+// Reserved system keys stored inside master_strategies (scope: 'system')
+export const SYS_KEY_TIMESTAND = '__sys_timestand_config__';
+export const SYS_KEY_SIMULATIONS = '__sys_viewer_simulations__';
+export const SYS_KEY_ACTIVE_SNAPSHOT = '__sys_active_snapshot__';
 
 export const INITIAL_USERS = [
   // Superadmin Accounts
@@ -104,6 +109,74 @@ export const DEFAULT_TIMESTAND_CONFIG = {
   updatedAt: '2026-11-16T08:00:00Z'
 };
 
+function safeReadLocalDb() {
+  if (typeof localStorage === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_DB);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+function safeWriteLocalDb(data) {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(data));
+  } catch (e) {
+    console.warn('Could not save to localStorage:', e);
+  }
+}
+
+/**
+ * Normalize masterTargets map so every entry is a finite plain Number
+ */
+export function normalizeMasterTargets(rawTargets = {}) {
+  const out = {};
+  if (!rawTargets || typeof rawTargets !== 'object') return out;
+  Object.entries(rawTargets).forEach(([key, val]) => {
+    if (!key || val === null || val === undefined) return;
+    const rawNum = typeof val === 'object' ? val.target : val;
+    if (rawNum === null || rawNum === undefined || rawNum === '') return;
+    const num = Number(rawNum);
+    if (Number.isFinite(num) && num >= 0) {
+      out[key] = num;
+    }
+  });
+  return out;
+}
+
+/**
+ * Normalize masterStrategies map so every non-system entry uses `{ text, scope, branchCode, rowId, updatedBy, updatedAt }`
+ */
+export function normalizeMasterStrategies(rawStrategies = {}) {
+  const out = {};
+  if (!rawStrategies || typeof rawStrategies !== 'object') return out;
+  Object.entries(rawStrategies).forEach(([key, val]) => {
+    if (!key || key.startsWith('__sys_') || !val) return;
+    const textVal = typeof val === 'string'
+      ? val
+      : (val.text !== undefined ? val.text : val.strategyText);
+    const cleanText = String(textVal || '').trim();
+    if (!cleanText) return;
+
+    const isGlobal = key.startsWith('g~');
+    const inferredBranch = isGlobal ? 'all' : (key.startsWith('b') ? key.split('~')[0].slice(1) : '10125');
+    const inferredRowId = Number(key.split('~')[1]) || Number(val.rowId) || 0;
+
+    out[key] = {
+      text: cleanText,
+      scope: val.scope === 'all' || isGlobal ? 'all' : 'branch',
+      branchCode: val.branchCode || inferredBranch,
+      rowId: inferredRowId,
+      tacticalActions: Array.isArray(val.tacticalActions) ? val.tacticalActions : cleanText.split('\n').filter(Boolean),
+      updatedBy: val.updatedBy || 'michael',
+      updatedAt: val.updatedAt || new Date().toISOString()
+    };
+  });
+  return out;
+}
+
 /**
  * Ensure all baseline INITIAL_USERS exist in any loaded users array
  */
@@ -126,33 +199,35 @@ export function ensureRequiredUsers(existingUsers = []) {
 }
 
 export function getInitialDbState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY_DB);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      const users = ensureRequiredUsers(parsed.users);
-      return {
-        users,
-        masterTargets: parsed.masterTargets || {},
-        masterStrategies: parsed.masterStrategies || {},
-        viewerSimulations: Array.isArray(parsed.viewerSimulations) ? parsed.viewerSimulations : [],
-        timestandConfig: parsed.timestandConfig || { ...DEFAULT_TIMESTAND_CONFIG }
-      };
-    }
-  } catch (e) {
-    console.warn('Failed reading local DB state:', e);
+  const parsed = safeReadLocalDb();
+  if (parsed) {
+    const users = ensureRequiredUsers(parsed.users);
+    return {
+      users,
+      masterTargets: normalizeMasterTargets(parsed.masterTargets || {}),
+      masterStrategies: normalizeMasterStrategies(parsed.masterStrategies || {}),
+      viewerSimulations: Array.isArray(parsed.viewerSimulations) ? parsed.viewerSimulations : [],
+      timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG, ...(parsed.timestandConfig || {}) },
+      officialActiveSnapshotId: parsed.officialActiveSnapshotId || null
+    };
   }
   return {
     users: [...INITIAL_USERS],
     masterTargets: {},
     masterStrategies: {},
     viewerSimulations: [],
-    timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG }
+    timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG },
+    officialActiveSnapshotId: null
   };
 }
 
+// Serialized write queue to prevent rapid concurrent Supabase writes from racing out of order
+let persistQueue = Promise.resolve();
+
 export async function fetchServerDb() {
-  // 1. Coba ambil dari Supabase Cloud Database terlebih dahulu
+  const localFallback = safeReadLocalDb();
+
+  // 1. Ambil dari Supabase Cloud Database terlebih dahulu
   if (supabase) {
     try {
       const [usersRes, targetsRes, stratsRes] = await Promise.all([
@@ -161,7 +236,7 @@ export async function fetchServerDb() {
         supabase.from('master_strategies').select('*')
       ]);
 
-      if (!usersRes.error && usersRes.data && usersRes.data.length > 0) {
+      if (!usersRes.error && !targetsRes.error && !stratsRes.error && Array.isArray(usersRes.data)) {
         let users = usersRes.data.map(u => ({
           username: u.username,
           displayName: u.display_name,
@@ -174,25 +249,57 @@ export async function fetchServerDb() {
         users = ensureRequiredUsers(users);
 
         const masterTargets = {};
-        if (targetsRes.data) {
+        if (Array.isArray(targetsRes.data)) {
           targetsRes.data.forEach(t => {
-            masterTargets[t.key] = {
-              target: Number(t.target_value),
-              updatedBy: t.updated_by,
-              updatedAt: t.updated_at
-            };
+            const num = Number(t.target_value);
+            if (t.key && Number.isFinite(num) && num >= 0) {
+              masterTargets[t.key] = num;
+            }
           });
         }
 
         const masterStrategies = {};
-        if (stratsRes.data) {
+        let cloudTimestand = null;
+        let cloudSimulations = null;
+        let officialActiveSnapshotId = null;
+
+        if (Array.isArray(stratsRes.data)) {
           stratsRes.data.forEach(s => {
+            if (!s || !s.key) return;
+            const parsedActions = typeof s.tactical_actions === 'string'
+              ? (() => { try { return JSON.parse(s.tactical_actions || '[]'); } catch { return []; } })()
+              : s.tactical_actions;
+
+            if (s.key === SYS_KEY_TIMESTAND) {
+              if (parsedActions && typeof parsedActions === 'object' && !Array.isArray(parsedActions)) {
+                cloudTimestand = { ...DEFAULT_TIMESTAND_CONFIG, ...parsedActions };
+              }
+              return;
+            }
+            if (s.key === SYS_KEY_SIMULATIONS) {
+              if (Array.isArray(parsedActions)) {
+                cloudSimulations = parsedActions;
+              }
+              return;
+            }
+            if (s.key === SYS_KEY_ACTIVE_SNAPSHOT) {
+              const snapId = (parsedActions && typeof parsedActions === 'object' && !Array.isArray(parsedActions))
+                ? parsedActions.activeSnapshotId
+                : s.strategy_text;
+              if (snapId) officialActiveSnapshotId = String(snapId);
+              return;
+            }
+
+            const cleanText = String(s.strategy_text || '').trim();
+            if (!cleanText) return;
             masterStrategies[s.key] = {
-              strategyText: s.strategy_text,
-              scope: s.scope,
-              tacticalActions: typeof s.tactical_actions === 'string' ? JSON.parse(s.tactical_actions || '[]') : (s.tactical_actions || []),
-              updatedBy: s.updated_by,
-              updatedAt: s.updated_at
+              text: cleanText,
+              scope: s.scope === 'all' ? 'all' : 'branch',
+              branchCode: s.branch_code || (s.scope === 'all' ? 'all' : '10125'),
+              rowId: Number(s.row_id) || Number(s.key.split('~')[1]) || 0,
+              tacticalActions: Array.isArray(parsedActions) ? parsedActions : cleanText.split('\n').filter(Boolean),
+              updatedBy: s.updated_by || 'michael',
+              updatedAt: s.updated_at || new Date().toISOString()
             };
           });
         }
@@ -201,10 +308,15 @@ export async function fetchServerDb() {
           users,
           masterTargets,
           masterStrategies,
-          viewerSimulations: [],
-          timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG }
+          viewerSimulations: cloudSimulations !== null
+            ? cloudSimulations
+            : (Array.isArray(localFallback?.viewerSimulations) ? localFallback.viewerSimulations : []),
+          timestandConfig: cloudTimestand !== null
+            ? cloudTimestand
+            : { ...DEFAULT_TIMESTAND_CONFIG, ...(localFallback?.timestandConfig || {}) },
+          officialActiveSnapshotId
         };
-        localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(cloudDb));
+        safeWriteLocalDb(cloudDb);
         return cloudDb;
       }
     } catch (e) {
@@ -218,9 +330,16 @@ export async function fetchServerDb() {
     if (res.ok) {
       const data = await res.json();
       if (data && Array.isArray(data.users)) {
-        data.users = ensureRequiredUsers(data.users);
-        localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(data));
-        return data;
+        const normalized = {
+          users: ensureRequiredUsers(data.users),
+          masterTargets: normalizeMasterTargets(data.masterTargets || {}),
+          masterStrategies: normalizeMasterStrategies(data.masterStrategies || {}),
+          viewerSimulations: Array.isArray(data.viewerSimulations) ? data.viewerSimulations : [],
+          timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG, ...(data.timestandConfig || {}) },
+          officialActiveSnapshotId: data.officialActiveSnapshotId || null
+        };
+        safeWriteLocalDb(normalized);
+        return normalized;
       }
     }
   } catch (e) {
@@ -229,80 +348,276 @@ export async function fetchServerDb() {
   return getInitialDbState();
 }
 
-export async function persistDbState(newDb) {
-  // 1. Simpan ke localStorage lokal
-  try {
-    localStorage.setItem(STORAGE_KEY_DB, JSON.stringify(newDb));
-  } catch (e) {
-    console.warn('Could not save to localStorage:', e);
-  }
+export async function persistDbState(newDb, options = {}) {
+  const {
+    changed = ['users', 'masterTargets', 'masterStrategies', 'timestandConfig', 'viewerSimulations'],
+    actor = 'michael',
+    officialActiveSnapshotId
+  } = options || {};
 
-  // 2. Simpan ke Supabase Cloud
-  if (supabase) {
-    try {
-      if (Array.isArray(newDb.users)) {
-        await supabase.from('users').upsert(
-          newDb.users.map(u => ({
+  const normalizedDb = {
+    users: ensureRequiredUsers(newDb.users || []),
+    masterTargets: normalizeMasterTargets(newDb.masterTargets || {}),
+    masterStrategies: normalizeMasterStrategies(newDb.masterStrategies || {}),
+    viewerSimulations: Array.isArray(newDb.viewerSimulations) ? newDb.viewerSimulations : [],
+    timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG, ...(newDb.timestandConfig || {}) },
+    officialActiveSnapshotId: officialActiveSnapshotId !== undefined
+      ? officialActiveSnapshotId
+      : (newDb.officialActiveSnapshotId || null)
+  };
+
+  // 1. Simpan segera ke localStorage lokal
+  safeWriteLocalDb(normalizedDb);
+
+  const runCloudPersist = async () => {
+    const errors = [];
+    const changedSet = new Set(Array.isArray(changed) ? changed : []);
+
+    // 2. Simpan ke Supabase Cloud (scoped & serialized)
+    if (supabase) {
+      try {
+        if (changedSet.has('users')) {
+          const userRows = normalizedDb.users.map(u => ({
             username: u.username,
             display_name: u.displayName || u.username,
             password: u.password || DEFAULT_PASSWORD,
             role: u.role || 'viewer',
             jabatan: u.jabatan || 'Pegawai Cabang',
             updated_at: new Date().toISOString()
-          }))
-        );
-      }
-      if (newDb.masterTargets) {
-        const targetRows = Object.entries(newDb.masterTargets).map(([key, val]) => {
-          const parts = key.split('_');
-          return {
-            key,
-            branch_code: parts[0] || '10125',
-            row_id: Number(parts[1]) || 0,
-            target_value: Number(val.target || 0),
-            updated_by: val.updatedBy || 'michael',
-            updated_at: val.updatedAt || new Date().toISOString()
-          };
-        });
-        if (targetRows.length > 0) {
-          await supabase.from('master_targets').upsert(targetRows);
+          }));
+          if (userRows.length > 0) {
+            const { error } = await supabase.from('users').upsert(userRows);
+            if (error) errors.push(`users upsert: ${error.message}`);
+          }
+          const { data: existingUsers, error: fetchUErr } = await supabase.from('users').select('username');
+          if (!fetchUErr && Array.isArray(existingUsers)) {
+            const keepUsernames = new Set(normalizedDb.users.map(u => u.username));
+            const toDeleteUsers = existingUsers
+              .map(u => u.username)
+              .filter(uname => uname !== 'superadmin' && !keepUsernames.has(uname));
+            if (toDeleteUsers.length > 0) {
+              const { error: delUErr } = await supabase.from('users').delete().in('username', toDeleteUsers);
+              if (delUErr) errors.push(`users delete: ${delUErr.message}`);
+            }
+          }
         }
-      }
-      if (newDb.masterStrategies) {
-        const stratRows = Object.entries(newDb.masterStrategies).map(([key, val]) => {
-          const branchCode = key.startsWith('b') ? key.split('~')[0].slice(1) : 'all';
-          const rowId = Number(key.split('~')[1]) || 0;
-          return {
-            key,
-            branch_code: branchCode,
-            row_id: rowId,
-            scope: val.scope || (branchCode === 'all' ? 'all' : 'branch'),
-            strategy_text: val.strategyText || '',
-            tactical_actions: val.tacticalActions || [],
-            updated_by: val.updatedBy || 'michael',
-            updated_at: val.updatedAt || new Date().toISOString()
-          };
-        });
-        if (stratRows.length > 0) {
-          await supabase.from('master_strategies').upsert(stratRows);
-        }
-      }
-    } catch (e) {
-      console.warn('Supabase cloud persist info:', e?.message || e);
-    }
-  }
 
-  // 3. Sync ke local dev server
-  try {
-    await fetch('/api/db/sync', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newDb)
-    });
-  } catch (e) {
-    // Ignore network errors on static preview
+        if (changedSet.has('masterTargets')) {
+          const targetRows = Object.entries(normalizedDb.masterTargets).map(([key, val]) => {
+            const parts = key.split('_');
+            const numVal = typeof val === 'object' && val !== null ? Number(val.target) : Number(val);
+            return {
+              key,
+              branch_code: parts[0] || '10125',
+              row_id: Number(parts[1]) || 0,
+              target_value: numVal,
+              updated_by: actor || 'michael',
+              updated_at: new Date().toISOString()
+            };
+          }).filter(r => Number.isFinite(r.target_value));
+
+          if (targetRows.length > 0) {
+            const { error } = await supabase.from('master_targets').upsert(targetRows);
+            if (error) errors.push(`master_targets upsert: ${error.message}`);
+          }
+
+          const { data: existingTargets, error: fetchTErr } = await supabase.from('master_targets').select('key');
+          if (!fetchTErr && Array.isArray(existingTargets)) {
+            const keepKeys = new Set(targetRows.map(r => r.key));
+            const toDeleteKeys = existingTargets.map(r => r.key).filter(k => !keepKeys.has(k));
+            if (toDeleteKeys.length > 0) {
+              const { error: delTErr } = await supabase.from('master_targets').delete().in('key', toDeleteKeys);
+              if (delTErr) errors.push(`master_targets delete: ${delTErr.message}`);
+            }
+          }
+        }
+
+        if (changedSet.has('masterStrategies')) {
+          const stratRows = Object.entries(normalizedDb.masterStrategies).map(([key, val]) => {
+            const cleanText = String(typeof val === 'string' ? val : (val.text ?? val.strategyText ?? '')).trim();
+            const isGlobal = key.startsWith('g~');
+            const branchCode = val.branchCode || (isGlobal ? 'all' : (key.startsWith('b') ? key.split('~')[0].slice(1) : '10125'));
+            const rowId = Number(val.rowId) || Number(key.split('~')[1]) || 0;
+            return {
+              key,
+              branch_code: branchCode,
+              row_id: rowId,
+              scope: val.scope === 'all' || isGlobal ? 'all' : 'branch',
+              strategy_text: cleanText,
+              tactical_actions: Array.isArray(val.tacticalActions) ? val.tacticalActions : cleanText.split('\n').filter(Boolean),
+              updated_by: val.updatedBy || actor || 'michael',
+              updated_at: val.updatedAt || new Date().toISOString()
+            };
+          }).filter(r => r.strategy_text.length > 0);
+
+          if (stratRows.length > 0) {
+            const { error } = await supabase.from('master_strategies').upsert(stratRows);
+            if (error) errors.push(`master_strategies upsert: ${error.message}`);
+          }
+
+          const { data: existingStrats, error: fetchSErr } = await supabase.from('master_strategies').select('key');
+          if (!fetchSErr && Array.isArray(existingStrats)) {
+            const keepKeys = new Set(stratRows.map(r => r.key));
+            const toDeleteKeys = existingStrats
+              .map(r => r.key)
+              .filter(k => !k.startsWith('__sys_') && !keepKeys.has(k));
+            if (toDeleteKeys.length > 0) {
+              const { error: delSErr } = await supabase.from('master_strategies').delete().in('key', toDeleteKeys);
+              if (delSErr) errors.push(`master_strategies delete: ${delSErr.message}`);
+            }
+          }
+        }
+
+        if (changedSet.has('timestandConfig')) {
+          const { error } = await supabase.from('master_strategies').upsert({
+            key: SYS_KEY_TIMESTAND,
+            branch_code: 'sys',
+            row_id: -1,
+            scope: 'system',
+            strategy_text: 'timestand_config',
+            tactical_actions: normalizedDb.timestandConfig,
+            updated_by: normalizedDb.timestandConfig?.updatedBy || actor || 'michael',
+            updated_at: new Date().toISOString()
+          });
+          if (error) errors.push(`timestand upsert: ${error.message}`);
+        }
+
+        if (changedSet.has('viewerSimulations')) {
+          const { error } = await supabase.from('master_strategies').upsert({
+            key: SYS_KEY_SIMULATIONS,
+            branch_code: 'sys',
+            row_id: -2,
+            scope: 'system',
+            strategy_text: 'viewer_simulations',
+            tactical_actions: normalizedDb.viewerSimulations,
+            updated_by: actor || 'viewer',
+            updated_at: new Date().toISOString()
+          });
+          if (error) errors.push(`viewer_simulations upsert: ${error.message}`);
+        }
+
+        if (officialActiveSnapshotId !== undefined) {
+          const { error } = await supabase.from('master_strategies').upsert({
+            key: SYS_KEY_ACTIVE_SNAPSHOT,
+            branch_code: 'sys',
+            row_id: -3,
+            scope: 'system',
+            strategy_text: String(officialActiveSnapshotId || ''),
+            tactical_actions: {
+              activeSnapshotId: String(officialActiveSnapshotId || ''),
+              updatedBy: actor || 'superadmin',
+              updatedAt: new Date().toISOString()
+            },
+            updated_by: actor || 'superadmin',
+            updated_at: new Date().toISOString()
+          });
+          if (error) errors.push(`official_snapshot upsert: ${error.message}`);
+        }
+      } catch (e) {
+        errors.push(e?.message || String(e));
+        console.warn('Supabase cloud persist info:', e?.message || e);
+      }
+    }
+
+    // 3. Sync ke local dev server (hanya di Vite Dev atau jika Supabase fallback gagal)
+    const isViteDev = typeof import.meta !== 'undefined' && Boolean(import.meta.env?.DEV);
+    if ((isViteDev || !supabase || errors.length > 0) && typeof fetch === 'function') {
+      try {
+        await fetch('/api/db/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(normalizedDb)
+        });
+      } catch (e) {
+        // Ignore network errors on static/Node environments
+      }
+    }
+
+    if (errors.length > 0) {
+      console.warn('Supabase sync reported errors:', errors);
+    }
+
+    return { ok: errors.length === 0, errors, db: normalizedDb };
+  };
+
+  persistQueue = persistQueue.then(runCloudPersist, runCloudPersist);
+  return persistQueue;
+}
+
+/**
+ * Persist which Excel Snapshot is the official active version for all Viewers & devices
+ */
+export async function persistOfficialActiveSnapshot(snapshotId, actor = 'superadmin') {
+  const local = getInitialDbState();
+  const nextDb = {
+    ...local,
+    officialActiveSnapshotId: snapshotId || null
+  };
+  safeWriteLocalDb(nextDb);
+
+  if (!supabase) return { ok: true, officialActiveSnapshotId: snapshotId };
+
+  const run = async () => {
+    try {
+      const { error } = await supabase.from('master_strategies').upsert({
+        key: SYS_KEY_ACTIVE_SNAPSHOT,
+        branch_code: 'sys',
+        row_id: -3,
+        scope: 'system',
+        strategy_text: String(snapshotId || ''),
+        tactical_actions: {
+          activeSnapshotId: String(snapshotId || ''),
+          updatedBy: actor || 'superadmin',
+          updatedAt: new Date().toISOString()
+        },
+        updated_by: actor || 'superadmin',
+        updated_at: new Date().toISOString()
+      });
+      if (error) return { ok: false, error: error.message };
+      return { ok: true, officialActiveSnapshotId: snapshotId };
+    } catch (e) {
+      return { ok: false, error: e?.message || String(e) };
+    }
+  };
+
+  persistQueue = persistQueue.then(run, run);
+  return persistQueue;
+}
+
+/**
+ * Subscribe to Supabase Realtime Postgres changes across Master Targets, Strategies, Users, and Snapshots
+ */
+export function subscribeToCloudDbChanges(onRemoteChange) {
+  if (!supabase || typeof onRemoteChange !== 'function') {
+    return () => {};
   }
-  return newDb;
+  try {
+    const channel = supabase
+      .channel(`branchiq-cloud-sync-${Math.random().toString(36).slice(2, 8)}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'master_targets' }, (payload) => {
+        onRemoteChange('master_targets', payload);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'master_strategies' }, (payload) => {
+        onRemoteChange('master_strategies', payload);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'users' }, (payload) => {
+        onRemoteChange('users', payload);
+      })
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'excel_snapshots' }, (payload) => {
+        onRemoteChange('excel_snapshots', payload);
+      })
+      .subscribe();
+
+    return () => {
+      try {
+        supabase.removeChannel(channel);
+      } catch (e) {
+        // ignore cleanup error
+      }
+    };
+  } catch (e) {
+    return () => {};
+  }
 }
 
 /**

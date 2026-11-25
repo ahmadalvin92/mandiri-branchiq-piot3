@@ -9,9 +9,11 @@ export function PrintReport({
   totalGap,
   categorySummary,
   metrics = [],
-  rankingInfo
+  rankingInfo,
+  masterStrategies = {}
 }) {
   const categories = Object.values(categorySummary || {});
+  const branchCode = String(branchInfo?.code || '10125');
   
   // Top under target metrics needing attention for morning briefing
   const topGaps = metrics
@@ -166,7 +168,12 @@ export function PrintReport({
             {topGaps.map((item, idx) => {
               const info = metricKnowledge[item.metric] || metricKnowledge[item.name] || {};
               const unit = info.unit || '';
-              const firstAction = info.tacticalAction ? info.tacticalAction[0] : 'Tingkatkan penagihan & pipeline harian.';
+              const bKey = `b${branchCode}~${item.row}`;
+              const gKey = `g~${item.row}`;
+              const customStrat = masterStrategies[bKey]?.text || masterStrategies[gKey]?.text || '';
+              const firstAction = customStrat
+                ? customStrat.split('\n').filter(Boolean)[0]
+                : (info.tacticalAction ? info.tacticalAction[0] : 'Tingkatkan penagihan & pipeline harian.');
 
               return (
                 <tr key={item.row} className="border-b border-slate-200">

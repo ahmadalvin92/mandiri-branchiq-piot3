@@ -131,7 +131,7 @@ export function SimulationManagerBar({
               <div className="flex flex-wrap items-center gap-2">
                 {isKonseptor ? (
                   <span className="px-2.5 py-0.5 rounded-full bg-[#003D79] text-white text-[10px] font-black uppercase tracking-wider">
-                    {isSuperadminUser ? 'Superadmin (Full Access)' : 'Konseptor Utama (Michael)'}
+                    {isSuperadminUser ? 'Superadmin (Full Access)' : `Admin / Konseptor (${currentUser?.displayName || currentUser?.username})`}
                   </span>
                 ) : (
                   <span className="px-2.5 py-0.5 rounded-full bg-blue-100 text-[#003D79] text-[10px] font-black uppercase tracking-wider">

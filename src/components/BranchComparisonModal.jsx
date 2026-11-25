@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Trophy,
   X,
@@ -42,12 +42,24 @@ export function BranchComparisonModal({
   const [sortBy, setSortBy] = useState('totalRank'); // 'totalRank', 'totalScore', 'DPK', 'Kredit', 'Livin', 'Acquiring', 'Kopra', 'GMM'
   const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
 
-  // Branches selected for multi-branch comparison (array of codes)
-  // Default to active branch + rank 1 branch
-  const [selectedForComparison, setSelectedForComparison] = useState([
-    activeBranchCode || '10125',
-    '13325' // Cibinong Mayor Oking (#1)
-  ]);
+  const [selectedForComparison, setSelectedForComparison] = useState(() => {
+    const topCode = allRankings[0]?.code || '13325';
+    const actCode = activeBranchCode || '10125';
+    return topCode && topCode !== actCode ? [actCode, topCode] : [actCode];
+  });
+
+  // Sync default comparison branches when active branch or top1 branch changes
+  useEffect(() => {
+    const topCode = allRankings[0]?.code || '13325';
+    setSelectedForComparison(prev => {
+      const hasValidActive = prev.some(c => c === activeBranchCode);
+      const cleaned = prev.filter(c => allRankings.some(r => r.code === c));
+      if (hasValidActive && cleaned.length >= 1) return cleaned;
+      const next = [activeBranchCode || '10125'];
+      if (topCode && topCode !== activeBranchCode) next.push(topCode);
+      return next;
+    });
+  }, [activeBranchCode, allRankings]);
 
   // Active branch ranking item
   const activeBranch = useMemo(() => {
@@ -246,7 +258,7 @@ export function BranchComparisonModal({
                     Peringkat & Matriks Perbandingan Cabang
                   </h2>
                   <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30">
-                    164 Cabang
+                    {allRankings.length || 164} Cabang
                   </span>
                 </div>
                 <p className="text-xs text-white/70 mt-0.5">
@@ -1116,8 +1128,8 @@ export function BranchComparisonModal({
             <Building2 className="w-4 h-4 text-slate-400" />
             <span>
               {selectedGrade !== 'all'
-                ? `Menampilkan ${filteredRankings.length} cabang Kelas ${selectedGrade} (dari total 164 Kantor Cabang se-Region V Jakarta 3)`
-                : 'Total 164 Kantor Cabang Pembantu (KCP) / Kantor Cabang (KC) se-Region V Jakarta 3'}
+                ? `Menampilkan ${filteredRankings.length} cabang Kelas ${selectedGrade} (dari total ${allRankings.length || 164} Kantor Cabang se-Region V Jakarta 3)`
+                : `Total ${allRankings.length || 164} Kantor Cabang Pembantu (KCP) / Kantor Cabang (KC) se-Region V Jakarta 3`}
             </span>
           </div>
 

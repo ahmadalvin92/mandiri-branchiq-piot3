@@ -40,7 +40,7 @@ export function ExecutiveSummary({
       gapScore: 3.93
     };
 
-  const totalRank = rankingInfo?.totalRank || 43;
+  const totalRank = rankingInfo?.totalRank || '-';
   const totalBranches = rankingInfo?.totalBranches || 164;
   const areaRank = rankingInfo?.areaRank;
   const totalInArea = rankingInfo?.totalInArea;

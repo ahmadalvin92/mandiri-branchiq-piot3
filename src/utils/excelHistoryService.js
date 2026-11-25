@@ -44,6 +44,52 @@ export const BASELINE_13NOV_META = {
   isDefault: false
 };
 
+function safeReadMetaStorage() {
+  if (typeof localStorage === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem(META_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    console.warn('Gagal membaca metadata riwayat Excel:', e);
+    return null;
+  }
+}
+
+function safeWriteMetaStorage(list) {
+  if (typeof localStorage === 'undefined') return;
+  try {
+    localStorage.setItem(META_STORAGE_KEY, JSON.stringify(list));
+  } catch (e) {
+    console.warn('Gagal menyimpan metadata riwayat Excel:', e);
+  }
+}
+
+function sortAndDedupeHistoryList(uploadedItems = []) {
+  const seenIds = new Set([DEFAULT_SNAPSHOT_META.id, BASELINE_13NOV_META.id, 'default_baseline_16nov_r05']);
+  const seenDates = new Set([
+    DEFAULT_SNAPSHOT_META.realizationDate.toLowerCase(),
+    BASELINE_13NOV_META.realizationDate.toLowerCase()
+  ]);
+
+  const sortedUploaded = [...(uploadedItems || [])]
+    .filter(item => item && item.id && !seenIds.has(item.id))
+    .sort((a, b) => {
+      const ta = new Date(a.uploadedAt || 0).getTime() || 0;
+      const tb = new Date(b.uploadedAt || 0).getTime() || 0;
+      return tb - ta;
+    })
+    .filter(item => {
+      const dateKey = String(item.realizationDate || '').trim().toLowerCase();
+      if (seenIds.has(item.id)) return false;
+      if (dateKey && seenDates.has(dateKey)) return false;
+      seenIds.add(item.id);
+      if (dateKey) seenDates.add(dateKey);
+      return true;
+    });
+
+  return [...sortedUploaded, DEFAULT_SNAPSHOT_META, BASELINE_13NOV_META];
+}
+
 function openHistoryIdb() {
   return new Promise((resolve, reject) => {
     if (typeof indexedDB === 'undefined') {
@@ -84,52 +130,34 @@ export function formatBytesToMB(bytes = 0) {
 }
 
 export function getExcelHistoryMetaList() {
-  try {
-    const raw = localStorage.getItem(META_STORAGE_KEY);
-    if (raw) {
-      let parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        let cleaned = parsed.map(item => {
-          if (item.id === 'default_r05_13nov2026' || item.realizationDate === '13 November 2026') {
-            return BASELINE_13NOV_META;
-          }
-          if (item.realizationDate === '16 November 2026' || item.id === 'default_baseline_16nov_r05' || item.id === DEFAULT_SNAPSHOT_META.id) {
-            return null; // Digantikan tepat satu DEFAULT_SNAPSHOT_META resmi
-          }
-          return item;
-        }).filter(Boolean);
-
-        // De-duplicate items
-        const uniqueItems = [];
-        const seen = new Set();
-        cleaned.forEach(item => {
-          if (!seen.has(item.id) && !seen.has(item.realizationDate)) {
-            seen.add(item.id);
-            seen.add(item.realizationDate);
-            uniqueItems.push(item);
-          }
-        });
-
-        const finalList = [
-          DEFAULT_SNAPSHOT_META, 
-          ...uniqueItems.filter(x => x.id !== BASELINE_13NOV_META.id), 
-          BASELINE_13NOV_META
-        ];
-        return finalList;
-      }
-    }
-  } catch (e) {
-    console.warn('Gagal membaca metadata riwayat Excel:', e);
+  const parsed = safeReadMetaStorage();
+  if (Array.isArray(parsed) && parsed.length > 0) {
+    const uploadedOnly = parsed.filter(item => {
+      if (!item || !item.id) return false;
+      if (item.id === 'default_baseline_16nov_r05' || item.id === DEFAULT_SNAPSHOT_META.id) return false;
+      if (item.id === BASELINE_13NOV_META.id) return false;
+      if (String(item.realizationDate || '').trim() === DEFAULT_SNAPSHOT_META.realizationDate) return false;
+      if (String(item.realizationDate || '').trim() === BASELINE_13NOV_META.realizationDate) return false;
+      return true;
+    });
+    return sortAndDedupeHistoryList(uploadedOnly);
   }
   return [DEFAULT_SNAPSHOT_META, BASELINE_13NOV_META];
 }
 
 export function saveExcelHistoryMetaList(list) {
-  try {
-    localStorage.setItem(META_STORAGE_KEY, JSON.stringify(list));
-  } catch (e) {
-    console.warn('Gagal menyimpan metadata riwayat Excel:', e);
-  }
+  safeWriteMetaStorage(list);
+}
+
+/**
+ * Ambil ID snapshot upload terbaru (non-default) jika tersedia di riwayat
+ */
+export function getLatestUploadedSnapshotId(list = null) {
+  const items = Array.isArray(list) ? list : getExcelHistoryMetaList();
+  const uploaded = items.find(
+    x => x && !x.isDefault && x.id !== DEFAULT_SNAPSHOT_META.id && x.id !== BASELINE_13NOV_META.id
+  );
+  return uploaded?.id || null;
 }
 
 /**
@@ -157,38 +185,16 @@ export async function syncCloudExcelHistory() {
         sizeBytes: Number(row.size_bytes),
         isDefault: Boolean(row.is_default)
       })).filter(m => {
-        // Jangan duplikasi baseline 16 Nov atau 13 Nov bawaan
-        if (m.realizationDate === '16 November 2026' || m.id === 'default_baseline_16nov_r05') return false;
-        if (m.realizationDate === '13 November 2026' || m.id === BASELINE_13NOV_META.id) return false;
+        if (!m.id) return false;
+        if (m.id === 'default_baseline_16nov_r05' || m.id === DEFAULT_SNAPSHOT_META.id) return false;
+        if (m.id === BASELINE_13NOV_META.id) return false;
+        if (m.realizationDate === DEFAULT_SNAPSHOT_META.realizationDate) return false;
+        if (m.realizationDate === BASELINE_13NOV_META.realizationDate) return false;
         return true;
       });
 
-      const localList = getExcelHistoryMetaList().filter(m => {
-        if (m.id === 'default_baseline_16nov_r05') return false;
-        if (m.realizationDate === '16 November 2026' && m.id !== DEFAULT_SNAPSHOT_META.id) return false;
-        return true;
-      });
-
-      const map = new Map();
-      // Selalu tepat satu snapshot resmi 16 Nov
-      map.set(DEFAULT_SNAPSHOT_META.id, DEFAULT_SNAPSHOT_META);
-
-      // Masukkan item baru dari cloud (upload Superadmin)
-      cloudMetas.forEach(m => {
-        if (!map.has(m.id)) map.set(m.id, m);
-      });
-
-      // Masukkan item lokal lain jika ada
-      localList.forEach(m => {
-        if (m.id !== DEFAULT_SNAPSHOT_META.id && m.id !== BASELINE_13NOV_META.id && !map.has(m.id)) {
-          map.set(m.id, m);
-        }
-      });
-
-      // Selalu letakkan cadangan 13 Nov
-      map.set(BASELINE_13NOV_META.id, BASELINE_13NOV_META);
-
-      const merged = Array.from(map.values());
+      // Cloud is the source of truth for uploaded snapshots (ensures deleted snapshots don't resurrect)
+      const merged = sortAndDedupeHistoryList(cloudMetas);
       saveExcelHistoryMetaList(merged);
       return merged;
     }
@@ -246,13 +252,15 @@ export async function saveExcelSnapshotToHistory({
   }
 
   const currentList = getExcelHistoryMetaList();
-  let workingList = [...currentList];
+  let workingList = currentList.filter(
+    x => !x.isDefault && x.id !== DEFAULT_SNAPSHOT_META.id && x.id !== BASELINE_13NOV_META.id
+  );
   const replacedItems = [];
 
   const cleanDate = String(realizationDate || '').trim().toLowerCase();
   if (cleanDate) {
     const duplicateIdx = workingList.findIndex(
-      x => !x.isDefault && String(x.realizationDate || '').trim().toLowerCase() === cleanDate
+      x => String(x.realizationDate || '').trim().toLowerCase() === cleanDate
     );
     if (duplicateIdx !== -1) {
       const dup = workingList[duplicateIdx];
@@ -267,11 +275,10 @@ export async function saveExcelSnapshotToHistory({
 
   while (
     workingList.length > 0 &&
-    (getStorageQuotaStats([...workingList, { sizeBytes }]).usedBytes >= AUTO_REPLACE_THRESHOLD_BYTES ||
-      workingList.length >= MAX_HISTORY_SNAPSHOTS)
+    (getStorageQuotaStats([...workingList, DEFAULT_SNAPSHOT_META, BASELINE_13NOV_META, { sizeBytes }]).usedBytes >= AUTO_REPLACE_THRESHOLD_BYTES ||
+      workingList.length + 2 >= MAX_HISTORY_SNAPSHOTS)
   ) {
-    const nonDefaults = workingList.filter(x => !x.isDefault);
-    const oldest = nonDefaults[nonDefaults.length - 1];
+    const oldest = workingList[workingList.length - 1];
     if (!oldest) break;
 
     await deleteFromIdb(oldest.id);
@@ -312,9 +319,10 @@ export async function saveExcelSnapshotToHistory({
   }
 
   // 2. Simpan ke Supabase Cloud (agar otomatis muncul di laptop semua rekan)
+  let cloudSyncError = null;
   if (supabase) {
     try {
-      await supabase.from('excel_snapshots').upsert({
+      const { error } = await supabase.from('excel_snapshots').upsert({
         id,
         file_name: meta.fileName,
         realization_date: meta.realizationDate,
@@ -327,22 +335,27 @@ export async function saveExcelSnapshotToHistory({
         is_default: false,
         payload_json: payloadObj
       });
+      if (error) {
+        cloudSyncError = error.message;
+        console.warn('Supabase cloud snapshot sync error:', error.message);
+      }
     } catch (errCloud) {
-      console.warn('Supabase cloud snapshot sync info:', errCloud?.message || errCloud);
+      cloudSyncError = errCloud?.message || String(errCloud);
+      console.warn('Supabase cloud snapshot sync info:', cloudSyncError);
     }
   }
 
-  const nextList = [meta, ...workingList.filter(x => x.id !== id)];
+  const nextList = sortAndDedupeHistoryList([meta, ...workingList.filter(x => x.id !== id)]);
   saveExcelHistoryMetaList(nextList);
 
-  return { meta, list: nextList, replacedItems };
+  return { meta, list: nextList, replacedItems, cloudSyncError };
 }
 
 export async function loadExcelSnapshotPayload(snapshotId) {
   if (!snapshotId || snapshotId === DEFAULT_SNAPSHOT_META.id) {
     return null;
   }
-  if (snapshotId === 'default_r05_13nov2026') {
+  if (snapshotId === BASELINE_13NOV_META.id) {
     try {
       const res = await fetch('/sample_branchiq_13nov.xlsx');
       if (res.ok) {
@@ -401,7 +414,7 @@ export async function loadExcelSnapshotPayload(snapshotId) {
 }
 
 export async function deleteExcelSnapshotFromHistory(snapshotId) {
-  if (!snapshotId || snapshotId === DEFAULT_SNAPSHOT_META.id) {
+  if (!snapshotId || snapshotId === DEFAULT_SNAPSHOT_META.id || snapshotId === BASELINE_13NOV_META.id) {
     return getExcelHistoryMetaList();
   }
   await deleteFromIdb(snapshotId);
@@ -417,14 +430,18 @@ export async function deleteExcelSnapshotFromHistory(snapshotId) {
 
 export async function pruneOldSnapshotsKeepLatest(activeSnapshotId) {
   const currentList = getExcelHistoryMetaList();
-  const nonDefaults = currentList.filter(x => !x.isDefault);
-  if (nonDefaults.length <= 1) return currentList;
+  const uploaded = currentList.filter(
+    x => !x.isDefault && x.id !== DEFAULT_SNAPSHOT_META.id && x.id !== BASELINE_13NOV_META.id
+  );
+  if (uploaded.length <= 1) return currentList;
 
-  const keepId = activeSnapshotId && activeSnapshotId !== DEFAULT_SNAPSHOT_META.id
+  const keepId = activeSnapshotId &&
+    activeSnapshotId !== DEFAULT_SNAPSHOT_META.id &&
+    activeSnapshotId !== BASELINE_13NOV_META.id
     ? activeSnapshotId
-    : nonDefaults[0].id;
+    : uploaded[0].id;
 
-  const toDelete = nonDefaults.filter(x => x.id !== keepId);
+  const toDelete = uploaded.filter(x => x.id !== keepId);
   for (const item of toDelete) {
     await deleteFromIdb(item.id);
     if (supabase) {
@@ -432,7 +449,9 @@ export async function pruneOldSnapshotsKeepLatest(activeSnapshotId) {
     }
   }
 
-  const nextList = currentList.filter(x => x.isDefault || x.id === keepId);
+  const nextList = currentList.filter(
+    x => x.isDefault || x.id === BASELINE_13NOV_META.id || x.id === keepId
+  );
   saveExcelHistoryMetaList(nextList);
   return nextList;
 }

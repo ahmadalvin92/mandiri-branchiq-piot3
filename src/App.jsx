@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { Header } from './components/Header';
 import { ExecutiveSummary } from './components/ExecutiveSummary';
 import { CategoryCharts } from './components/CategoryCharts';
@@ -30,6 +30,8 @@ import {
   getInitialDbState,
   fetchServerDb,
   persistDbState,
+  persistOfficialActiveSnapshot,
+  subscribeToCloudDbChanges,
   isSuperadmin,
   isKonseptorOrAdmin
 } from './utils/dbService';
@@ -43,6 +45,7 @@ import {
 import {
   DEFAULT_SNAPSHOT_META,
   getExcelHistoryMetaList,
+  getLatestUploadedSnapshotId,
   syncCloudExcelHistory,
   saveExcelSnapshotToHistory,
   loadExcelSnapshotPayload,
@@ -111,23 +114,25 @@ export function App() {
   const [selectedMetricForDetail, setSelectedMetricForDetail] = useState(null);
   const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
+  const [syncToast, setSyncToast] = useState(null);
 
-  // Load Server DB, Google Calendar Holidays, and Cloud Excel History on mount
-  useEffect(() => {
-    fetchServerDb().then((loaded) => {
-      if (loaded) setDbState(loaded);
-    });
+  // Refs for race-free async cloud sync & callbacks
+  const dbStateRef = useRef(dbState);
+  dbStateRef.current = dbState;
+  const lastLocalWriteAtRef = useRef(0);
+  const activeSnapshotIdRef = useRef(activeSnapshotId);
+  activeSnapshotIdRef.current = activeSnapshotId;
+  const rawBranchCodeRef = useRef(rawBranchData.branchInfo?.code || '10125');
+  rawBranchCodeRef.current = rawBranchData.branchInfo?.code || '10125';
+  const toastTimerRef = useRef(null);
 
-    handleSyncGoogleCalendar();
-
-    syncCloudExcelHistory().then((cloudList) => {
-      if (cloudList && cloudList.length > 0) {
-        setExcelHistoryList(cloudList);
-      }
-    });
+  const showSyncToast = useCallback((msg, type = 'success') => {
+    setSyncToast({ msg, type });
+    if (toastTimerRef.current) clearTimeout(toastTimerRef.current);
+    toastTimerRef.current = setTimeout(() => setSyncToast(null), 3500);
   }, []);
 
-  const handleFetchDefaultExcel = () => {
+  const handleFetchDefaultExcel = useCallback(() => {
     fetch('/sample_branchiq.xlsx')
       .then(res => res.arrayBuffer())
       .then(buffer => parseBranchIQWorkbook(buffer))
@@ -144,61 +149,195 @@ export function App() {
       .catch(err => {
         console.warn('Could not pre-fetch sample_branchiq.xlsx, using static default:', err);
       });
-  };
-
-  // Automatically fetch sample excel or load active snapshot on mount
-  useEffect(() => {
-    const targetId = (() => {
-      try {
-        const stored = localStorage.getItem('branchiq_active_snapshot_id');
-        const list = getExcelHistoryMetaList();
-        if (stored && list.some(x => x.id === stored)) return stored;
-      } catch (e) { }
-      return DEFAULT_SNAPSHOT_META.id;
-    })();
-
-    if (targetId && targetId !== DEFAULT_SNAPSHOT_META.id) {
-      loadExcelSnapshotPayload(targetId).then(payload => {
-        if (payload && payload.dbData) {
-          setCachedDbData(payload.dbData);
-          setBranchesList(payload.branches || defaultBranches);
-          setMetricDefs(payload.metricDefs || defaultMetricDefs);
-          if (payload.allRankings && payload.allRankings.length > 0) {
-            setAllRankings(payload.allRankings);
-          }
-          const currentCode = rawBranchData.branchInfo?.code || '10125';
-          const targetCode = payload.branches?.some(b => String(b.code) === String(currentCode))
-            ? currentCode
-            : (payload.branches?.[0]?.code || '10125');
-          const calculated = calculateBranchScore(
-            targetCode,
-            payload.dbData,
-            payload.metricDefs || defaultMetricDefs,
-            payload.branches || defaultBranches,
-            payload.realizationDate || '16 November 2026',
-            payload.allRankings || allRankings
-          );
-          setRawBranchData(calculated);
-          setIsCustomFileLoaded(true);
-          const meta = excelHistoryList.find(x => x.id === targetId);
-          if (meta) setCustomFileName(meta.fileName);
-          setActiveSnapshotId(targetId);
-        } else {
-          handleFetchDefaultExcel();
-        }
-      }).catch(() => {
-        handleFetchDefaultExcel();
-      });
-    } else {
-      handleFetchDefaultExcel();
-    }
   }, []);
 
-  const updateAndPersistDb = (updater) => {
-    setDbState((prev) => {
-      const next = typeof updater === 'function' ? updater(prev) : updater;
-      persistDbState(next);
-      return next;
+  const applySnapshotPayloadToState = useCallback((snapshotId, payload, historyList = []) => {
+    if (!payload || !payload.dbData) return false;
+    setCachedDbData(payload.dbData);
+    setBranchesList(payload.branches || defaultBranches);
+    setMetricDefs(payload.metricDefs || defaultMetricDefs);
+    if (payload.allRankings && payload.allRankings.length > 0) {
+      setAllRankings(payload.allRankings);
+    }
+    const currentCode = rawBranchCodeRef.current || '10125';
+    const targetCode = payload.branches?.some(b => String(b.code) === String(currentCode))
+      ? currentCode
+      : (payload.branches?.[0]?.code || '10125');
+    const meta = historyList.find(x => x.id === snapshotId);
+    const calculated = calculateBranchScore(
+      targetCode,
+      payload.dbData,
+      payload.metricDefs || defaultMetricDefs,
+      payload.branches || defaultBranches,
+      payload.realizationDate || meta?.realizationDate || '16 November 2026',
+      payload.allRankings || allRankingsData
+    );
+    setRawBranchData(calculated);
+    setIsCustomFileLoaded(true);
+    setCustomFileName(meta?.fileName || '');
+    setActiveSnapshotId(snapshotId);
+    try {
+      localStorage.setItem('branchiq_active_snapshot_id', snapshotId);
+    } catch (e) { }
+    return true;
+  }, []);
+
+  const syncAllFromCloud = useCallback(async ({ isInitial = false } = {}) => {
+    try {
+      const [loadedDb, cloudList] = await Promise.all([
+        fetchServerDb(),
+        syncCloudExcelHistory()
+      ]);
+
+      // 1. Update Master DB State unless a local edit just happened within the last 3.5 seconds
+      const timeSinceWrite = Date.now() - lastLocalWriteAtRef.current;
+      if (loadedDb && timeSinceWrite > 3500) {
+        const prevStr = JSON.stringify({
+          t: dbStateRef.current.masterTargets,
+          s: dbStateRef.current.masterStrategies,
+          tc: dbStateRef.current.timestandConfig,
+          vs: dbStateRef.current.viewerSimulations,
+          u: dbStateRef.current.users
+        });
+        const nextStr = JSON.stringify({
+          t: loadedDb.masterTargets,
+          s: loadedDb.masterStrategies,
+          tc: loadedDb.timestandConfig,
+          vs: loadedDb.viewerSimulations,
+          u: loadedDb.users
+        });
+        if (prevStr !== nextStr || isInitial) {
+          dbStateRef.current = loadedDb;
+          setDbState(loadedDb);
+          setCurrentUser(prevUser => {
+            if (!prevUser || !Array.isArray(loadedDb.users)) return prevUser;
+            const fresh = loadedDb.users.find(u => u.username.toLowerCase() === String(prevUser.username).toLowerCase());
+            if (!fresh) return prevUser;
+            if (fresh.role === prevUser.role && fresh.displayName === prevUser.displayName && fresh.jabatan === prevUser.jabatan) {
+              return prevUser;
+            }
+            const updatedUser = { ...prevUser, role: fresh.role, displayName: fresh.displayName, jabatan: fresh.jabatan };
+            try {
+              if (localStorage.getItem('branchiq_auth_user')) localStorage.setItem('branchiq_auth_user', JSON.stringify(updatedUser));
+              if (sessionStorage.getItem('branchiq_auth_user')) sessionStorage.setItem('branchiq_auth_user', JSON.stringify(updatedUser));
+            } catch (e) {}
+            return updatedUser;
+          });
+        }
+      }
+
+      // 2. Sync Excel Snapshot list & auto-select newest Cloud Upload for everyone
+      const effectiveList = (cloudList && cloudList.length > 0) ? cloudList : getExcelHistoryMetaList();
+      setExcelHistoryList(effectiveList);
+
+      const latestCloudId = (loadedDb?.officialActiveSnapshotId && effectiveList.some(x => x.id === loadedDb.officialActiveSnapshotId))
+        ? loadedDb.officialActiveSnapshotId
+        : getLatestUploadedSnapshotId(effectiveList);
+
+      let storedActiveId = null;
+      let lastSeenCloudId = null;
+      try {
+        storedActiveId = localStorage.getItem('branchiq_active_snapshot_id');
+        lastSeenCloudId = localStorage.getItem('branchiq_last_cloud_snapshot_id');
+      } catch (e) {}
+
+      let targetId = activeSnapshotIdRef.current || DEFAULT_SNAPSHOT_META.id;
+      const isNewCloudArrival = Boolean(latestCloudId && latestCloudId !== lastSeenCloudId);
+      const shouldAdoptCloud = Boolean(
+        latestCloudId && (
+          isNewCloudArrival ||
+          !storedActiveId ||
+          !effectiveList.some(x => x.id === storedActiveId) ||
+          (storedActiveId === DEFAULT_SNAPSHOT_META.id && !lastSeenCloudId)
+        )
+      );
+
+      if (shouldAdoptCloud && latestCloudId) {
+        targetId = latestCloudId;
+        try {
+          localStorage.setItem('branchiq_active_snapshot_id', latestCloudId);
+          localStorage.setItem('branchiq_last_cloud_snapshot_id', latestCloudId);
+        } catch (e) {}
+      } else if (isInitial) {
+        targetId = (storedActiveId && effectiveList.some(x => x.id === storedActiveId))
+          ? storedActiveId
+          : (latestCloudId || DEFAULT_SNAPSHOT_META.id);
+      }
+
+      if (targetId && targetId !== DEFAULT_SNAPSHOT_META.id && (isInitial || targetId !== activeSnapshotIdRef.current || isNewCloudArrival)) {
+        const payload = await loadExcelSnapshotPayload(targetId);
+        if (payload && payload.dbData) {
+          applySnapshotPayloadToState(targetId, payload, effectiveList);
+        } else if (isInitial) {
+          handleFetchDefaultExcel();
+        }
+      } else if (isInitial && targetId === DEFAULT_SNAPSHOT_META.id) {
+        handleFetchDefaultExcel();
+      }
+    } catch (e) {
+      console.warn('Cloud sync warning:', e?.message || e);
+      if (isInitial) handleFetchDefaultExcel();
+    }
+  }, [applySnapshotPayloadToState, handleFetchDefaultExcel]);
+
+  // Initial Cloud + Holidays sync, Realtime subscription, Focus & 15s background polling
+  useEffect(() => {
+    syncAllFromCloud({ isInitial: true });
+    handleSyncGoogleCalendar();
+
+    let debounceTimer = null;
+    const scheduleSync = () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        syncAllFromCloud({ isInitial: false });
+      }, 450);
+    };
+
+    const unsubscribeRealtime = subscribeToCloudDbChanges(() => {
+      scheduleSync();
+    });
+
+    const handleWindowFocus = () => syncAllFromCloud({ isInitial: false });
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        syncAllFromCloud({ isInitial: false });
+      }
+    };
+
+    window.addEventListener('focus', handleWindowFocus);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    const pollInterval = setInterval(() => {
+      if (document.visibilityState === 'visible') {
+        syncAllFromCloud({ isInitial: false });
+      }
+    }, 15000);
+
+    return () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      unsubscribeRealtime();
+      window.removeEventListener('focus', handleWindowFocus);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      clearInterval(pollInterval);
+    };
+  }, [syncAllFromCloud]);
+
+  const updateAndPersistDb = (updater, options = {}) => {
+    const next = typeof updater === 'function' ? updater(dbStateRef.current) : updater;
+    dbStateRef.current = next;
+    lastLocalWriteAtRef.current = Date.now();
+    setDbState(next);
+
+    const { toastMsg, ...persistOpts } = options || {};
+    persistDbState(next, {
+      ...persistOpts,
+      actor: currentUser?.username || persistOpts.actor || 'michael'
+    }).then((res) => {
+      if (res && res.ok === false) {
+        showSyncToast(`Gagal sinkron ke Cloud Supabase: ${res.errors?.[0] || 'Error koneksi'}`, 'error');
+      } else if (toastMsg) {
+        showSyncToast(toastMsg, 'success');
+      }
     });
   };
 
@@ -219,7 +358,8 @@ export function App() {
   const handleLogin = (userData) => {
     setCurrentUser(userData);
     setActivePage('dashboard');
-    setIsViewerSimMode(false);
+    handleResetViewerSimDraft();
+    syncAllFromCloud({ isInitial: false });
   };
 
   const handleLogout = () => {
@@ -227,7 +367,7 @@ export function App() {
     sessionStorage.removeItem('branchiq_auth_user');
     setCurrentUser(null);
     setActivePage('dashboard');
-    setIsViewerSimMode(false);
+    handleResetViewerSimDraft();
   };
 
   // RBAC Role Checks
@@ -239,10 +379,9 @@ export function App() {
     return recalculateBranchWithOverrides(rawBranchData, dbState.masterTargets || {}, {});
   }, [rawBranchData, dbState.masterTargets]);
 
-  // Active Displayed Branch Data (either Master Data or Viewer Simulation Data)
+  // Active Displayed Branch Data (strictly isolated: Master Mode ALWAYS shows masterBranchData cleanly)
   const currentBranchData = useMemo(() => {
-    const hasSim = isViewerSimMode || Object.keys(viewerSimTargets).length > 0 || Object.keys(viewerSimReals).length > 0;
-    if (!hasSim) return masterBranchData;
+    if (!isViewerSimMode) return masterBranchData;
     return recalculateBranchWithOverrides(masterBranchData, viewerSimTargets, viewerSimReals, { isSimulationLayer: true });
   }, [masterBranchData, isViewerSimMode, viewerSimTargets, viewerSimReals]);
 
@@ -276,7 +415,7 @@ export function App() {
           updatedAt: new Date().toISOString()
         }
       ]
-    }));
+    }), { changed: ['users'], toastMsg: `User "${newUserObj.username}" disimpan ke Cloud Supabase` });
   };
 
   const handleUpdateUser = (username, updates) => {
@@ -285,7 +424,7 @@ export function App() {
       users: prev.users.map((u) =>
         u.username === username ? { ...u, ...updates, updatedAt: new Date().toISOString() } : u
       )
-    }));
+    }), { changed: ['users'], toastMsg: `User "${username}" diperbarui di Cloud Supabase` });
     if (currentUser?.username === username) {
       const updatedSelf = { ...currentUser, ...updates };
       setCurrentUser(updatedSelf);
@@ -299,14 +438,14 @@ export function App() {
       users: prev.users.map((u) =>
         u.username === username ? { ...u, password: newPassword, updatedAt: new Date().toISOString() } : u
       )
-    }));
+    }), { changed: ['users'], toastMsg: `Password "${username}" diperbarui di Cloud Supabase` });
   };
 
   const handleDeleteUser = (username) => {
     updateAndPersistDb((prev) => ({
       ...prev,
       users: prev.users.filter((u) => u.username !== username)
-    }));
+    }), { changed: ['users'], toastMsg: `User "${username}" dihapus dari Cloud Supabase` });
   };
 
   // ---------------- MASTER TARGET & STRATEGY HANDLERS (MICHAEL / SUPERADMIN) ----------------
@@ -319,7 +458,7 @@ export function App() {
         ...(prev.masterTargets || {}),
         [key]: Number(targetValue)
       }
-    }));
+    }), { changed: ['masterTargets'], toastMsg: 'Target Master tersimpan ke Supabase & aktif untuk seluruh Viewer' });
   };
 
   const handleResetMasterTarget = (branchCode, rowId) => {
@@ -332,7 +471,7 @@ export function App() {
         ...prev,
         masterTargets: nextTargets
       };
-    });
+    }, { changed: ['masterTargets'], toastMsg: 'Target Master dikembalikan ke nilai asli Excel' });
   };
 
   const handleSaveMasterStrategy = (branchCode, rowId, strategyPayload) => {
@@ -341,11 +480,11 @@ export function App() {
     const key = scope === 'all' ? `g~${rowId}` : `b${branchCode}~${rowId}`;
     updateAndPersistDb((prev) => {
       const nextStrategies = { ...(prev.masterStrategies || {}) };
-      if (!strategyPayload.text) {
+      if (!strategyPayload.text || !strategyPayload.text.trim()) {
         delete nextStrategies[key];
       } else {
         nextStrategies[key] = {
-          text: strategyPayload.text,
+          text: strategyPayload.text.trim(),
           scope,
           branchCode: scope === 'all' ? 'all' : branchCode,
           rowId,
@@ -357,7 +496,7 @@ export function App() {
         ...prev,
         masterStrategies: nextStrategies
       };
-    });
+    }, { changed: ['masterStrategies'], toastMsg: 'Strategi Master tersimpan ke Supabase & aktif untuk seluruh Viewer' });
   };
 
   const handleResetMasterStrategy = (branchCode, rowId) => {
@@ -370,7 +509,7 @@ export function App() {
         ...prev,
         masterStrategies: nextStrategies
       };
-    });
+    }, { changed: ['masterStrategies'], toastMsg: 'Strategi Master dikembalikan ke bawaan' });
   };
 
   const handleResetAllMasterOverrides = () => {
@@ -390,7 +529,7 @@ export function App() {
         masterTargets: nextTargets,
         masterStrategies: nextStrategies
       };
-    });
+    }, { changed: ['masterTargets', 'masterStrategies'], toastMsg: 'Seluruh override Master cabang direset ke template Excel' });
   };
 
   // ---------------- VIEWER SIMULATION HANDLERS ----------------
@@ -432,6 +571,15 @@ export function App() {
     setIsViewerSimMode(false);
   };
 
+  const handleToggleViewerSimMode = () => {
+    if (isViewerSimMode) {
+      // Exiting Simulation Mode -> always clear draft simulation edits so Master Mode stays 100% pure
+      handleResetViewerSimDraft();
+    } else {
+      setIsViewerSimMode(true);
+    }
+  };
+
   const handleSaveViewerSimulation = (simObj) => {
     updateAndPersistDb((prev) => {
       const list = Array.isArray(prev.viewerSimulations) ? [...prev.viewerSimulations] : [];
@@ -450,7 +598,7 @@ export function App() {
         ...prev,
         viewerSimulations: list
       };
-    });
+    }, { changed: ['viewerSimulations'] });
     setActiveSimulationId(simObj.id);
   };
 
@@ -469,7 +617,7 @@ export function App() {
     updateAndPersistDb((prev) => ({
       ...prev,
       viewerSimulations: (prev.viewerSimulations || []).filter((s) => s.id !== simId)
-    }));
+    }), { changed: ['viewerSimulations'] });
     if (activeSimulationId === simId) {
       setActiveSimulationId(null);
     }
@@ -485,9 +633,9 @@ export function App() {
       });
       const nextStrategies = { ...(prev.masterStrategies || {}) };
       Object.entries(simObj.strategies || {}).forEach(([rowId, text]) => {
-        if (text) {
+        if (text && String(text).trim()) {
           nextStrategies[`b${code}~${rowId}`] = {
-            text,
+            text: String(text).trim(),
             scope: 'branch',
             branchCode: code,
             rowId: Number(rowId),
@@ -501,9 +649,8 @@ export function App() {
         masterTargets: nextTargets,
         masterStrategies: nextStrategies
       };
-    });
-    setIsViewerSimMode(false);
-    setActiveSimulationId(null);
+    }, { changed: ['masterTargets', 'masterStrategies'], toastMsg: 'Simulasi berhasil diterapkan permanen ke Data Master!' });
+    handleResetViewerSimDraft();
   };
 
   // ---------------- TIMESTAND HANDLER ----------------
@@ -512,7 +659,7 @@ export function App() {
     updateAndPersistDb((prev) => ({
       ...prev,
       timestandConfig: newConfig
-    }));
+    }), { changed: ['timestandConfig'], toastMsg: `Timestand (${newConfig.effectiveWorkdays || ''} HK) tersimpan ke Supabase` });
     if (newConfig.googleApiKey && newConfig.googleApiKey !== dbState.timestandConfig?.googleApiKey) {
       handleSyncGoogleCalendar(newConfig.googleApiKey);
     }
@@ -520,6 +667,7 @@ export function App() {
 
   // Handle switching branch from dropdown or leaderboard
   const handleSelectBranch = (branchCode) => {
+    setSelectedMetricForDetail(null);
     const dataSource = cachedDbData || dbRowsData;
     if (dataSource) {
       try {
@@ -569,7 +717,10 @@ export function App() {
     setActiveSnapshotId(saved.meta.id);
     try {
       localStorage.setItem('branchiq_active_snapshot_id', saved.meta.id);
+      localStorage.setItem('branchiq_last_cloud_snapshot_id', saved.meta.id);
     } catch (e) { }
+    persistOfficialActiveSnapshot(saved.meta.id, currentUser?.username || 'superadmin');
+    showSyncToast(`File Excel "${file.name}" aktif & tersinkronisasi ke Cloud Supabase untuk semua user!`);
 
     setCachedDbData(parsedWithDate.dbData);
     setBranchesList(parsedWithDate.branches);
@@ -667,9 +818,6 @@ export function App() {
       try {
         localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
       } catch (e) { }
-      try {
-        localStorage.setItem('branchiq_active_snapshot_id', DEFAULT_SNAPSHOT_META.id);
-      } catch (e) { }
 
       const calculated = calculateBranchScore(
         '10125',
@@ -723,6 +871,7 @@ export function App() {
         categorySummary={currentBranchData.categorySummary}
         metrics={currentBranchData.calculatedMetrics}
         rankingInfo={currentBranchData.rankingInfo}
+        masterStrategies={dbState.masterStrategies || {}}
       />
 
       {/* Screen View */}
@@ -831,7 +980,7 @@ export function App() {
                   isKonseptor={isKonseptor}
                   isSuperadminUser={isSuperadminUser}
                   isViewerSimMode={isViewerSimMode}
-                  onToggleViewerSimMode={() => setIsViewerSimMode(prev => !prev)}
+                  onToggleViewerSimMode={handleToggleViewerSimMode}
                   activeSimulationId={activeSimulationId}
                   viewerSimTargets={viewerSimTargets}
                   viewerSimReals={viewerSimReals}
@@ -914,12 +1063,15 @@ export function App() {
         branchInfo={currentBranchData.branchInfo}
         onClose={() => setSelectedMetricForDetail(null)}
         onOpenSimulatorForMetric={() => setIsSimulatorOpen(true)}
+        masterStrategies={dbState.masterStrategies || {}}
+        viewerSimStrategies={viewerSimStrategies}
+        isViewerSimMode={isViewerSimMode}
       />
 
       {/* What-If Simulator Modal */}
       <WhatIfSimulator
         metrics={currentBranchData.calculatedMetrics}
-        baselineTotalScore={currentBranchData.totalScore}
+        baselineTotalScore={isViewerSimMode ? currentBranchData.totalScore : masterBranchData.totalScore}
         branchInfo={currentBranchData.branchInfo}
         isOpen={isSimulatorOpen}
         onClose={() => setIsSimulatorOpen(false)}
@@ -957,8 +1109,8 @@ export function App() {
         realizationDate={currentBranchData.realizationDate}
       />
 
-      {/* Sticky Floating Simulation Bar (Always visible on screen while in Simulation Mode) */}
-      {(isViewerSimMode || Object.keys(viewerSimTargets).length > 0 || Object.keys(viewerSimReals).length > 0) && (
+      {/* Sticky Floating Simulation Bar (Strictly only visible while Simulation Mode is active!) */}
+      {isViewerSimMode && (
         <aside
           aria-label="Status Simulasi Berjalan"
           className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-[#00254D] text-white px-3.5 sm:px-5 py-2.5 rounded-2xl shadow-2xl border-2 border-[#FFB81C] flex items-center gap-2.5 sm:gap-4 max-w-[95vw] sm:max-w-xl animate-in slide-in-from-bottom duration-200"
@@ -1017,6 +1169,20 @@ export function App() {
             </button>
           </div>
         </aside>
+      )}
+
+      {/* Global Cloud Sync Feedback Toast */}
+      {syncToast && (
+        <div
+          role="status"
+          className={`fixed bottom-4 right-4 z-50 px-4 py-2.5 rounded-xl shadow-xl border text-xs font-extrabold flex items-center gap-2 max-w-sm animate-in fade-in duration-150 ${
+            syncToast.type === 'error'
+              ? 'bg-rose-600 text-white border-rose-700'
+              : 'bg-emerald-600 text-white border-emerald-700'
+          }`}
+        >
+          <span>{syncToast.msg}</span>
+        </div>
       )}
 
     </div>
