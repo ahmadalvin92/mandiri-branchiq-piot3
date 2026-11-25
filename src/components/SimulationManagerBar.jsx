@@ -152,7 +152,7 @@ export function SimulationManagerBar({
                   <span className="text-xs font-bold text-slate-800">
                     {isKonseptor
                       ? 'Mode Edit Master Aktif — Anda dapat mengubah angka Target & Strategi secara permanen'
-                      : 'Mode Read-Only Data Master — Aktifkan Mode Simulasi untuk menguji proyeksi Realisasi & Strategi Anda sendiri'}
+                      : 'Mode Read-Only Data Master — Aktifkan Mode Simulasi untuk menguji proyeksi Realisasi, Target & Strategi Anda sendiri'}
                   </span>
                 )}
               </div>
@@ -216,7 +216,7 @@ export function SimulationManagerBar({
               <span>
                 {isViewerSimMode
                   ? 'Keluar Mode Simulasi (Kembali ke Master)'
-                  : 'Mode Simulasi Realisasi'}
+                  : (isKonseptor ? 'Mode Simulasi Realisasi' : 'Mode Simulasi Realisasi & Target')}
               </span>
             </button>
 
@@ -319,7 +319,7 @@ export function SimulationManagerBar({
 
           {branchSimulations.length === 0 ? (
             <div className="py-6 text-center text-xs text-slate-400">
-              Belum ada simulasi yang disimpan untuk cabang ini. Aktifkan <strong>Mode Simulasi</strong>, ubah proyeksi Realisasi/Strategi di Panel Editor tabel, lalu klik <strong>Simpan Simulasi</strong>.
+              Belum ada simulasi yang disimpan untuk cabang ini. Aktifkan <strong>Mode Simulasi</strong>, ubah proyeksi Realisasi/Target/Strategi di Panel Editor tabel, lalu klik <strong>Simpan Simulasi</strong>.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">

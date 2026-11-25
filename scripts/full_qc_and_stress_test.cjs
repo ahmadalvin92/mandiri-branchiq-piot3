@@ -233,9 +233,9 @@ async function runBrowserE2EQC() {
   const origTimestandRow = (origStratsSnap || []).find(r => r.key === '__sys_timestand_config__');
   let origStartDate = '2026-11-16';
   try {
-    if (origTimestandRow?.strategy_text) {
-      origStartDate = JSON.parse(origTimestandRow.strategy_text)?.startDate || '2026-11-16';
-    }
+    const rawTs = origTimestandRow?.tactical_actions;
+    const parsedTs = typeof rawTs === 'string' ? JSON.parse(rawTs) : rawTs;
+    if (parsedTs?.startDate) origStartDate = parsedTs.startDate;
   } catch (e) {}
 
   try {
@@ -248,17 +248,19 @@ async function runBrowserE2EQC() {
       const text = document.body.innerText;
       const hasSimulatorHeaderBtn = Boolean(document.querySelector('button[title="Buka What-If Simulator Skor"]'));
       const hasDetailRumusBtn = Array.from(document.querySelectorAll('button')).some(b => b.innerText.includes('Detail Rumus'));
+      const masterBar = document.querySelector('div[aria-label="Status Mode Master"]')?.innerText || '';
       const row12 = document.getElementById('metric-row-12')?.innerText || '';
-      return { text, hasSimulatorHeaderBtn, hasDetailRumusBtn, row12 };
+      return { text, hasSimulatorHeaderBtn, hasDetailRumusBtn, masterBar, row12 };
     });
     assert(!/idea\s+by|developed\s+by/i.test(adminCheck.text), 'Idea by / Developed by must not exist');
     assert(adminCheck.text.includes('#45'), 'Superadmin should auto-load 18 Nov rank #45');
     assert(adminCheck.text.includes('Mode Edit Master Aktif'), 'Superadmin must start in Master Mode');
+    assert(adminCheck.masterBar.includes('MODE MASTER (PERMANEN)'), 'Sticky top Master mode bar must be clearly visible');
     assert(!adminCheck.hasSimulatorHeaderBtn, 'Duplicate Simulator button in Header must be removed');
     assert(!adminCheck.hasDetailRumusBtn, 'Duplicate Detail Rumus button must be removed');
     assert(!adminCheck.row12.includes('Porsi Target:'), 'Table row must not show cluttered Porsi Target');
     assert(!adminCheck.row12.includes('Target Asli Excel:'), 'Table row must not show cluttered Target Asli Excel');
-    console.log(' ✅ PASS | Superadmin logged in, 18 Nov (#45), duplicate buttons/clutter removed');
+    console.log(' ✅ PASS | Superadmin logged in, 18 Nov (#45), sticky Mode Master bar visible, no clutter');
 
     // [B2] Superadmin opens Row 12 Editor -> single-mode Master Editor, stays in Master Mode!
     console.log('[B2] Verifying Superadmin inline editor focuses only on Master Target & Strategy...');
@@ -346,10 +348,12 @@ async function runBrowserE2EQC() {
     await sleep(300);
     const viewerRow12WithStrat = await viewerPage.evaluate(() => document.getElementById('metric-row-12').innerText);
     const viewerBodyText = await viewerPage.evaluate(() => document.body.innerText);
+    const viewerReadOnlyBar = await viewerPage.evaluate(() => document.querySelector('div[aria-label="Status Mode Read-Only"]')?.innerText || '');
+    assert(viewerReadOnlyBar.includes('DATA MASTER (READ-ONLY)'), 'Sticky top Read-Only mode bar must be visible for Viewer');
     assert(viewerRow12Text.includes('Master') && /555[,.]0/.test(viewerRow12Text), `Viewer missing Master Target 555,0: ${viewerRow12Text}`);
     assert(viewerRow12WithStrat.includes('QC Master Sync Strategy Test Line 1'), `Viewer missing Master Strategy: ${viewerRow12WithStrat}`);
     assert(viewerBodyText.includes('18 Nov 2026 – 30 Nov 2026'), 'Viewer missing synced Timestand 18 Nov – 30 Nov 2026');
-    console.log(' ✅ PASS | Viewer automatically received 18 Nov snapshot, Target 555, Strategy & Timestand');
+    console.log(' ✅ PASS | Viewer Read-Only sticky bar visible, received 18 Nov snapshot, Target 555, Strategy & Timestand');
 
     // [B5] Live sync WITHOUT page reload in Viewer when Superadmin updates Master Target 555 -> 560
     console.log('[B5] Testing live sync WITHOUT reload: Superadmin edits Target 555 -> 560...');
@@ -407,9 +411,14 @@ async function runBrowserE2EQC() {
       btn.click();
     });
     await sleep(300);
-    const simPanelText = await adminPage.evaluate(() => document.getElementById('metric-row-12').nextElementSibling?.innerText || '');
-    assert(simPanelText.includes('1. Simulasi Realisasi & Rumus Skor'), 'Simulation editor must focus on Realisasi');
-    assert(!simPanelText.includes('Edit / Simulasi Target KPI'), 'Duplicate Target KPI tab must NOT appear in Simulation Mode');
+    const simPanelInfo = await adminPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12').nextElementSibling;
+      const panelText = panel?.innerText || '';
+      const hasTargetSimTab = Boolean(panel && Array.from(panel.querySelectorAll('button')).some(b => b.innerText.includes('Simulasi Target')));
+      return { panelText, hasTargetSimTab };
+    });
+    assert(simPanelInfo.panelText.includes('1. Simulasi Realisasi & Rumus Skor'), 'Admin simulation editor must focus on Realisasi');
+    assert(!simPanelInfo.hasTargetSimTab, 'Simulasi Target tab is exclusively for Viewers, not Superadmin/Admin');
 
     await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
@@ -418,7 +427,7 @@ async function runBrowserE2EQC() {
     });
     await sleep(400);
 
-    // Anti-Overlap Check: Top Sticky Simulation Bar MUST NOT overlap Panel bottom action buttons!
+    // Anti-Overlap Check: Top Sticky Simulation Bar MUST show MODE SIMULASI and MUST NOT overlap Panel bottom action buttons!
     const overlapCheck = await adminPage.evaluate(() => {
       const aside = document.querySelector('aside[aria-label="Status Simulasi Berjalan"]');
       const panel = document.getElementById('metric-row-12').nextElementSibling;
@@ -433,9 +442,10 @@ async function runBrowserE2EQC() {
         const overlaps = !(r.right <= aRect.left || r.left >= aRect.right || r.bottom <= aRect.top || r.top >= aRect.bottom);
         return { text: b.innerText, overlaps, aBottom: aRect.bottom, rTop: r.top };
       });
-      return { exists: true, btnRects };
+      return { exists: true, asideText: aside.innerText, btnRects };
     });
     assert(overlapCheck.exists, 'Sticky simulation bar should appear during Simulation Mode');
+    assert(overlapCheck.asideText.includes('MODE SIMULASI'), 'Sticky simulation bar must clearly badge MODE SIMULASI');
     assert(overlapCheck.btnRects.length >= 2, 'Panel bottom buttons missing');
     for (const br of overlapCheck.btnRects) {
       assert(!br.overlaps, `BUG CHECK FAILED: Sticky simulation bar overlaps button "${br.text}": ${JSON.stringify(br)}`);
@@ -450,10 +460,10 @@ async function runBrowserE2EQC() {
     await sleep(400);
     const simBarAfterExit = await adminPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
     assert(!simBarAfterExit, 'BUG CHECK FAILED: Simulation bar remained visible after exiting to Master Mode!');
-    console.log(' ✅ PASS | Simulation Mode Realisasi-only, zero button overlap, & clean exit verified');
+    console.log(' ✅ PASS | Superadmin Simulation Mode Realisasi-only, sticky badge, zero overlap, & clean exit verified');
 
-    // [B8] Viewer 1-Click Direct Open Panel & Isolation Test
-    console.log('[B8] Testing Viewer 1-click direct open & Simulation save isolation...');
+    // [B8] Viewer 1-Click Direct Open Panel + Viewer Target Simulation & Master Isolation Test
+    console.log('[B8] Testing Viewer 1-click open, Simulasi Realisasi + Simulasi Target & Master isolation...');
     await viewerPage.bringToFront();
     // Viewer is currently still in Read-Only mode -> clicking Simulasi Capaian ONCE must open Panel Gambar 2 immediately!
     await viewerPage.evaluate(() => {
@@ -463,18 +473,51 @@ async function runBrowserE2EQC() {
       btn.click();
     });
     await sleep(400);
-    const viewerPanelOpenedOnFirstClick = await viewerPage.evaluate(() => {
-      const nextEl = document.getElementById('metric-row-12')?.nextElementSibling;
-      return Boolean(nextEl && nextEl.innerText.includes('1. Simulasi Realisasi & Rumus Skor'));
+    const viewerPanelState = await viewerPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12')?.nextElementSibling;
+      const text = panel?.innerText || '';
+      const btns = panel ? Array.from(panel.querySelectorAll('button')).map(b => b.innerText) : [];
+      return {
+        opened: text.includes('1. Simulasi Angka & Rumus Skor'),
+        hasRealTab: btns.some(t => t.includes('Simulasi Realisasi')),
+        hasTgtTab: btns.some(t => t.includes('Simulasi Target'))
+      };
     });
-    assert(viewerPanelOpenedOnFirstClick, 'Viewer 1-click Simulasi Capaian did not open Panel Gambar 2 on first click!');
+    assert(viewerPanelState.opened, 'Viewer 1-click Simulasi Capaian did not open Panel Gambar 2 on first click!');
+    assert(viewerPanelState.hasRealTab && viewerPanelState.hasTgtTab, 'Viewer Simulation Panel must expose both Simulasi Realisasi & Simulasi Target tabs');
 
+    // 1) Click Set 100% Target on Realisasi tab
     await viewerPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const set100Btn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Set 100% Target'));
       set100Btn.click();
     });
     await sleep(300);
+
+    // 2) Switch to Simulasi Target tab & change Viewer simulated target to 500
+    await viewerPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12').nextElementSibling;
+      const tgtTabBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Target'));
+      tgtTabBtn.click();
+    });
+    await sleep(300);
+    await viewerPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12').nextElementSibling;
+      if (!panel.innerText.includes('Simulasi Target Viewer')) {
+        throw new Error('Simulasi Target Viewer notice missing after switching tab');
+      }
+      const numInput = panel.querySelector('input[type="number"]');
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+      setter.call(numInput, '500');
+      numInput.dispatchEvent(new Event('input', { bubbles: true }));
+      numInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+    await sleep(400);
+
+    const viewerRowAfterTargetSim = await viewerPage.evaluate(() => document.getElementById('metric-row-12').innerText);
+    assert(/500[,.]0/.test(viewerRowAfterTargetSim) && viewerRowAfterTargetSim.includes('Sim'), `Viewer row 12 should reflect Target Simulasi 500,0 with Sim badge: ${viewerRowAfterTargetSim}`);
+
+    // 3) Save Viewer simulation & verify Supabase Master stays 560 while Viewer Simulation stores targets["12"] === 500
     await viewerPage.evaluate(() => {
       const saveSimBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simpan Simulasi ('));
       saveSimBtn.click();
@@ -489,10 +532,15 @@ async function runBrowserE2EQC() {
       inp.dispatchEvent(new Event('change', { bubbles: true }));
       modal.querySelector('button[type="submit"]').click();
     });
-    await sleep(1200);
+    await sleep(1400);
     const { data: supTgtAfterSim } = await supabase.from('master_targets').select('*').eq('key', '10125_12').single();
-    assert.strictEqual(Number(supTgtAfterSim?.target_value), 560, 'Viewer simulation mutated Master Target!');
-    console.log(' ✅ PASS | Viewer 1-click opened panel & simulation persisted without mutating Master data');
+    assert.strictEqual(Number(supTgtAfterSim?.target_value), 560, 'Viewer target simulation mutated Master Target!');
+    const { data: supSimsRow } = await supabase.from('master_strategies').select('*').eq('key', '__sys_viewer_simulations__').single();
+    const rawSims = supSimsRow?.tactical_actions;
+    const savedSims = Array.isArray(rawSims) ? rawSims : JSON.parse(rawSims || '[]');
+    const qcSim = savedSims.find(s => s.title === 'QC Viewer Sim Isolation Test');
+    assert(qcSim && Number(qcSim.targets?.['12']) === 500, `Viewer simulation did not save simulated target 500: ${JSON.stringify(qcSim)}`);
+    console.log(' ✅ PASS | Viewer 1-click opened panel, simulated Realisasi & Target=500, & Master stayed untouched (560)');
 
     // [B9] Regression checks: Ranking Modal, File Upload Modal order, Search Scroll, Mobile View, CMS
     console.log('[B9] Running UI Regression Suite (Leaderboard, Upload Order, CMS, Mobile Clean Cards)...');
@@ -588,17 +636,17 @@ async function runBrowserE2EQC() {
     }, origStartDate);
     await sleep(1000);
 
-    // Delete ONLY QC Viewer Sim Isolation Test from Simulasi Tersimpan
+    // Delete ONLY QC Viewer Sim Isolation Test card(s) from Simulasi Tersimpan
     await adminPage.evaluate(() => {
       const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
       listBtn.click();
     });
     await sleep(400);
     await adminPage.evaluate(() => {
-      const delBtn = Array.from(document.querySelectorAll('button[title="Hapus Simulasi"]')).find(b =>
+      const delBtns = Array.from(document.querySelectorAll('button[title="Hapus Simulasi"]')).filter(b =>
         b.parentElement?.parentElement?.innerText.includes('QC Viewer Sim Isolation Test')
       );
-      if (delBtn) delBtn.click();
+      delBtns.forEach(b => b.click());
     });
     await sleep(1200);
 
