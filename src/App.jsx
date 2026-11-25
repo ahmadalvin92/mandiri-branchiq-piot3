@@ -4,7 +4,6 @@ import { ExecutiveSummary } from './components/ExecutiveSummary';
 import { CategoryCharts } from './components/CategoryCharts';
 import { MetricsTable } from './components/MetricsTable';
 import { MetricDetailDrawer } from './components/MetricDetailDrawer';
-import { WhatIfSimulator } from './components/WhatIfSimulator';
 import { FileUploadModal } from './components/FileUploadModal';
 import { PrintReport } from './components/PrintReport';
 import { BranchComparisonModal } from './components/BranchComparisonModal';
@@ -112,7 +111,6 @@ export function App() {
 
   // Drawers and Modals
   const [selectedMetricForDetail, setSelectedMetricForDetail] = useState(null);
-  const [isSimulatorOpen, setIsSimulatorOpen] = useState(false);
   const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
   const [syncToast, setSyncToast] = useState(null);
 
@@ -887,8 +885,6 @@ export function App() {
           onSelectBranch={handleSelectBranch}
           onUploadClick={() => setIsUploadModalOpen(true)}
           onResetToDefault={handleResetToDefault}
-          onToggleSimulator={() => setIsSimulatorOpen(!isSimulatorOpen)}
-          isSimulatorActive={isSimulatorOpen}
           onOpenComparison={() => setIsComparisonModalOpen(true)}
           onPrint={handlePrint}
           isCustomFileLoaded={isCustomFileLoaded}
@@ -904,6 +900,70 @@ export function App() {
           masterTotalScore={masterBranchData.totalScore}
           activeTotalScore={currentBranchData.totalScore}
         />
+
+        {/* Sticky Top Simulation Bar (Strictly only visible while Simulation Mode is active; never overlaps bottom buttons!) */}
+        {isViewerSimMode && (
+          <aside
+            aria-label="Status Simulasi Berjalan"
+            className="sticky top-0 z-30 w-full bg-[#00254D]/95 backdrop-blur-sm text-white border-b-2 border-[#FFB81C] shadow-md"
+          >
+            <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2 sm:gap-4">
+              <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span className="w-2.5 h-2.5 rounded-full bg-[#FFB81C] animate-pulse shrink-0" />
+                  <span className="text-[10px] sm:text-xs text-[#FFE5A3] font-bold uppercase tracking-wider shrink-0">
+                    Total Skor Simulasi:
+                  </span>
+                  <div className="flex items-baseline gap-1.5 font-mono">
+                    <span className="text-sm sm:text-lg font-black text-white">
+                      {currentBranchData.totalScore.toFixed(2).replace('.', ',')}
+                    </span>
+                    <span className="text-slate-400 text-[11px]">/100</span>
+                    <span
+                      className={`text-[10px] sm:text-xs font-black px-1.5 py-0.2 rounded ${currentBranchData.totalScore >= masterBranchData.totalScore
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-rose-500 text-white'
+                        }`}
+                    >
+                      {currentBranchData.totalScore >= masterBranchData.totalScore ? '+' : ''}
+                      {(currentBranchData.totalScore - masterBranchData.totalScore).toFixed(2).replace('.', ',')} pt
+                    </span>
+                  </div>
+                </div>
+
+                <div className="h-5 w-px bg-white/20 shrink-0 hidden sm:block" />
+
+                <div className="hidden sm:block text-[11px] text-slate-300 shrink-0">
+                  <span>Awal (Konseptor): </span>
+                  <strong className="text-white font-mono">{masterBranchData.totalScore.toFixed(2).replace('.', ',')} pt</strong>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 shrink-0 ml-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const bar = document.getElementById('simulation-manager-section');
+                    if (bar) bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    setIsViewerSimMode(true);
+                  }}
+                  className="px-3 py-1 rounded-lg bg-[#FFB81C] hover:bg-[#f3aa0d] text-[#00254D] font-black text-xs cursor-pointer shadow-xs transition-colors"
+                  title="Buka panel untuk menyimpan skenario simulasi"
+                >
+                  Simpan Simulasi
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetViewerSimDraft}
+                  className="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white cursor-pointer text-xs font-bold"
+                  title="Reset & keluar dari Mode Simulasi"
+                >
+                  Reset / Keluar
+                </button>
+              </div>
+            </div>
+          </aside>
+        )}
 
         {/* Main Body */}
         <main className="max-w-7xl mx-auto px-2.5 sm:px-4 py-3 sm:py-6 w-full space-y-3.5 sm:space-y-6">
@@ -933,7 +993,6 @@ export function App() {
                   rankingInfo={currentBranchData.rankingInfo}
                   onShowUnderTargetOnly={() => setFilterUnderTarget(!filterUnderTarget)}
                   isUnderTargetOnly={filterUnderTarget}
-                  onOpenSimulator={() => setIsSimulatorOpen(true)}
                   onOpenComparison={() => setIsComparisonModalOpen(true)}
                   isViewerSimMode={isViewerSimMode}
                   masterTotalScore={masterBranchData.totalScore}
@@ -1013,7 +1072,6 @@ export function App() {
                   onSearchChange={setSearchQuery}
                   branchInfo={currentBranchData.branchInfo}
                   onSelectMetricForDetail={setSelectedMetricForDetail}
-                  onOpenSimulatorForMetric={() => setIsSimulatorOpen(true)}
                   canEditMaster={isKonseptor}
                   isViewerSimMode={isViewerSimMode}
                   masterStrategies={dbState.masterStrategies || {}}
@@ -1062,24 +1120,9 @@ export function App() {
         metric={selectedMetricForDetail}
         branchInfo={currentBranchData.branchInfo}
         onClose={() => setSelectedMetricForDetail(null)}
-        onOpenSimulatorForMetric={() => setIsSimulatorOpen(true)}
         masterStrategies={dbState.masterStrategies || {}}
         viewerSimStrategies={viewerSimStrategies}
         isViewerSimMode={isViewerSimMode}
-      />
-
-      {/* What-If Simulator Modal */}
-      <WhatIfSimulator
-        metrics={currentBranchData.calculatedMetrics}
-        baselineTotalScore={isViewerSimMode ? currentBranchData.totalScore : masterBranchData.totalScore}
-        branchInfo={currentBranchData.branchInfo}
-        isOpen={isSimulatorOpen}
-        onClose={() => setIsSimulatorOpen(false)}
-        onApplyToViewerSim={(newRealsMap) => {
-          // Merge (jangan timpa) simulasi realisasi yang sudah ada dari tabel
-          setViewerSimReals(prev => ({ ...prev, ...(newRealsMap || {}) }));
-          setIsViewerSimMode(true);
-        }}
       />
 
       {/* Excel File Upload & History Modal */}
@@ -1108,68 +1151,6 @@ export function App() {
         metricDefs={metricDefs}
         realizationDate={currentBranchData.realizationDate}
       />
-
-      {/* Sticky Floating Simulation Bar (Strictly only visible while Simulation Mode is active!) */}
-      {isViewerSimMode && (
-        <aside
-          aria-label="Status Simulasi Berjalan"
-          className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-[#00254D] text-white px-3.5 sm:px-5 py-2.5 rounded-2xl shadow-2xl border-2 border-[#FFB81C] flex items-center gap-2.5 sm:gap-4 max-w-[95vw] sm:max-w-xl animate-in slide-in-from-bottom duration-200"
-        >
-          <div className="flex items-center gap-2 min-w-0">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#FFB81C] animate-ping shrink-0" />
-            <div className="min-w-0">
-              <span className="text-[10px] text-[#FFE5A3] font-bold uppercase tracking-wider block">
-                Total Skor Simulasi:
-              </span>
-              <div className="flex items-baseline gap-1.5 font-mono">
-                <span className="text-base sm:text-xl font-black text-white">
-                  {currentBranchData.totalScore.toFixed(2).replace('.', ',')}
-                </span>
-                <span className="text-slate-400 text-xs">/100</span>
-                <span
-                  className={`text-[10px] sm:text-xs font-black px-1.5 py-0.2 rounded ${currentBranchData.totalScore >= masterBranchData.totalScore
-                    ? 'bg-emerald-500 text-white'
-                    : 'bg-rose-500 text-white'
-                    }`}
-                >
-                  {currentBranchData.totalScore >= masterBranchData.totalScore ? '+' : ''}
-                  {(currentBranchData.totalScore - masterBranchData.totalScore).toFixed(2).replace('.', ',')} pt
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="h-8 w-px bg-white/20 shrink-0 hidden sm:block" />
-
-          <div className="hidden sm:block text-[11px] text-slate-300 shrink-0">
-            <span>Awal (Konseptor): </span>
-            <strong className="text-white font-mono">{masterBranchData.totalScore.toFixed(2).replace('.', ',')} pt</strong>
-          </div>
-
-          <div className="flex items-center gap-1.5 shrink-0 ml-auto">
-            <button
-              type="button"
-              onClick={() => {
-                const bar = document.getElementById('simulation-manager-section');
-                if (bar) bar.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setIsViewerSimMode(true);
-              }}
-              className="px-3 py-1.5 rounded-xl bg-[#FFB81C] hover:bg-[#f3aa0d] text-[#00254D] font-black text-xs cursor-pointer shadow-xs transition-colors"
-              title="Buka panel untuk menyimpan skenario simulasi"
-            >
-              Simpan Simulasi
-            </button>
-            <button
-              type="button"
-              onClick={handleResetViewerSimDraft}
-              className="p-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-300 hover:text-white cursor-pointer text-xs font-bold"
-              title="Reset simulasi ke awal"
-            >
-              ✕
-            </button>
-          </div>
-        </aside>
-      )}
 
       {/* Global Cloud Sync Feedback Toast */}
       {syncToast && (

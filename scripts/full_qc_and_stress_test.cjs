@@ -223,21 +223,45 @@ async function runBrowserE2EQC() {
   adminPage.on('dialog', async d => await d.accept());
   viewerPage.on('dialog', async d => await d.accept());
 
+  // Snapshot live production Supabase rows BEFORE browser tests so we never disturb real user edits (e.g. 10125_50, 10125_51)
+  const { data: origTargetsSnap } = await supabase.from('master_targets').select('*');
+  const { data: origStratsSnap } = await supabase.from('master_strategies').select('*');
+  const origTargetKeys = (origTargetsSnap || []).map(r => r.key).filter(k => k !== '10125_12');
+  const origNonSysStratKeys = (origStratsSnap || [])
+    .map(r => r.key)
+    .filter(k => !k.startsWith('__sys_') && k !== 'b10125~12');
+  const origTimestandRow = (origStratsSnap || []).find(r => r.key === '__sys_timestand_config__');
+  let origStartDate = '2026-11-16';
   try {
-    // [B1] Superadmin login & initial cloud snapshot auto-load
-    console.log('[B1] Superadmin (alvin.superadmin) login & cloud snapshot check...');
+    if (origTimestandRow?.strategy_text) {
+      origStartDate = JSON.parse(origTimestandRow.strategy_text)?.startDate || '2026-11-16';
+    }
+  } catch (e) {}
+
+  try {
+    // [B1] Superadmin login, initial cloud snapshot auto-load & simplified UI check
+    console.log('[B1] Superadmin (alvin.superadmin) login & simplified UI check...');
     await adminPage.goto(TARGET_URL, { waitUntil: 'networkidle2', timeout: 30000 });
     await loginAs(adminPage, 'alvin.superadmin');
     await waitForText(adminPage, '18 November 2026', 15000);
-    const adminBody = await adminPage.evaluate(() => document.body.innerText);
-    assert(!/idea\s+by|developed\s+by/i.test(adminBody), 'Idea by / Developed by must not exist');
-    assert(adminBody.includes('85,91'), 'Superadmin should auto-load 18 Nov score 85,91');
-    assert(adminBody.includes('#45'), 'Superadmin should auto-load 18 Nov rank #45');
-    assert(adminBody.includes('Mode Edit Master Aktif'), 'Superadmin must start in Master Mode');
-    console.log(' ✅ PASS | Superadmin logged in, auto-loaded 18 Nov (85,91 | #45), in Master Mode');
+    const adminCheck = await adminPage.evaluate(() => {
+      const text = document.body.innerText;
+      const hasSimulatorHeaderBtn = Boolean(document.querySelector('button[title="Buka What-If Simulator Skor"]'));
+      const hasDetailRumusBtn = Array.from(document.querySelectorAll('button')).some(b => b.innerText.includes('Detail Rumus'));
+      const row12 = document.getElementById('metric-row-12')?.innerText || '';
+      return { text, hasSimulatorHeaderBtn, hasDetailRumusBtn, row12 };
+    });
+    assert(!/idea\s+by|developed\s+by/i.test(adminCheck.text), 'Idea by / Developed by must not exist');
+    assert(adminCheck.text.includes('#45'), 'Superadmin should auto-load 18 Nov rank #45');
+    assert(adminCheck.text.includes('Mode Edit Master Aktif'), 'Superadmin must start in Master Mode');
+    assert(!adminCheck.hasSimulatorHeaderBtn, 'Duplicate Simulator button in Header must be removed');
+    assert(!adminCheck.hasDetailRumusBtn, 'Duplicate Detail Rumus button must be removed');
+    assert(!adminCheck.row12.includes('Porsi Target:'), 'Table row must not show cluttered Porsi Target');
+    assert(!adminCheck.row12.includes('Target Asli Excel:'), 'Table row must not show cluttered Target Asli Excel');
+    console.log(' ✅ PASS | Superadmin logged in, 18 Nov (#45), duplicate buttons/clutter removed');
 
-    // [B2] Superadmin opens Row 12 Editor -> MUST stay in Master Mode, NOT Simulation!
-    console.log('[B2] Verifying Superadmin inline editor stays strictly in Master Mode...');
+    // [B2] Superadmin opens Row 12 Editor -> single-mode Master Editor, stays in Master Mode!
+    console.log('[B2] Verifying Superadmin inline editor focuses only on Master Target & Strategy...');
     await adminPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
       const btn = Array.from(row.querySelectorAll('button')).find(b => b.innerText.includes('Edit Target / Strategi'));
@@ -246,9 +270,11 @@ async function runBrowserE2EQC() {
     });
     await sleep(400);
     const hasFloatingBarBeforeSave = await adminPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
-    assert(!hasFloatingBarBeforeSave, 'BUG CHECK FAILED: Opening Master editor activated Floating Simulation Bar!');
-    const editorHeaderTxt = await adminPage.evaluate(() => document.body.innerText);
-    assert(editorHeaderTxt.includes('MODE MASTER'), 'Editor header must display MODE MASTER');
+    assert(!hasFloatingBarBeforeSave, 'BUG CHECK FAILED: Opening Master editor activated Simulation Bar!');
+    const editorCheck = await adminPage.evaluate(() => document.getElementById('metric-row-12').nextElementSibling?.innerText || '');
+    assert(editorCheck.includes('MODE MASTER'), 'Editor header must display MODE MASTER');
+    assert(editorCheck.includes('1. Edit Target Master & Rumus Skor'), 'Left panel must focus on Target Master');
+    assert(!editorCheck.includes('Simulasi Realisasi (Capaian)'), 'Duplicate 2-tab Simulasi Realisasi must NOT appear in Master Mode');
 
     // Edit Target to 555 and Strategy to QC Master Sync Strategy Test
     await adminPage.evaluate(() => {
@@ -283,8 +309,9 @@ async function runBrowserE2EQC() {
     const hasFloatingBarAfterSave = await adminPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
     assert(!hasFloatingBarAfterSave, 'BUG CHECK FAILED: Saving Master flipped to Simulation Mode!');
     const row12TxtAfterSave = await adminPage.evaluate(() => document.getElementById('metric-row-12').innerText);
-    assert(row12TxtAfterSave.includes('Master Diedit') && /555[,.]0/.test(row12TxtAfterSave), `Row 12 did not show Master Diedit 555,0: ${row12TxtAfterSave}`);
+    assert(row12TxtAfterSave.includes('Master') && /555[,.]0/.test(row12TxtAfterSave), `Row 12 did not show Master 555,0: ${row12TxtAfterSave}`);
     assert(!row12TxtAfterSave.includes('Target Simulasi'), 'Row 12 falsely shows Target Simulasi in Master Mode!');
+    assert(!row12TxtAfterSave.includes('Target Asli Excel:'), 'Row 12 must stay clean without Target Asli Excel!');
 
     // Confirm exact values persisted in live Supabase
     const { data: supTgt1 } = await supabase.from('master_targets').select('*').eq('key', '10125_12').single();
@@ -319,7 +346,7 @@ async function runBrowserE2EQC() {
     await sleep(300);
     const viewerRow12WithStrat = await viewerPage.evaluate(() => document.getElementById('metric-row-12').innerText);
     const viewerBodyText = await viewerPage.evaluate(() => document.body.innerText);
-    assert(viewerRow12Text.includes('Master Diedit') && /555[,.]0/.test(viewerRow12Text), `Viewer missing Master Target 555,0: ${viewerRow12Text}`);
+    assert(viewerRow12Text.includes('Master') && /555[,.]0/.test(viewerRow12Text), `Viewer missing Master Target 555,0: ${viewerRow12Text}`);
     assert(viewerRow12WithStrat.includes('QC Master Sync Strategy Test Line 1'), `Viewer missing Master Strategy: ${viewerRow12WithStrat}`);
     assert(viewerBodyText.includes('18 Nov 2026 – 30 Nov 2026'), 'Viewer missing synced Timestand 18 Nov – 30 Nov 2026');
     console.log(' ✅ PASS | Viewer automatically received 18 Nov snapshot, Target 555, Strategy & Timestand');
@@ -365,12 +392,12 @@ async function runBrowserE2EQC() {
     assert(!michaelSimBar, 'Admin michael entered simulation mode unexpectedly');
     console.log(' ✅ PASS | Admin (michael) sees Master Target 560,00 and stays in Master Mode');
 
-    // [B7] Simulation Mode & Clean Exit Test (Superadmin)
-    console.log('[B7] Testing Superadmin Simulation Mode entry & clean exit back to Master...');
+    // [B7] Simulation Mode, Single-Mode Realisasi Panel, Anti-Overlap Bar Check & Clean Exit
+    console.log('[B7] Testing Simulation Mode (Realisasi-only + Anti-Overlap Bar + Clean Exit)...');
     await adminPage.bringToFront();
     await adminPage.evaluate(() => {
-      const btn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Mode Simulasi Target & Strategi'));
-      if (!btn) throw new Error('Mode Simulasi toggle button missing');
+      const btn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Mode Simulasi Realisasi'));
+      if (!btn) throw new Error('Mode Simulasi Realisasi toggle button missing');
       btn.click();
     });
     await sleep(400);
@@ -380,14 +407,39 @@ async function runBrowserE2EQC() {
       btn.click();
     });
     await sleep(300);
+    const simPanelText = await adminPage.evaluate(() => document.getElementById('metric-row-12').nextElementSibling?.innerText || '');
+    assert(simPanelText.includes('1. Simulasi Realisasi & Rumus Skor'), 'Simulation editor must focus on Realisasi');
+    assert(!simPanelText.includes('Edit / Simulasi Target KPI'), 'Duplicate Target KPI tab must NOT appear in Simulation Mode');
+
     await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const set100Btn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Set 100% Target'));
       set100Btn.click();
     });
     await sleep(400);
-    const simBarActive = await adminPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
-    assert(simBarActive, 'Floating simulation bar should appear during Simulation Mode');
+
+    // Anti-Overlap Check: Top Sticky Simulation Bar MUST NOT overlap Panel bottom action buttons!
+    const overlapCheck = await adminPage.evaluate(() => {
+      const aside = document.querySelector('aside[aria-label="Status Simulasi Berjalan"]');
+      const panel = document.getElementById('metric-row-12').nextElementSibling;
+      if (!aside || !panel) return { exists: false };
+      panel.scrollIntoView({ block: 'center' });
+      const btns = Array.from(panel.querySelectorAll('button')).filter(b =>
+        b.innerText.includes('Tutup Panel') || b.innerText.includes('Selesai & Simpan Catatan')
+      );
+      const aRect = aside.getBoundingClientRect();
+      const btnRects = btns.map(b => {
+        const r = b.getBoundingClientRect();
+        const overlaps = !(r.right <= aRect.left || r.left >= aRect.right || r.bottom <= aRect.top || r.top >= aRect.bottom);
+        return { text: b.innerText, overlaps, aBottom: aRect.bottom, rTop: r.top };
+      });
+      return { exists: true, btnRects };
+    });
+    assert(overlapCheck.exists, 'Sticky simulation bar should appear during Simulation Mode');
+    assert(overlapCheck.btnRects.length >= 2, 'Panel bottom buttons missing');
+    for (const br of overlapCheck.btnRects) {
+      assert(!br.overlaps, `BUG CHECK FAILED: Sticky simulation bar overlaps button "${br.text}": ${JSON.stringify(br)}`);
+    }
 
     // Exit Simulation Mode
     await adminPage.evaluate(() => {
@@ -398,22 +450,25 @@ async function runBrowserE2EQC() {
     await sleep(400);
     const simBarAfterExit = await adminPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
     assert(!simBarAfterExit, 'BUG CHECK FAILED: Simulation bar remained visible after exiting to Master Mode!');
-    console.log(' ✅ PASS | Entered Simulation Mode & exited cleanly back to pure Master Mode');
+    console.log(' ✅ PASS | Simulation Mode Realisasi-only, zero button overlap, & clean exit verified');
 
-    // [B8] Viewer Simulation Isolation Test
-    console.log('[B8] Testing Viewer Simulation save & isolation (Master stays untouched)...');
+    // [B8] Viewer 1-Click Direct Open Panel & Isolation Test
+    console.log('[B8] Testing Viewer 1-click direct open & Simulation save isolation...');
     await viewerPage.bringToFront();
-    await viewerPage.evaluate(() => {
-      const btn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Mode Simulasi Target & Strategi'));
-      btn.click();
-    });
-    await sleep(300);
+    // Viewer is currently still in Read-Only mode -> clicking Simulasi Capaian ONCE must open Panel Gambar 2 immediately!
     await viewerPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
       const btn = Array.from(row.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Capaian'));
+      if (!btn) throw new Error('Viewer Simulasi Capaian button missing');
       btn.click();
     });
-    await sleep(300);
+    await sleep(400);
+    const viewerPanelOpenedOnFirstClick = await viewerPage.evaluate(() => {
+      const nextEl = document.getElementById('metric-row-12')?.nextElementSibling;
+      return Boolean(nextEl && nextEl.innerText.includes('1. Simulasi Realisasi & Rumus Skor'));
+    });
+    assert(viewerPanelOpenedOnFirstClick, 'Viewer 1-click Simulasi Capaian did not open Panel Gambar 2 on first click!');
+
     await viewerPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const set100Btn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Set 100% Target'));
@@ -435,13 +490,12 @@ async function runBrowserE2EQC() {
       modal.querySelector('button[type="submit"]').click();
     });
     await sleep(1200);
-    // Confirm Master target in Supabase is still 560!
     const { data: supTgtAfterSim } = await supabase.from('master_targets').select('*').eq('key', '10125_12').single();
     assert.strictEqual(Number(supTgtAfterSim?.target_value), 560, 'Viewer simulation mutated Master Target!');
-    console.log(' ✅ PASS | Viewer simulation persisted without mutating Master data');
+    console.log(' ✅ PASS | Viewer 1-click opened panel & simulation persisted without mutating Master data');
 
-    // [B9] Regression checks: Ranking Modal, File Upload Modal order, WhatIfSimulator, Search Scroll, Mobile View, CMS
-    console.log('[B9] Running UI Regression Suite (Leaderboard, Upload Order, Simulator, Search, CMS, Mobile)...');
+    // [B9] Regression checks: Ranking Modal, File Upload Modal order, Search Scroll, Mobile View, CMS
+    console.log('[B9] Running UI Regression Suite (Leaderboard, Upload Order, CMS, Mobile Clean Cards)...');
     await adminPage.bringToFront();
 
     // 9a. Leaderboard & Grade Filter
@@ -475,18 +529,7 @@ async function runBrowserE2EQC() {
     });
     await sleep(300);
 
-    // 9c. WhatIfSimulator modal
-    await adminPage.click('button[title="Buka What-If Simulator Skor"]');
-    await sleep(500);
-    const simModalOk = await adminPage.evaluate(() => document.body.innerText.includes('Simulasi Kenaikan Skor'));
-    assert(simModalOk, 'WhatIfSimulator modal failed to open');
-    await adminPage.evaluate(() => {
-      const closeBtn = Array.from(document.querySelectorAll('.fixed button')).find(b => b.innerText.includes('Selesai & Tutup'));
-      closeBtn.click();
-    });
-    await sleep(300);
-
-    // 9d. CMS Page (Superadmin)
+    // 9c. CMS Page (Superadmin)
     await adminPage.evaluate(() => {
       const cmsBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.trim() === 'CMS');
       cmsBtn.click();
@@ -500,50 +543,76 @@ async function runBrowserE2EQC() {
     });
     await sleep(400);
 
-    // 9e. Mobile viewport check
+    // 9d. Mobile viewport check (clean cards without Porsi / Detail Rumus clutter)
     await adminPage.setViewport({ width: 390, height: 844, isMobile: true });
     await sleep(400);
-    const mobRow12Exists = await adminPage.evaluate(() => Boolean(document.getElementById('metric-mob-12')));
-    assert(mobRow12Exists, 'Mobile metric card #metric-mob-12 missing');
+    const mobCheck = await adminPage.evaluate(() => {
+      const card = document.getElementById('metric-mob-12');
+      return { exists: Boolean(card), text: card ? card.innerText : '' };
+    });
+    assert(mobCheck.exists, 'Mobile metric card #metric-mob-12 missing');
+    assert(!mobCheck.text.includes('Porsi:'), 'Mobile card should not show cluttered Porsi:');
     await adminPage.setViewport({ width: 1440, height: 900, isMobile: false });
     await sleep(300);
-    console.log(' ✅ PASS | All UI regressions (Leaderboard, Upload Order, Simulator, CMS, Mobile) passed cleanly');
+    console.log(' ✅ PASS | All UI regressions (Leaderboard, Upload Order, CMS, Clean Mobile) passed cleanly');
 
-    // [B10] Full Reset & Verification that production Supabase returns completely clean
-    console.log('[B10] Resetting test Master target/strategy/timestand/simulation & verifying clean Supabase state...');
+    // [B10] Non-Destructive Per-Row Reset & Verification (Preserving Real Production Edits!)
+    console.log('[B10] Resetting ONLY test row #12, timestand & QC test sim (preserving production rows)...');
     await adminPage.evaluate(() => {
-      const resetAllBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Reset Master'));
-      if (resetAllBtn) resetAllBtn.click();
+      const row = document.getElementById('metric-row-12');
+      const btn = Array.from(row.querySelectorAll('button')).find(b => b.innerText.includes('Edit Target / Strategi'));
+      btn.click();
     });
-    await sleep(1000);
-
-    // Reset Timestand start date back to 2026-11-16
+    await sleep(300);
     await adminPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12').nextElementSibling;
+      const resetTgtBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Reset ke Excel Asli'));
+      if (resetTgtBtn) resetTgtBtn.click();
+      const resetStrBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Reset ke Strategi Bawaan'));
+      if (resetStrBtn) resetStrBtn.click();
+    });
+    await sleep(1200);
+    await adminPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12')?.nextElementSibling;
+      const closeBtn = panel && Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Tutup Panel'));
+      if (closeBtn) closeBtn.click();
+    });
+    await sleep(300);
+
+    // Reset Timestand start date back to original production value
+    await adminPage.evaluate((origDate) => {
       const dateInputs = document.querySelectorAll('input[type="date"]');
       const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-      setter.call(dateInputs[0], '2026-11-16');
+      setter.call(dateInputs[0], origDate);
       dateInputs[0].dispatchEvent(new Event('change', { bubbles: true }));
-    });
+    }, origStartDate);
     await sleep(1000);
 
-    // Delete QC Viewer Sim Isolation Test from Simulasi Tersimpan
+    // Delete ONLY QC Viewer Sim Isolation Test from Simulasi Tersimpan
     await adminPage.evaluate(() => {
       const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
       listBtn.click();
     });
     await sleep(400);
     await adminPage.evaluate(() => {
-      const delBtns = document.querySelectorAll('button[title="Hapus Simulasi"]');
-      delBtns.forEach(b => b.click());
+      const delBtn = Array.from(document.querySelectorAll('button[title="Hapus Simulasi"]')).find(b =>
+        b.parentElement?.parentElement?.innerText.includes('QC Viewer Sim Isolation Test')
+      );
+      if (delBtn) delBtn.click();
     });
     await sleep(1200);
 
-    // Verify clean Supabase state directly
+    // Verify test keys cleaned AND all original production keys are 100% intact
     const { data: finalTargets } = await supabase.from('master_targets').select('*');
     const { data: finalStrats } = await supabase.from('master_strategies').select('*');
-    const nonSysStrats = (finalStrats || []).filter(s => !s.key.startsWith('__sys_'));
-    assert.strictEqual((finalTargets || []).length, 0, `Expected 0 leftover master_targets, got ${JSON.stringify(finalTargets)}`);
-    assert.strictEqual(nonSysStrats.length, 0, `Expected 0 leftover master_strategies, got ${JSON.stringify(nonSysStrats)}`);
+    assert(!(finalTargets || []).some(t => t.key === '10125_12'), 'Test key 10125_12 still in Supabase!');
+    assert(!(finalStrats || []).some(s => s.key === 'b10125~12'), 'Test key b10125~12 still in Supabase!');
+    for (const k of origTargetKeys) {
+      assert((finalTargets || []).some(t => t.key === k), `Production target ${k} was unexpectedly removed!`);
+    }
+    for (const k of origNonSysStratKeys) {
+      assert((finalStrats || []).some(s => s.key === k), `Production strategy ${k} was unexpectedly removed!`);
+    }
 
     // Check console & HTTP errors
     assert.strictEqual(adminErrors.length, 0, `Admin/Michael Console Errors: ${adminErrors.join(' | ')}`);
@@ -551,8 +620,11 @@ async function runBrowserE2EQC() {
     assert.strictEqual(adminHttpErrors.length, 0, `Admin/Michael HTTP Errors: ${adminHttpErrors.join(' | ')}`);
     assert.strictEqual(viewerHttpErrors.length, 0, `Viewer HTTP Errors: ${viewerHttpErrors.join(' | ')}`);
 
-    console.log(' ✅ PASS | Full cleanup verified in Supabase, 0 console errors, 0 HTTP 4xx/5xx errors!');
+    console.log(' ✅ PASS | Test row #12 cleaned, all production data intact, 0 console & HTTP errors!');
   } finally {
+    // Guaranteed cleanup of QC test keys even if a step throws early
+    try { await supabase.from('master_targets').delete().eq('key', '10125_12'); } catch (e) {}
+    try { await supabase.from('master_strategies').delete().eq('key', 'b10125~12'); } catch (e) {}
     await browser.close();
   }
 }

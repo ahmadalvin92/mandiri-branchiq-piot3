@@ -9,7 +9,6 @@ import {
   Calculator, 
   Sparkles, 
   Building2, 
-  Sliders, 
   Briefcase,
   ChevronRight,
   ShieldCheck,
@@ -22,7 +21,6 @@ export function MetricDetailDrawer({
   metric,
   branchInfo = { code: '10125', name: 'Jakarta Pondok Indah Office 3', head: 'MICHAEL DANNIEL', grade: 'B.3' },
   onClose,
-  onOpenSimulatorForMetric,
   masterStrategies = {},
   viewerSimStrategies = {},
   isViewerSimMode = false
@@ -154,16 +152,6 @@ export function MetricDetailDrawer({
                     <span className="inline-flex items-center gap-1 font-mono font-bold text-[11px] bg-white px-2.5 py-1 rounded-md border border-amber-300 text-amber-800 shadow-2xs">
                       Potensi Kenaikan: +{metric.scoreGap.toFixed(2).replace('.', ',')} poin
                     </span>
-                    <button
-                      onClick={() => {
-                        onClose();
-                        onOpenSimulatorForMetric(metric);
-                      }}
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#003D79] text-white text-[11px] font-bold hover:bg-[#00254D] transition-colors cursor-pointer"
-                    >
-                      <Sliders className="w-3 h-3 text-[#FFB81C]" />
-                      <span>Uji di Simulator</span>
-                    </button>
                   </div>
                 )}
               </div>
@@ -236,26 +224,13 @@ export function MetricDetailDrawer({
         </div>
 
         {/* Modal Footer Actions */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-between gap-3 shrink-0">
+        <div className="p-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3 shrink-0">
           <button
             onClick={onClose}
             className="px-4 py-2 rounded-lg bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 text-xs font-bold transition-colors cursor-pointer"
           >
             Tutup
           </button>
-
-          {metric.scoreGap > 0 && (
-            <button
-              onClick={() => {
-                onClose();
-                onOpenSimulatorForMetric(metric);
-              }}
-              className="inline-flex items-center gap-2 px-5 py-2 rounded-lg bg-[#003D79] hover:bg-[#002D59] text-white text-xs font-bold shadow-xs transition-all active:scale-95 cursor-pointer"
-            >
-              <Sliders className="w-3.5 h-3.5 text-[#FFB81C]" />
-              <span>Simulasikan di What-If Simulator</span>
-            </button>
-          )}
         </div>
 
       </div>
