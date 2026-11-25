@@ -180,7 +180,7 @@ export function SimulationManagerBar({
                 ) : (
                   <span className="text-xs font-bold text-slate-800">
                     {isKonseptor
-                      ? 'Mode Edit Master Aktif — Anda dapat mengubah angka Target & Strategi secara permanen'
+                      ? 'Mode Edit Master Aktif — Anda dapat mengubah Realisasi, Target & Strategi secara permanen'
                       : 'Mode Read-Only Data Master — Aktifkan Mode Simulasi untuk menguji proyeksi Realisasi, Target & Strategi Anda sendiri'}
                   </span>
                 )}
@@ -308,7 +308,7 @@ export function SimulationManagerBar({
               <button
                 type="button"
                 onClick={() => {
-                  if (window.confirm('Kembalikan seluruh Target & Strategi cabang ini ke nilai asli template Excel?')) {
+                  if (window.confirm('Kembalikan seluruh Realisasi, Target & Strategi cabang ini ke nilai asli template Excel?')) {
                     onResetAllMasterOverrides();
                   }
                 }}

@@ -192,6 +192,7 @@ export function App() {
       if (loadedDb && timeSinceWrite > 3500) {
         const prevStr = JSON.stringify({
           t: dbStateRef.current.masterTargets,
+          r: dbStateRef.current.masterReals,
           s: dbStateRef.current.masterStrategies,
           tc: dbStateRef.current.timestandConfig,
           vs: dbStateRef.current.viewerSimulations,
@@ -199,6 +200,7 @@ export function App() {
         });
         const nextStr = JSON.stringify({
           t: loadedDb.masterTargets,
+          r: loadedDb.masterReals,
           s: loadedDb.masterStrategies,
           tc: loadedDb.timestandConfig,
           vs: loadedDb.viewerSimulations,
@@ -372,10 +374,10 @@ export function App() {
   const isSuperadminUser = isSuperadmin(currentUser);
   const isKonseptor = isKonseptorOrAdmin(currentUser);
 
-  // Master Branch Data (incorporating permanent Master Target overrides saved by Michael/Superadmin)
+  // Master Branch Data (incorporating permanent Master Target & Realisasi overrides saved by Michael/Superadmin)
   const masterBranchData = useMemo(() => {
-    return recalculateBranchWithOverrides(rawBranchData, dbState.masterTargets || {}, {});
-  }, [rawBranchData, dbState.masterTargets]);
+    return recalculateBranchWithOverrides(rawBranchData, dbState.masterTargets || {}, dbState.masterReals || {});
+  }, [rawBranchData, dbState.masterTargets, dbState.masterReals]);
 
   // Active Displayed Branch Data (strictly isolated: Master Mode ALWAYS shows masterBranchData cleanly)
   const currentBranchData = useMemo(() => {
@@ -397,9 +399,10 @@ export function App() {
   const masterOverridesCount = useMemo(() => {
     const code = String(rawBranchData.branchInfo?.code || '10125');
     const tgtCount = Object.keys(dbState.masterTargets || {}).filter(k => k.startsWith(`${code}_`)).length;
+    const realCount = Object.keys(dbState.masterReals || {}).filter(k => k.startsWith(`${code}_`)).length;
     const strCount = Object.keys(dbState.masterStrategies || {}).filter(k => k.startsWith(`b${code}~`) || k.startsWith('g~')).length;
-    return tgtCount + strCount;
-  }, [rawBranchData.branchInfo?.code, dbState.masterTargets, dbState.masterStrategies]);
+    return tgtCount + realCount + strCount;
+  }, [rawBranchData.branchInfo?.code, dbState.masterTargets, dbState.masterReals, dbState.masterStrategies]);
 
   // ---------------- CMS USER MANAGEMENT HANDLERS (SUPERADMIN) ----------------
   const handleAddUser = (newUserObj) => {
@@ -472,6 +475,31 @@ export function App() {
     }, { changed: ['masterTargets'], toastMsg: 'Target Master dikembalikan ke nilai asli Excel' });
   };
 
+  const handleSaveMasterReal = (branchCode, rowId, realValue) => {
+    if (!isKonseptor) return;
+    const key = `${branchCode}_${rowId}`;
+    updateAndPersistDb((prev) => ({
+      ...prev,
+      masterReals: {
+        ...(prev.masterReals || {}),
+        [key]: Number(realValue)
+      }
+    }), { changed: ['masterReals'], toastMsg: 'Realisasi Master tersimpan ke Supabase & aktif untuk seluruh Viewer' });
+  };
+
+  const handleResetMasterReal = (branchCode, rowId) => {
+    if (!isKonseptor) return;
+    const key = `${branchCode}_${rowId}`;
+    updateAndPersistDb((prev) => {
+      const nextReals = { ...(prev.masterReals || {}) };
+      delete nextReals[key];
+      return {
+        ...prev,
+        masterReals: nextReals
+      };
+    }, { changed: ['masterReals'], toastMsg: 'Realisasi Master dikembalikan ke nilai asli Excel' });
+  };
+
   const handleSaveMasterStrategy = (branchCode, rowId, strategyPayload) => {
     if (!isKonseptor) return;
     const scope = strategyPayload.scope === 'all' ? 'all' : 'branch';
@@ -518,6 +546,10 @@ export function App() {
       Object.keys(nextTargets).forEach((k) => {
         if (k.startsWith(`${code}_`)) delete nextTargets[k];
       });
+      const nextReals = { ...(prev.masterReals || {}) };
+      Object.keys(nextReals).forEach((k) => {
+        if (k.startsWith(`${code}_`)) delete nextReals[k];
+      });
       const nextStrategies = { ...(prev.masterStrategies || {}) };
       Object.keys(nextStrategies).forEach((k) => {
         if (k.startsWith(`b${code}~`)) delete nextStrategies[k];
@@ -525,9 +557,10 @@ export function App() {
       return {
         ...prev,
         masterTargets: nextTargets,
+        masterReals: nextReals,
         masterStrategies: nextStrategies
       };
-    }, { changed: ['masterTargets', 'masterStrategies'], toastMsg: 'Seluruh override Master cabang direset ke template Excel' });
+    }, { changed: ['masterTargets', 'masterReals', 'masterStrategies'], toastMsg: 'Seluruh override Master cabang direset ke template Excel' });
   };
 
   // ---------------- VIEWER SIMULATION HANDLERS ----------------
@@ -629,6 +662,10 @@ export function App() {
       Object.entries(simObj.targets || {}).forEach(([rowId, val]) => {
         nextTargets[`${code}_${rowId}`] = Number(val);
       });
+      const nextReals = { ...(prev.masterReals || {}) };
+      Object.entries(simObj.reals || {}).forEach(([rowId, val]) => {
+        nextReals[`${code}_${rowId}`] = Number(val);
+      });
       const nextStrategies = { ...(prev.masterStrategies || {}) };
       Object.entries(simObj.strategies || {}).forEach(([rowId, text]) => {
         if (text && String(text).trim()) {
@@ -647,9 +684,10 @@ export function App() {
       return {
         ...prev,
         masterTargets: nextTargets,
+        masterReals: nextReals,
         masterStrategies: nextStrategies
       };
-    }, { changed: ['masterTargets', 'masterStrategies'], toastMsg: 'Simulasi berhasil diterapkan permanen ke Data Master!' });
+    }, { changed: ['masterTargets', 'masterReals', 'masterStrategies'], toastMsg: 'Simulasi berhasil diterapkan permanen ke Data Master!' });
     handleResetViewerSimDraft();
   };
 
@@ -1001,7 +1039,7 @@ export function App() {
                     </button>
                   </div>
                   <span className="text-[11px] sm:text-xs font-semibold text-emerald-950 truncate hidden md:inline">
-                    Edit Target &amp; Strategi tersimpan permanen ke Supabase &amp; tampil di semua Viewer
+                    Edit Realisasi, Target &amp; Strategi tersimpan permanen ke Supabase &amp; tampil di semua Viewer
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-auto text-[11px] sm:text-xs">
@@ -1162,6 +1200,8 @@ export function App() {
                   viewerSimReals={viewerSimReals}
                   onSaveMasterTarget={handleSaveMasterTarget}
                   onResetMasterTarget={handleResetMasterTarget}
+                  onSaveMasterReal={handleSaveMasterReal}
+                  onResetMasterReal={handleResetMasterReal}
                   onSaveMasterStrategy={handleSaveMasterStrategy}
                   onResetMasterStrategy={handleResetMasterStrategy}
                   onUpdateViewerSimTarget={handleUpdateViewerSimTarget}

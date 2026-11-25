@@ -13,6 +13,7 @@ export const STORAGE_KEY_DB = 'branchiq_master_db_v2';
 export const SYS_KEY_TIMESTAND = '__sys_timestand_config__';
 export const SYS_KEY_SIMULATIONS = '__sys_viewer_simulations__';
 export const SYS_KEY_ACTIVE_SNAPSHOT = '__sys_active_snapshot__';
+export const SYS_KEY_MASTER_REALS = '__sys_master_reals__';
 
 export const INITIAL_USERS = [
   // Superadmin Accounts
@@ -147,6 +148,24 @@ export function normalizeMasterTargets(rawTargets = {}) {
 }
 
 /**
+ * Normalize masterReals map so every entry is a finite plain Number
+ */
+export function normalizeMasterReals(rawReals = {}) {
+  const out = {};
+  if (!rawReals || typeof rawReals !== 'object') return out;
+  Object.entries(rawReals).forEach(([key, val]) => {
+    if (!key || val === null || val === undefined) return;
+    const rawNum = typeof val === 'object' ? val.real : val;
+    if (rawNum === null || rawNum === undefined || rawNum === '') return;
+    const num = Number(rawNum);
+    if (Number.isFinite(num) && num >= 0) {
+      out[key] = num;
+    }
+  });
+  return out;
+}
+
+/**
  * Normalize masterStrategies map so every non-system entry uses `{ text, scope, branchCode, rowId, updatedBy, updatedAt }`
  */
 export function normalizeMasterStrategies(rawStrategies = {}) {
@@ -205,6 +224,7 @@ export function getInitialDbState() {
     return {
       users,
       masterTargets: normalizeMasterTargets(parsed.masterTargets || {}),
+      masterReals: normalizeMasterReals(parsed.masterReals || {}),
       masterStrategies: normalizeMasterStrategies(parsed.masterStrategies || {}),
       viewerSimulations: Array.isArray(parsed.viewerSimulations) ? parsed.viewerSimulations : [],
       timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG, ...(parsed.timestandConfig || {}) },
@@ -214,6 +234,7 @@ export function getInitialDbState() {
   return {
     users: [...INITIAL_USERS],
     masterTargets: {},
+    masterReals: {},
     masterStrategies: {},
     viewerSimulations: [],
     timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG },
@@ -259,6 +280,7 @@ export async function fetchServerDb() {
         }
 
         const masterStrategies = {};
+        let cloudMasterReals = null;
         let cloudTimestand = null;
         let cloudSimulations = null;
         let officialActiveSnapshotId = null;
@@ -270,6 +292,12 @@ export async function fetchServerDb() {
               ? (() => { try { return JSON.parse(s.tactical_actions || '[]'); } catch { return []; } })()
               : s.tactical_actions;
 
+            if (s.key === SYS_KEY_MASTER_REALS) {
+              if (parsedActions && typeof parsedActions === 'object' && !Array.isArray(parsedActions)) {
+                cloudMasterReals = normalizeMasterReals(parsedActions);
+              }
+              return;
+            }
             if (s.key === SYS_KEY_TIMESTAND) {
               if (parsedActions && typeof parsedActions === 'object' && !Array.isArray(parsedActions)) {
                 cloudTimestand = { ...DEFAULT_TIMESTAND_CONFIG, ...parsedActions };
@@ -307,6 +335,9 @@ export async function fetchServerDb() {
         const cloudDb = {
           users,
           masterTargets,
+          masterReals: cloudMasterReals !== null
+            ? cloudMasterReals
+            : normalizeMasterReals(localFallback?.masterReals || {}),
           masterStrategies,
           viewerSimulations: cloudSimulations !== null
             ? cloudSimulations
@@ -333,6 +364,7 @@ export async function fetchServerDb() {
         const normalized = {
           users: ensureRequiredUsers(data.users),
           masterTargets: normalizeMasterTargets(data.masterTargets || {}),
+          masterReals: normalizeMasterReals(data.masterReals || {}),
           masterStrategies: normalizeMasterStrategies(data.masterStrategies || {}),
           viewerSimulations: Array.isArray(data.viewerSimulations) ? data.viewerSimulations : [],
           timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG, ...(data.timestandConfig || {}) },
@@ -350,7 +382,7 @@ export async function fetchServerDb() {
 
 export async function persistDbState(newDb, options = {}) {
   const {
-    changed = ['users', 'masterTargets', 'masterStrategies', 'timestandConfig', 'viewerSimulations'],
+    changed = ['users', 'masterTargets', 'masterReals', 'masterStrategies', 'timestandConfig', 'viewerSimulations'],
     actor = 'michael',
     officialActiveSnapshotId
   } = options || {};
@@ -358,6 +390,7 @@ export async function persistDbState(newDb, options = {}) {
   const normalizedDb = {
     users: ensureRequiredUsers(newDb.users || []),
     masterTargets: normalizeMasterTargets(newDb.masterTargets || {}),
+    masterReals: normalizeMasterReals(newDb.masterReals || {}),
     masterStrategies: normalizeMasterStrategies(newDb.masterStrategies || {}),
     viewerSimulations: Array.isArray(newDb.viewerSimulations) ? newDb.viewerSimulations : [],
     timestandConfig: { ...DEFAULT_TIMESTAND_CONFIG, ...(newDb.timestandConfig || {}) },
@@ -466,6 +499,20 @@ export async function persistDbState(newDb, options = {}) {
               if (delSErr) errors.push(`master_strategies delete: ${delSErr.message}`);
             }
           }
+        }
+
+        if (changedSet.has('masterReals')) {
+          const { error } = await supabase.from('master_strategies').upsert({
+            key: SYS_KEY_MASTER_REALS,
+            branch_code: 'sys',
+            row_id: -4,
+            scope: 'system',
+            strategy_text: 'master_reals',
+            tactical_actions: normalizedDb.masterReals,
+            updated_by: actor || 'michael',
+            updated_at: new Date().toISOString()
+          });
+          if (error) errors.push(`master_reals upsert: ${error.message}`);
         }
 
         if (changedSet.has('timestandConfig')) {
@@ -589,7 +636,7 @@ export async function persistOfficialActiveSnapshot(snapshotId, actor = 'superad
  */
 export function subscribeToCloudDbChanges(onRemoteChange) {
   if (!supabase || typeof onRemoteChange !== 'function') {
-    return () => {};
+    return () => { };
   }
   try {
     const channel = supabase
@@ -616,7 +663,7 @@ export function subscribeToCloudDbChanges(onRemoteChange) {
       }
     };
   } catch (e) {
-    return () => {};
+    return () => { };
   }
 }
 
