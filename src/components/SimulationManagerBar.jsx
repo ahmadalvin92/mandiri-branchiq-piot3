@@ -45,8 +45,28 @@ export function SimulationManagerBar({
   const [toastMsg, setToastMsg] = useState('');
 
   const branchCode = String(branchInfo?.code || '10125');
-  const branchSimulations = viewerSimulations.filter(s => String(s.branchCode) === branchCode);
-  const activeSimObj = viewerSimulations.find(s => s.id === activeSimulationId) || null;
+  const myUsername = String(currentUser?.username || '').toLowerCase();
+
+  const isAdminOwnedSim = (sim) => {
+    const role = String(sim?.createdByRole || '').toLowerCase();
+    const owner = String(sim?.createdBy || '').toLowerCase();
+    return Boolean(sim?.isPrivate) || role === 'superadmin' || role === 'admin' || owner === 'superadmin' || owner === 'michael' || owner.includes('admin');
+  };
+
+  const canCurrentUserViewSim = (sim) => {
+    const owner = String(sim?.createdBy || '').toLowerCase();
+    if (isAdminOwnedSim(sim)) {
+      // Simulasi Superadmin/Admin bersifat PRIVAT: hanya terlihat oleh akun pembuatnya sendiri!
+      return owner === myUsername;
+    }
+    // Simulasi Viewer: terlihat oleh Viewer pembuatnya sendiri + Konseptor (Admin/Superadmin) untuk presentasi
+    return owner === myUsername || isKonseptor;
+  };
+
+  const branchSimulations = viewerSimulations.filter(
+    (s) => String(s.branchCode) === branchCode && canCurrentUserViewSim(s)
+  );
+  const activeSimObj = branchSimulations.find((s) => s.id === activeSimulationId) || null;
 
   const modifiedDraftCount =
     Object.keys(viewerSimTargets).length +
@@ -74,14 +94,17 @@ export function SimulationManagerBar({
   const handleConfirmSave = (e) => {
     e.preventDefault();
     if (!simTitle.trim()) return;
+    const ownerRole = currentUser?.role || (isSuperadminUser ? 'superadmin' : isKonseptor ? 'admin' : 'viewer');
     onSaveViewerSimulation({
-      id: activeSimObj && activeSimObj.createdBy === currentUser?.username ? activeSimObj.id : `sim_${Date.now()}`,
+      id: activeSimObj && String(activeSimObj.createdBy || '').toLowerCase() === myUsername ? activeSimObj.id : `sim_${Date.now()}`,
       title: simTitle.trim(),
       notes: simNotes.trim(),
       branchCode,
       branchName: branchInfo?.name || `Cabang ${branchCode}`,
-      createdBy: currentUser?.username || 'viewer',
+      createdBy: myUsername || 'viewer',
       createdByName: currentUser?.displayName || currentUser?.username || 'Viewer',
+      createdByRole: ownerRole,
+      isPrivate: Boolean(isKonseptor),
       targets: viewerSimTargets,
       reals: viewerSimReals,
       strategies: viewerSimStrategies,
@@ -90,7 +113,11 @@ export function SimulationManagerBar({
       scoreDelta
     });
     setIsSaveModalOpen(false);
-    showTempToast('Simulasi berhasil disimpan! Siap dipresentasikan ke Konseptor (Michael).');
+    showTempToast(
+      isKonseptor
+        ? 'Simulasi pribadi tersimpan! Hanya terlihat oleh akun Anda sendiri (Master & Viewer tidak terpengaruh).'
+        : 'Simulasi berhasil disimpan! Siap dipresentasikan ke Konseptor.'
+    );
   };
 
   return (
@@ -145,7 +172,9 @@ export function SimulationManagerBar({
                     <span>
                       {activeSimObj
                         ? `Presentasi Simulasi: "${activeSimObj.title}" (oleh ${activeSimObj.createdByName})`
-                        : 'MODE SIMULASI VIEWER AKTIF (Data Master Aman)'}
+                        : isKonseptor
+                          ? `MODE SIMULASI PRIBADI AKTIF (Khusus Akun ${currentUser?.username} — Master Aman)`
+                          : 'MODE SIMULASI VIEWER AKTIF (Data Master Aman)'}
                     </span>
                   </span>
                 ) : (
@@ -216,7 +245,7 @@ export function SimulationManagerBar({
               <span>
                 {isViewerSimMode
                   ? 'Keluar Mode Simulasi (Kembali ke Master)'
-                  : (isKonseptor ? 'Mode Simulasi Realisasi' : 'Mode Simulasi Realisasi & Target')}
+                  : 'Mode Simulasi Realisasi & Target'}
               </span>
             </button>
 
@@ -309,7 +338,9 @@ export function SimulationManagerBar({
             <div className="flex items-center gap-2">
               <Presentation className="w-4 h-4 text-[#003D79]" />
               <h4 className="font-extrabold text-[#003D79] text-xs uppercase tracking-wider">
-                Daftar Skenario Simulasi Viewer — Siap Dipresentasikan ke Konseptor (Michael)
+                {isKonseptor
+                  ? 'Daftar Simulasi Tersimpan — Privat Akun Anda & Usulan Viewer'
+                  : 'Daftar Skenario Simulasi Anda — Siap Dipresentasikan ke Konseptor'}
               </h4>
             </div>
             <button onClick={() => setIsListOpen(false)} className="text-slate-400 hover:text-slate-600">
@@ -325,7 +356,9 @@ export function SimulationManagerBar({
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
               {branchSimulations.map((sim) => {
                 const isSelected = activeSimulationId === sim.id && isViewerSimMode;
-                const canDelete = isKonseptor || sim.createdBy === currentUser?.username;
+                const ownerLower = String(sim.createdBy || '').toLowerCase();
+                const isPrivateSim = isAdminOwnedSim(sim);
+                const canDelete = ownerLower === myUsername || (isKonseptor && !isPrivateSim);
                 const delta = Number((sim.simulatedScore - sim.baselineScore).toFixed(2));
 
                 return (
@@ -338,6 +371,17 @@ export function SimulationManagerBar({
                     }`}
                   >
                     <div>
+                      <div className="mb-1.5 flex items-center justify-between gap-1.5">
+                        <span
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                            isPrivateSim
+                              ? 'bg-purple-100 text-purple-900 border border-purple-300'
+                              : 'bg-blue-100 text-[#003D79] border border-blue-200'
+                          }`}
+                        >
+                          {isPrivateSim ? '🔒 Privat (Akun Anda)' : '👤 Usulan Viewer'}
+                        </span>
+                      </div>
                       <div className="flex items-start justify-between gap-2">
                         <span className="font-extrabold text-slate-900 leading-snug">{sim.title}</span>
                         <span
@@ -407,7 +451,9 @@ export function SimulationManagerBar({
               <div className="flex items-center gap-2">
                 <Save className="w-4 h-4 text-[#003D79]" />
                 <h3 className="text-sm font-extrabold text-[#003D79]">
-                  Simpan Draft Simulasi (Save Simulation)
+                  {isKonseptor
+                    ? 'Simpan Simulasi Pribadi (Khusus Akun Anda)'
+                    : 'Simpan Draft Simulasi (Save Simulation)'}
                 </h3>
               </div>
               <button onClick={() => setIsSaveModalOpen(false)} className="text-slate-400 hover:text-slate-600">
@@ -416,6 +462,12 @@ export function SimulationManagerBar({
             </div>
 
             <form onSubmit={handleConfirmSave} className="space-y-3">
+              {isKonseptor && (
+                <div className="p-2.5 rounded-lg bg-purple-50 border border-purple-200 text-[11px] text-purple-900 font-medium">
+                  🔒 Simulasi ini bersifat <strong>PRIVAT</strong> — hanya terlihat saat login menggunakan akun{' '}
+                  <strong>"{currentUser?.username}"</strong>. Data Master dan tampilan Viewer tidak akan berubah.
+                </div>
+              )}
               <div>
                 <label className="block font-bold text-slate-700 mb-1">Judul Skenario Simulasi *</label>
                 <input
@@ -429,7 +481,9 @@ export function SimulationManagerBar({
               </div>
 
               <div>
-                <label className="block font-bold text-slate-700 mb-1">Catatan Presentasi untuk Michael (Konseptor)</label>
+                <label className="block font-bold text-slate-700 mb-1">
+                  {isKonseptor ? 'Catatan Pribadi (Opsional)' : 'Catatan Presentasi untuk Konseptor'}
+                </label>
                 <textarea
                   rows={3}
                   value={simNotes}

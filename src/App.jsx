@@ -637,7 +637,9 @@ export function App() {
             scope: 'branch',
             branchCode: code,
             rowId: Number(rowId),
-            updatedBy: `${currentUser?.username} (dari simulasi ${simObj.createdByName})`,
+            updatedBy: String(simObj.createdBy || '').toLowerCase() === String(currentUser?.username || '').toLowerCase()
+              ? (currentUser?.username || 'admin')
+              : `${currentUser?.username} (dari simulasi ${simObj.createdByName})`,
             updatedAt: new Date().toISOString()
           };
         }
@@ -653,7 +655,7 @@ export function App() {
 
   // ---------------- TIMESTAND HANDLER ----------------
   const handleSaveTimestandConfig = (newConfig) => {
-    if (!isKonseptor) return;
+    if (!isKonseptor || isViewerSimMode) return;
     updateAndPersistDb((prev) => ({
       ...prev,
       timestandConfig: newConfig
@@ -901,19 +903,30 @@ export function App() {
           activeTotalScore={currentBranchData.totalScore}
         />
 
-        {/* Sticky Top Mode Status Bar — Selalu tampil jelas di atas untuk semua mode! */}
+        {/* Sticky Top Mode Status Bar & Mode Switcher — Selalu tampil jelas di atas untuk semua mode! */}
         {isViewerSimMode ? (
           <aside
             aria-label="Status Simulasi Berjalan"
             className="sticky top-0 z-30 w-full bg-[#00254D]/95 backdrop-blur-sm text-white border-b-2 border-[#FFB81C] shadow-md"
           >
             <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2 flex flex-wrap items-center justify-between gap-2 sm:gap-4">
-              <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-wrap">
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#FFB81C] text-[#00254D] text-[10px] font-black uppercase tracking-wider shrink-0">
-                  ⚡ MODE SIMULASI
-                </span>
+              <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-wrap">
+                {/* Segmented Switcher: Mode Master <-> Mode Simulasi */}
+                <div className="inline-flex items-center p-0.5 rounded-lg bg-white/10 border border-white/20 shrink-0">
+                  <button
+                    type="button"
+                    onClick={handleToggleViewerSimMode}
+                    className="px-2 py-1 rounded-md text-[10px] font-bold text-slate-200 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                    title="Kembali ke Data Master"
+                  >
+                    {isKonseptor ? '🔒 Mode Master' : '👁️ Data Master'}
+                  </button>
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#FFB81C] text-[#00254D] text-[10px] font-black uppercase tracking-wider">
+                    ⚡ MODE SIMULASI{isKonseptor ? ` · Privat (${currentUser?.username})` : ''}
+                  </span>
+                </div>
+
                 <div className="flex items-center gap-2 min-w-0">
-                  <span className="w-2 h-2 rounded-full bg-[#FFB81C] animate-pulse shrink-0 hidden sm:inline-block" />
                   <span className="text-[10px] sm:text-xs text-[#FFE5A3] font-bold uppercase tracking-wider shrink-0">
                     Total Skor Simulasi:
                   </span>
@@ -934,9 +947,9 @@ export function App() {
                   </div>
                 </div>
 
-                <div className="h-5 w-px bg-white/20 shrink-0 hidden md:block" />
+                <div className="h-5 w-px bg-white/20 shrink-0 hidden lg:block" />
 
-                <div className="hidden md:block text-[11px] text-slate-300 shrink-0">
+                <div className="hidden lg:block text-[11px] text-slate-300 shrink-0">
                   <span>Awal (Konseptor): </span>
                   <strong className="text-white font-mono">{masterBranchData.totalScore.toFixed(2).replace('.', ',')} pt</strong>
                 </div>
@@ -951,7 +964,7 @@ export function App() {
                     setIsViewerSimMode(true);
                   }}
                   className="px-3 py-1 rounded-lg bg-[#FFB81C] hover:bg-[#f3aa0d] text-[#00254D] font-black text-xs cursor-pointer shadow-xs transition-colors"
-                  title="Buka panel untuk menyimpan skenario simulasi"
+                  title={isKonseptor ? 'Simpan simulasi pribadi Anda' : 'Buka panel untuk menyimpan skenario simulasi'}
                 >
                   Simpan Simulasi
                 </button>
@@ -974,10 +987,20 @@ export function App() {
             >
               <div className="max-w-7xl mx-auto px-3 sm:px-4 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-2 min-w-0 flex-wrap">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider shrink-0">
-                    🔒 MODE MASTER (PERMANEN)
-                  </span>
-                  <span className="text-[11px] sm:text-xs font-semibold text-emerald-950 truncate">
+                  <div className="inline-flex items-center p-0.5 rounded-lg bg-white border border-emerald-300 shadow-2xs shrink-0">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-emerald-600 text-white text-[10px] font-black uppercase tracking-wider">
+                      🔒 MODE MASTER (PERMANEN)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsViewerSimMode(true)}
+                      className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold text-[#003D79] hover:bg-amber-100 hover:text-[#00254D] transition-colors cursor-pointer"
+                      title="Pindah ke Mode Simulasi Pribadi (hanya untuk akun Anda, tidak mengubah Data Master)"
+                    >
+                      ⚡ Mode Simulasi
+                    </button>
+                  </div>
+                  <span className="text-[11px] sm:text-xs font-semibold text-emerald-950 truncate hidden md:inline">
                     Edit Target &amp; Strategi tersimpan permanen ke Supabase &amp; tampil di semua Viewer
                   </span>
                 </div>
@@ -996,27 +1019,27 @@ export function App() {
             >
               <div className="max-w-7xl mx-auto px-3 sm:px-4 py-1.5 flex flex-wrap items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-2 min-w-0 flex-wrap">
-                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-[#003D79] text-white text-[10px] font-black uppercase tracking-wider shrink-0">
-                    👁️ DATA MASTER (READ-ONLY)
-                  </span>
-                  <span className="text-[11px] sm:text-xs font-semibold text-slate-700 truncate">
-                    Menampilkan angka resmi Konseptor — aktifkan simulasi untuk uji Realisasi &amp; Target
+                  <div className="inline-flex items-center p-0.5 rounded-lg bg-white border border-blue-200 shadow-2xs shrink-0">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-[#003D79] text-white text-[10px] font-black uppercase tracking-wider">
+                      👁️ DATA MASTER (READ-ONLY)
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsViewerSimMode(true)}
+                      className="px-2.5 py-0.5 rounded-md text-[10px] font-extrabold text-[#00254D] bg-[#FFB81C]/90 hover:bg-[#FFB81C] transition-colors cursor-pointer"
+                    >
+                      ⚡ Mode Simulasi
+                    </button>
+                  </div>
+                  <span className="text-[11px] sm:text-xs font-semibold text-slate-700 truncate hidden md:inline">
+                    Menampilkan angka resmi Konseptor — pindah ke Mode Simulasi untuk uji Realisasi &amp; Target
                   </span>
                 </div>
-                <div className="flex items-center gap-2.5 shrink-0 ml-auto text-[11px] sm:text-xs">
-                  <div>
-                    <span className="text-slate-600 font-medium">Skor Master: </span>
-                    <strong className="font-mono font-black text-[#003D79]">
-                      {masterBranchData.totalScore.toFixed(2).replace('.', ',')} /100
-                    </strong>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setIsViewerSimMode(true)}
-                    className="px-2.5 py-1 rounded-lg bg-[#FFB81C] hover:bg-[#f3aa0d] text-[#00254D] font-black text-[11px] cursor-pointer shadow-2xs transition-colors"
-                  >
-                    ⚡ Simulasi Viewer
-                  </button>
+                <div className="flex items-center gap-2 shrink-0 ml-auto text-[11px] sm:text-xs">
+                  <span className="text-slate-600 font-medium">Skor Master:</span>
+                  <strong className="font-mono font-black text-[#003D79]">
+                    {masterBranchData.totalScore.toFixed(2).replace('.', ',')} /100
+                  </strong>
                 </div>
               </div>
             </div>
@@ -1084,7 +1107,7 @@ export function App() {
                   isSyncingHolidays={isSyncingHolidays}
                   onSyncHolidays={handleSyncGoogleCalendar}
                   onSaveTimestandConfig={handleSaveTimestandConfig}
-                  canEditTimestand={isKonseptor}
+                  canEditTimestand={isKonseptor && !isViewerSimMode}
                   currentUser={currentUser}
                   metrics={currentBranchData.calculatedMetrics}
                 />
@@ -1132,6 +1155,7 @@ export function App() {
                   onSelectMetricForDetail={setSelectedMetricForDetail}
                   canEditMaster={isKonseptor}
                   isViewerSimMode={isViewerSimMode}
+                  currentUser={currentUser}
                   masterStrategies={dbState.masterStrategies || {}}
                   viewerSimStrategies={viewerSimStrategies}
                   viewerSimTargets={viewerSimTargets}

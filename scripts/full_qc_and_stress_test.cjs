@@ -255,7 +255,7 @@ async function runBrowserE2EQC() {
     assert(!/idea\s+by|developed\s+by/i.test(adminCheck.text), 'Idea by / Developed by must not exist');
     assert(adminCheck.text.includes('#45'), 'Superadmin should auto-load 18 Nov rank #45');
     assert(adminCheck.text.includes('Mode Edit Master Aktif'), 'Superadmin must start in Master Mode');
-    assert(adminCheck.masterBar.includes('MODE MASTER (PERMANEN)'), 'Sticky top Master mode bar must be clearly visible');
+    assert(adminCheck.masterBar.includes('MODE MASTER (PERMANEN)') && adminCheck.masterBar.includes('Mode Simulasi'), 'Sticky top Master mode bar with switcher must be visible');
     assert(!adminCheck.hasSimulatorHeaderBtn, 'Duplicate Simulator button in Header must be removed');
     assert(!adminCheck.hasDetailRumusBtn, 'Duplicate Detail Rumus button must be removed');
     assert(!adminCheck.row12.includes('Porsi Target:'), 'Table row must not show cluttered Porsi Target');
@@ -396,15 +396,24 @@ async function runBrowserE2EQC() {
     assert(!michaelSimBar, 'Admin michael entered simulation mode unexpectedly');
     console.log(' ✅ PASS | Admin (michael) sees Master Target 560,00 and stays in Master Mode');
 
-    // [B7] Simulation Mode, Single-Mode Realisasi Panel, Anti-Overlap Bar Check & Clean Exit
-    console.log('[B7] Testing Simulation Mode (Realisasi-only + Anti-Overlap Bar + Clean Exit)...');
+    // [B7] Superadmin Top-Bar Switch + Simulasi Realisasi & Target + Strict Per-Account Privacy!
+    console.log('[B7] Testing Superadmin top-bar switch, Simulasi Realisasi & Target, & strict privacy...');
     await adminPage.bringToFront();
     await adminPage.evaluate(() => {
-      const btn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Mode Simulasi Realisasi'));
-      if (!btn) throw new Error('Mode Simulasi Realisasi toggle button missing');
+      const topBar = document.querySelector('div[aria-label="Status Mode Master"]');
+      const btn = topBar && Array.from(topBar.querySelectorAll('button')).find(b => b.innerText.includes('Mode Simulasi'));
+      if (!btn) throw new Error('Mode Simulasi switcher missing in top Mode Master bar');
       btn.click();
     });
     await sleep(400);
+
+    // Timestand Master inputs MUST be locked during Simulation Mode
+    const timestandLockedInSim = await adminPage.evaluate(() => {
+      const inputs = Array.from(document.querySelectorAll('input[type="date"]'));
+      return inputs.length === 0 || inputs.every(inp => inp.disabled);
+    });
+    assert(timestandLockedInSim, 'Timestand Master must be locked while Superadmin is in Simulation Mode');
+
     await adminPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
       const btn = Array.from(row.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Capaian'));
@@ -414,20 +423,42 @@ async function runBrowserE2EQC() {
     const simPanelInfo = await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const panelText = panel?.innerText || '';
-      const hasTargetSimTab = Boolean(panel && Array.from(panel.querySelectorAll('button')).some(b => b.innerText.includes('Simulasi Target')));
-      return { panelText, hasTargetSimTab };
+      const btns = panel ? Array.from(panel.querySelectorAll('button')).map(b => b.innerText) : [];
+      return {
+        panelText,
+        hasRealTab: btns.some(t => t.includes('Simulasi Realisasi')),
+        hasTargetTab: btns.some(t => t.includes('Simulasi Target'))
+      };
     });
-    assert(simPanelInfo.panelText.includes('1. Simulasi Realisasi & Rumus Skor'), 'Admin simulation editor must focus on Realisasi');
-    assert(!simPanelInfo.hasTargetSimTab, 'Simulasi Target tab is exclusively for Viewers, not Superadmin/Admin');
+    assert(simPanelInfo.panelText.includes('MODE SIMULASI PRIBADI'), 'Admin simulation panel header must show MODE SIMULASI PRIBADI');
+    assert(simPanelInfo.panelText.includes('1. Simulasi Angka & Rumus Skor'), 'Admin simulation editor must show 1. Simulasi Angka & Rumus Skor');
+    assert(simPanelInfo.hasRealTab && simPanelInfo.hasTargetTab, 'Superadmin in Simulation Mode MUST have both Simulasi Realisasi & Simulasi Target tabs');
 
     await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const set100Btn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Set 100% Target'));
       set100Btn.click();
     });
+    await sleep(300);
+    await adminPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12').nextElementSibling;
+      const tgtTabBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Target'));
+      tgtTabBtn.click();
+    });
+    await sleep(300);
+    await adminPage.evaluate(() => {
+      const panel = document.getElementById('metric-row-12').nextElementSibling;
+      const numInput = panel.querySelector('input[type="number"]');
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+      setter.call(numInput, '480');
+      numInput.dispatchEvent(new Event('input', { bubbles: true }));
+      numInput.dispatchEvent(new Event('change', { bubbles: true }));
+    });
     await sleep(400);
+    const adminSimRow = await adminPage.evaluate(() => document.getElementById('metric-row-12').innerText);
+    assert(/480[,.]0/.test(adminSimRow) && adminSimRow.includes('Sim'), `Superadmin row 12 should show simulated target 480,0: ${adminSimRow}`);
 
-    // Anti-Overlap Check: Top Sticky Simulation Bar MUST show MODE SIMULASI and MUST NOT overlap Panel bottom action buttons!
+    // Anti-Overlap Check: Top Sticky Simulation Bar MUST show MODE SIMULASI & Mode Master button and MUST NOT overlap Panel bottom buttons!
     const overlapCheck = await adminPage.evaluate(() => {
       const aside = document.querySelector('aside[aria-label="Status Simulasi Berjalan"]');
       const panel = document.getElementById('metric-row-12').nextElementSibling;
@@ -445,22 +476,99 @@ async function runBrowserE2EQC() {
       return { exists: true, asideText: aside.innerText, btnRects };
     });
     assert(overlapCheck.exists, 'Sticky simulation bar should appear during Simulation Mode');
-    assert(overlapCheck.asideText.includes('MODE SIMULASI'), 'Sticky simulation bar must clearly badge MODE SIMULASI');
+    assert(overlapCheck.asideText.includes('MODE SIMULASI') && overlapCheck.asideText.includes('Mode Master'), 'Sticky simulation bar must show MODE SIMULASI and Mode Master switcher');
     assert(overlapCheck.btnRects.length >= 2, 'Panel bottom buttons missing');
     for (const br of overlapCheck.btnRects) {
       assert(!br.overlaps, `BUG CHECK FAILED: Sticky simulation bar overlaps button "${br.text}": ${JSON.stringify(br)}`);
     }
 
-    // Exit Simulation Mode
+    // Save Superadmin Private Simulation & test strict 3-account privacy!
     await adminPage.evaluate(() => {
-      const exitBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Keluar Mode Simulasi'));
-      if (!exitBtn) throw new Error('Keluar Mode Simulasi button missing');
-      exitBtn.click();
+      const saveSimBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simpan Simulasi ('));
+      saveSimBtn.click();
+    });
+    await sleep(300);
+    await adminPage.evaluate(() => {
+      const modal = document.querySelector('.fixed');
+      if (!modal.innerText.includes('PRIVAT')) throw new Error('Private simulation notice missing in Admin Save Modal');
+      const inp = modal.querySelector('input[type="text"]');
+      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+      setter.call(inp, 'QC Superadmin Private Sim Test');
+      inp.dispatchEvent(new Event('input', { bubbles: true }));
+      inp.dispatchEvent(new Event('change', { bubbles: true }));
+      modal.querySelector('button[type="submit"]').click();
+    });
+    await sleep(1400);
+
+    // 1) Supabase Master Target MUST remain 560!
+    const { data: supTgtAfterAdminSim } = await supabase.from('master_targets').select('*').eq('key', '10125_12').single();
+    assert.strictEqual(Number(supTgtAfterAdminSim?.target_value), 560, 'Superadmin private simulation leaked to Master Target!');
+
+    // 2) Superadmin owner DOES see it marked Privat (Akun Anda)
+    await adminPage.evaluate(() => {
+      const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
+      listBtn.click();
+    });
+    await sleep(300);
+    const adminListTxt = await adminPage.evaluate(() => document.getElementById('simulation-manager-section').innerText);
+    assert(adminListTxt.includes('QC Superadmin Private Sim Test') && /Privat \(Akun Anda\)/i.test(adminListTxt), 'Superadmin owner must see own private simulation');
+    await adminPage.evaluate(() => {
+      const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
+      listBtn.click();
+    });
+
+    // 3) Viewer (rian) MUST NOT see 480 nor QC Superadmin Private Sim Test!
+    await viewerPage.bringToFront();
+    await viewerPage.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await sleep(1200);
+    const viewerPrivacyCheck = await viewerPage.evaluate(() => {
+      const row12 = document.getElementById('metric-row-12').innerText;
+      const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
+      listBtn.click();
+      return row12;
+    });
+    await sleep(300);
+    const viewerListTxt = await viewerPage.evaluate(() => {
+      const sec = document.getElementById('simulation-manager-section').innerText;
+      const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
+      listBtn.click();
+      return sec;
+    });
+    assert(/560[,.]0/.test(viewerPrivacyCheck) && !/480[,.]0/.test(viewerPrivacyCheck), 'Viewer received Superadmin simulation instead of Master 560!');
+    assert(!viewerListTxt.includes('QC Superadmin Private Sim Test'), 'PRIVACY BREACH: Viewer can see Superadmin private simulation!');
+
+    // 4) Other Admin (michael) MUST NOT see QC Superadmin Private Sim Test!
+    await michaelPage.bringToFront();
+    await michaelPage.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await sleep(1200);
+    await michaelPage.evaluate(() => {
+      const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
+      listBtn.click();
+    });
+    await sleep(300);
+    const michaelListTxt = await michaelPage.evaluate(() => {
+      const sec = document.getElementById('simulation-manager-section').innerText;
+      const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
+      listBtn.click();
+      return sec;
+    });
+    assert(!michaelListTxt.includes('QC Superadmin Private Sim Test'), 'PRIVACY BREACH: Other admin michael can see alvin.superadmin private simulation!');
+
+    // Exit Simulation Mode back to Master directly via Top-Bar Switcher!
+    await adminPage.bringToFront();
+    await adminPage.evaluate(() => {
+      const aside = document.querySelector('aside[aria-label="Status Simulasi Berjalan"]');
+      const masterBtn = aside && Array.from(aside.querySelectorAll('button')).find(b => b.innerText.includes('Mode Master'));
+      if (!masterBtn) throw new Error('Mode Master switcher missing in sticky simulation bar');
+      masterBtn.click();
     });
     await sleep(400);
     const simBarAfterExit = await adminPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
-    assert(!simBarAfterExit, 'BUG CHECK FAILED: Simulation bar remained visible after exiting to Master Mode!');
-    console.log(' ✅ PASS | Superadmin Simulation Mode Realisasi-only, sticky badge, zero overlap, & clean exit verified');
+    const masterBarBack = await adminPage.evaluate(() => Boolean(document.querySelector('div[aria-label="Status Mode Master"]')));
+    const row12RestoredToMaster = await adminPage.evaluate(() => document.getElementById('metric-row-12').innerText);
+    assert(!simBarAfterExit && masterBarBack, 'BUG CHECK FAILED: Top-bar switcher did not return cleanly to Mode Master!');
+    assert(/560[,.]0/.test(row12RestoredToMaster) && !/480[,.]0/.test(row12RestoredToMaster), 'Row 12 did not revert to Master 560,0 on exit!');
+    console.log(' ✅ PASS | Superadmin Simulasi Realisasi+Target, top-bar switch, Timestand lock & 3-account privacy verified');
 
     // [B8] Viewer 1-Click Direct Open Panel + Viewer Target Simulation & Master Isolation Test
     console.log('[B8] Testing Viewer 1-click open, Simulasi Realisasi + Simulasi Target & Master isolation...');
@@ -636,16 +744,17 @@ async function runBrowserE2EQC() {
     }, origStartDate);
     await sleep(1000);
 
-    // Delete ONLY QC Viewer Sim Isolation Test card(s) from Simulasi Tersimpan
+    // Delete ONLY QC test scenario card(s) from Simulasi Tersimpan (leaving real user sims untouched)
     await adminPage.evaluate(() => {
       const listBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Tersimpan'));
       listBtn.click();
     });
     await sleep(400);
     await adminPage.evaluate(() => {
-      const delBtns = Array.from(document.querySelectorAll('button[title="Hapus Simulasi"]')).filter(b =>
-        b.parentElement?.parentElement?.innerText.includes('QC Viewer Sim Isolation Test')
-      );
+      const delBtns = Array.from(document.querySelectorAll('button[title="Hapus Simulasi"]')).filter(b => {
+        const cardText = b.parentElement?.parentElement?.innerText || '';
+        return cardText.includes('QC Viewer Sim Isolation Test') || cardText.includes('QC Superadmin Private Sim Test');
+      });
       delBtns.forEach(b => b.click());
     });
     await sleep(1200);
