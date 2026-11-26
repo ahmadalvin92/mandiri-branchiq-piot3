@@ -18,7 +18,8 @@ import {
   X,
   RotateCcw,
   Check,
-  Search
+  Search,
+  Lock
 } from 'lucide-react';
 import metricDefinitions from '../data/metricDefinitions.json';
 import { formatBankingNumber, getMetricKnowledge } from '../utils/knowledgeBase';
@@ -99,7 +100,7 @@ export function MetricsTable({
   const [savedBannerMsg, setSavedBannerMsg] = useState('');
 
   const isMasterEditMode = canEditMaster && !isViewerSimMode;
-  const isSimTargetEnabled = isViewerSimMode;
+  const isSimTargetEnabled = false;
   const canInlineEdit = canEditMaster || isViewerSimMode;
   const branchCode = String(branchInfo?.code || '10125');
 
@@ -284,10 +285,7 @@ export function MetricsTable({
 
   const handleSetRealToTarget = (e, item) => {
     if (e) e.stopPropagation();
-    const curDraftTgt = parseFloat(draftTargetVal);
-    const baseTgt = !isNaN(curDraftTgt) && curDraftTgt >= 0
-      ? curDraftTgt
-      : (item.isPct ? item.target * 100 : item.target);
+    const baseTgt = item.isPct ? item.target * 100 : item.target;
     handleChangeReal(item, String(Number(baseTgt.toFixed(4))));
   };
 
@@ -377,24 +375,17 @@ export function MetricsTable({
   const handleSaveBothAndClose = (e, item) => {
     if (e) e.stopPropagation();
     if (isMasterEditMode) {
-      // Mode Master: simpan Realisasi Master, Target Master & Strategi Master jika diubah (JANGAN sentuh simulasi!)
+      // Mode Master: simpan Realisasi Master & Strategi Master jika diubah (Target terkunci & JANGAN sentuh simulasi!)
       if (isDraftDifferent(item, draftRealVal, item.real) && onSaveMasterReal) {
         const valReal = parseDraft(item, draftRealVal);
         if (valReal !== null) onSaveMasterReal(branchCode, item.row, valReal);
-      }
-      if (isDraftDifferent(item, draftTargetVal, item.target)) {
-        const val = parseDraft(item, draftTargetVal);
-        if (val !== null) onSaveMasterTarget(branchCode, item.row, val);
       }
       handleSaveStrategy(e, item, { onlyIfDirty: true });
       setEditingRowId(null);
       return;
     }
-    // Mode Simulasi: simpan Simulasi Realisasi + Simulasi Target & Strategi Simulasi
+    // Mode Simulasi: simpan Simulasi Realisasi & Strategi Simulasi (Target terkunci)
     handleSaveReal(e, item);
-    if (isSimTargetEnabled) {
-      commitTarget(item, draftTargetVal);
-    }
     handleSaveStrategy(e, item, { onlyIfDirty: true });
     setEditingRowId(null);
   };
@@ -782,23 +773,14 @@ export function MetricsTable({
     );
   };
 
-  // Render Large, Spacious Full-Width Editor Panel for Realisasi / Target, Rumus & Strategy
+  // Render Large, Spacious Full-Width Editor Panel for Realisasi, Rumus & Strategy (Target Terkunci)
   const renderFullWidthEditorPanel = (item, displayNumber, unit, resolvedStrategy) => {
-    const canEditTargetInput = isMasterEditMode || isSimTargetEnabled;
-    const parsedDraftTgt = parseFloat(draftTargetVal);
-    const previewTargetVal = canEditTargetInput && !isNaN(parsedDraftTgt) && parsedDraftTgt >= 0
-      ? (item.isPct ? parsedDraftTgt / 100 : parsedDraftTgt)
-      : item.target;
+    const previewTargetVal = item.target;
 
     const parsedDraftReal = parseFloat(draftRealVal);
     const previewRealVal = !isNaN(parsedDraftReal) && parsedDraftReal >= 0
       ? (item.isPct ? parsedDraftReal / 100 : parsedDraftReal)
       : item.real;
-
-    const excelBaselineTarget = item.originalTarget !== undefined ? item.originalTarget : item.target;
-    const konseptorBaselineTarget = item.konseptorTarget !== undefined ? item.konseptorTarget : excelBaselineTarget;
-    const isMasterTargetChanged = item.originalTarget !== undefined && Math.abs(item.target - item.originalTarget) > 1e-6;
-    const isKonseptorTargetEditedFromExcel = item.originalTarget !== undefined && Math.abs(konseptorBaselineTarget - item.originalTarget) > 1e-6;
 
     const excelBaselineReal = item.originalReal !== undefined ? item.originalReal : item.real;
     const konseptorBaselineReal = item.masterReal !== undefined ? item.masterReal : excelBaselineReal;
@@ -829,8 +811,8 @@ export function MetricsTable({
     const projectedTotal = Number((totalScore - item.score + previewScoreObj.score).toFixed(2));
     const totalSimDelta = Number((projectedTotal - baseTotalScore).toFixed(2));
     const isRealDirty = isDraftDifferent(item, draftRealVal, item.real);
-    const isTargetDirty = isDraftDifferent(item, draftTargetVal, item.target);
-    const isSimulated = item.isRealModified || item.isTargetModified || isRealDirty || isTargetDirty;
+    const isTargetDirty = false;
+    const isSimulated = item.isRealModified || isRealDirty;
     // Rekomendasi metrik berbobot dengan potensi poin terbesar (prioritaskan kategori yang sama)
     const sameCatGap = metrics.filter(x => x.category === item.category && x.used && x.scoreGap > 0.0005);
     const otherCatGap = metrics.filter(x => x.category !== item.category && x.used && x.scoreGap > 0.0005);
@@ -891,8 +873,8 @@ export function MetricsTable({
                 <Calculator className="w-4 h-4 text-[#003D79]" />
                 <span>
                   {isMasterEditMode
-                    ? '1. Edit Angka Master & Rumus Skor'
-                    : '1. Simulasi Angka & Rumus Skor'}
+                    ? '1. Edit Realisasi Master & Rumus Skor'
+                    : '1. Simulasi Realisasi & Rumus Skor'}
                 </span>
               </span>
               {unit && (
@@ -951,325 +933,106 @@ export function MetricsTable({
               </div>
             )}
 
-            {/* PILIHAN 2 TAB SIMETRIS (DI MODE MASTER & MODE SIMULASI): REALISASI vs TARGET */}
-            {(isMasterEditMode || isSimTargetEnabled) && (
-              <div className="flex items-center gap-1.5 p-1 bg-slate-200/80 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => setViewerSimTab('realisasi')}
-                  className={`flex-1 py-1.5 px-2 rounded-lg font-extrabold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
-                    viewerSimTab === 'realisasi'
-                      ? 'bg-[#003D79] text-white shadow-xs'
-                      : 'text-slate-700 hover:bg-white/60'
-                  }`}
-                >
-                  <span>{isMasterEditMode ? 'Edit Realisasi Master' : 'Simulasi Realisasi'}</span>
-                  {((isMasterEditMode && (isMasterRealChanged || isRealDirty)) || (!isMasterEditMode && item.isRealModified)) && (
-                    <span className="w-2 h-2 rounded-full bg-[#FFB81C]" />
-                  )}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setViewerSimTab('target')}
-                  className={`flex-1 py-1.5 px-2 rounded-lg font-extrabold text-xs transition-colors cursor-pointer flex items-center justify-center gap-1.5 ${
-                    viewerSimTab === 'target'
-                      ? 'bg-[#003D79] text-white shadow-xs'
-                      : 'text-slate-700 hover:bg-white/60'
-                  }`}
-                >
-                  <span>{isMasterEditMode ? 'Edit Target Master' : 'Simulasi Target'}</span>
-                  {((isMasterEditMode && (isMasterTargetChanged || isTargetDirty)) || (!isMasterEditMode && item.isTargetModified)) && (
-                    <span className="w-2 h-2 rounded-full bg-[#FFB81C]" />
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* TAB 1: REALISASI (MASTER ATAU SIMULASI) */}
-            {viewerSimTab === 'realisasi' && (
-              <div className="space-y-2.5">
-                {isMasterEditMode && (
-                  <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] text-[#003D79] leading-relaxed">
-                    🔒 <strong>Mode Master Konseptor:</strong> Perubahan angka <strong>Realisasi</strong>, <strong>Target KPI</strong> &amp; <strong>Strategi</strong> akan tersimpan permanen ke Supabase dan langsung tampil ke seluruh Viewer.
-                  </div>
-                )}
-                <div className="flex items-center justify-between">
-                  <label className="block font-bold text-slate-700 text-xs">
-                    {isMasterEditMode
-                      ? `Masukkan Realisasi Master Baru ${item.isPct ? '(dalam %)' : `(${unit || 'Nominal'})`}:`
-                      : `Masukkan Simulasi Realisasi (Capaian) ${item.isPct ? '(%)' : `(${unit || 'Nominal'})`}:`}
-                  </label>
-                  <span className="text-[10px] text-slate-500">
-                    {!isMasterEditMode && item.isTargetModified ? 'Target Simulasi:' : 'Target Aktif:'}{' '}
-                    <strong className="font-mono text-[#003D79]">{formatBankingNumber(previewTargetVal, unit, item.isPct)}</strong>
-                  </span>
-                </div>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={(e) => handleSetRealToTarget(e, item)}
-                    className="px-2.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[11px] cursor-pointer shadow-2xs"
-                    title="Set realisasi langsung sama dengan target 100%"
-                  >
-                    Set 100% Target
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepReal(e, item, 0.05)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    +5%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepReal(e, item, 0.10)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    +10%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepReal(e, item, -0.05)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    −5%
-                  </button>
-                </div>
-                <input
-                  type="number"
-                  step="any"
-                  value={draftRealVal}
-                  onChange={(e) => handleChangeReal(item, e.target.value)}
-                  className="w-full px-4 py-2.5 text-right font-mono font-black text-base text-[#003D79] bg-white border-2 border-[#003D79] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
-                  placeholder={isMasterEditMode ? 'Ketik realisasi master resmi...' : 'Ketik angka realisasi yang ingin dicapai...'}
-                />
-
-                {/* Baseline Realisasi + Info Target & Porsi Target */}
-                <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-200/90 space-y-1.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
-                        {isMasterEditMode ? 'Realisasi Asli File Excel:' : 'Realisasi Master (Konseptor):'}
-                      </span>
-                      <strong className="font-mono text-sm text-slate-900">
-                        {formatBankingNumber(isMasterEditMode ? excelBaselineReal : masterRealBaseline, unit, item.isPct)} {unit}
-                      </strong>
-                      {!isMasterEditMode && isKonseptorRealEditedFromExcel && (
-                        <span className="ml-1.5 text-[10px] text-slate-400">
-                          (Excel: {formatBankingNumber(excelBaselineReal, unit, item.isPct)})
-                        </span>
-                      )}
-                    </div>
-                    {((isMasterEditMode && isMasterRealChanged) || (!isMasterEditMode && item.isRealModified)) && (
-                      <button
-                        type="button"
-                        onClick={(e) => handleResetReal(e, item)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold cursor-pointer"
-                      >
-                        <RotateCcw className="w-3 h-3 text-[#FFB81C]" />
-                        <span>{isMasterEditMode ? 'Reset Realisasi ke Excel' : 'Pakai Realisasi Master'}</span>
-                      </button>
-                    )}
-                  </div>
-                  <div className="pt-1.5 border-t border-blue-200/70 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-600">
-                    <span>
-                      {!isMasterEditMode && item.isTargetModified ? 'Target Simulasi:' : 'Target Aktif:'}{' '}
-                      <strong className="font-mono text-[#003D79]">{formatBankingNumber(previewTargetVal, unit, item.isPct)} {unit}</strong>
-                      {isMasterTargetChanged && (
-                        <span className="ml-1 text-slate-400">
-                          ({!isMasterEditMode && item.isTargetModified ? `Master: ${formatBankingNumber(konseptorBaselineTarget, unit, item.isPct)}` : `Excel: ${formatBankingNumber(excelBaselineTarget, unit, item.isPct)}`})
-                        </span>
-                      )}
-                    </span>
-                    {previewTargetVal > 0 && effectiveWorkdays > 0 && (
-                      <span>
-                        Porsi Target: <strong className="font-mono text-[#003D79]">{formatBankingNumber(dailyTargetPreview, unit, item.isPct)}/HK</strong>
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* MODE SIMULASI TAB 2: UBAH SIMULASI TARGET KPI */}
-            {isSimTargetEnabled && viewerSimTab === 'target' && (
-              <div className="space-y-2.5">
-                <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-[11px] text-amber-950 leading-relaxed">
-                  {canEditMaster ? (
-                    <>
-                      ⚡ <strong>Simulasi Target Pribadi ({currentUser?.username || 'Admin'}):</strong> Perubahan hanya untuk simulasi akun Anda sendiri — Data Master &amp; tampilan Viewer tidak berubah.
-                    </>
-                  ) : (
-                    <>
-                      ⚡ <strong>Simulasi Target Viewer (Draft Lokal):</strong> Ubah proyeksi target untuk simulasi/presentasi ke Konseptor. Data Master tidak berubah.
-                    </>
-                  )}
-                </div>
-                <label className="block font-bold text-slate-700 text-xs">
-                  Masukkan Proyeksi Target Simulasi {item.isPct ? '(dalam %)' : `(${unit || 'Nominal'})`}:
-                </label>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, -0.10)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    −10%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, -0.05)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    −5%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, 0.05)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    +5%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, 0.10)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    +10%
-                  </button>
-                </div>
-                <input
-                  type="number"
-                  step="any"
-                  value={draftTargetVal}
-                  onChange={(e) => handleChangeTarget(item, e.target.value)}
-                  className="w-full px-4 py-2.5 text-right font-mono font-black text-base text-[#003D79] bg-white border-2 border-[#003D79] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
-                  placeholder="Ketik target simulasi..."
-                />
-
-                {/* Baseline Target Master Konseptor + Realisasi Proyeksi & Porsi Target */}
-                <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-200/90 space-y-1.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
-                        Target Master (Konseptor):
-                      </span>
-                      <strong className="font-mono text-sm text-[#003D79]">
-                        {formatBankingNumber(konseptorBaselineTarget, unit, item.isPct)} {unit}
-                      </strong>
-                      {isKonseptorTargetEditedFromExcel && (
-                        <span className="ml-1.5 text-[10px] text-slate-400">
-                          (Excel: {formatBankingNumber(excelBaselineTarget, unit, item.isPct)})
-                        </span>
-                      )}
-                    </div>
-                    {item.isTargetModified && (
-                      <button
-                        type="button"
-                        onClick={(e) => handleResetTarget(e, item)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold cursor-pointer"
-                      >
-                        <RotateCcw className="w-3 h-3 text-[#FFB81C]" />
-                        <span>Pakai Target Master</span>
-                      </button>
-                    )}
-                  </div>
-                  <div className="pt-1.5 border-t border-blue-200/70 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-600">
-                    <span>
-                      Realisasi Proyeksi: <strong className="font-mono text-slate-800">{formatBankingNumber(previewRealVal, unit, item.isPct)} {unit}</strong>
-                    </span>
-                    {previewTargetVal > 0 && effectiveWorkdays > 0 && (
-                      <span>
-                        Porsi Target: <strong className="font-mono text-[#003D79]">{formatBankingNumber(dailyTargetPreview, unit, item.isPct)}/HK</strong>
-                      </span>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* TAB 2 (MODE MASTER): EDIT TARGET MASTER */}
-            {isMasterEditMode && viewerSimTab === 'target' && (
-              <div className="space-y-2.5">
+            {/* REALISASI (MASTER ATAU SIMULASI) — TARGET TERKUNCI */}
+            <div className="space-y-2.5">
+              {isMasterEditMode && (
                 <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-[11px] text-[#003D79] leading-relaxed">
-                  🔒 <strong>Mode Master Konseptor:</strong> Perubahan angka <strong>Realisasi</strong>, <strong>Target KPI</strong> &amp; <strong>Strategi</strong> akan tersimpan permanen ke Supabase dan langsung tampil ke seluruh Viewer.
+                  🔒 <strong>Mode Master Konseptor:</strong> Perubahan angka <strong>Realisasi</strong> &amp; <strong>Strategi</strong> akan tersimpan permanen ke Supabase dan langsung tampil ke seluruh Viewer. Angka <strong>Target</strong> terkunci dari data Excel resmi.
                 </div>
+              )}
+              <div className="flex items-center justify-between gap-2">
                 <label className="block font-bold text-slate-700 text-xs">
-                  Masukkan Nilai Target Master Baru {item.isPct ? '(dalam %)' : `(${unit || 'Nominal'})`}:
+                  {isMasterEditMode
+                    ? `Masukkan Realisasi Master Baru ${item.isPct ? '(dalam %)' : `(${unit || 'Nominal'})`}:`
+                    : `Masukkan Simulasi Realisasi (Capaian) ${item.isPct ? '(%)' : `(${unit || 'Nominal'})`}:`}
                 </label>
-                <div className="flex flex-wrap items-center gap-1.5">
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, -0.10)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    −10%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, -0.05)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    −5%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, 0.05)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    +5%
-                  </button>
-                  <button
-                    type="button"
-                    onClick={(e) => handleStepTarget(e, item, 0.10)}
-                    className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
-                  >
-                    +10%
-                  </button>
-                </div>
-                <input
-                  type="number"
-                  step="any"
-                  value={draftTargetVal}
-                  onChange={(e) => handleChangeTarget(item, e.target.value)}
-                  className="w-full px-4 py-2.5 text-right font-mono font-black text-base text-[#003D79] bg-white border-2 border-[#003D79] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
-                />
+                <span className="inline-flex items-center gap-1 text-[10px] text-slate-600 shrink-0">
+                  <Lock className="w-3 h-3 text-slate-400" />
+                  <span>Target Tetap:</span>
+                  <strong className="font-mono text-[#003D79]">{formatBankingNumber(item.target, unit, item.isPct)}</strong>
+                </span>
+              </div>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={(e) => handleSetRealToTarget(e, item)}
+                  className="px-2.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[11px] cursor-pointer shadow-2xs"
+                  title="Set realisasi langsung sama dengan target 100%"
+                >
+                  Set 100% Target
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => handleStepReal(e, item, 0.05)}
+                  className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
+                >
+                  +5%
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => handleStepReal(e, item, 0.10)}
+                  className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
+                >
+                  +10%
+                </button>
+                <button
+                  type="button"
+                  onClick={(e) => handleStepReal(e, item, -0.05)}
+                  className="px-2.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 font-bold text-xs cursor-pointer shadow-2xs"
+                >
+                  −5%
+                </button>
+              </div>
+              <input
+                type="number"
+                step="any"
+                value={draftRealVal}
+                onChange={(e) => handleChangeReal(item, e.target.value)}
+                className="w-full px-4 py-2.5 text-right font-mono font-black text-base text-[#003D79] bg-white border-2 border-[#003D79] rounded-xl focus:outline-none focus:ring-2 focus:ring-[#FFB81C]"
+                placeholder={isMasterEditMode ? 'Ketik realisasi master resmi...' : 'Ketik angka realisasi yang ingin dicapai...'}
+              />
 
-                {/* Baseline Target Excel + Realisasi Proyeksi & Porsi Target */}
-                <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-200/90 space-y-1.5">
-                  <div className="flex items-center justify-between gap-2">
-                    <div>
-                      <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
-                        Target Asli File Excel:
-                      </span>
-                      <strong className="font-mono text-sm text-[#003D79]">
-                        {formatBankingNumber(excelBaselineTarget, unit, item.isPct)} {unit}
-                      </strong>
-                    </div>
-                    {isMasterTargetChanged && (
-                      <button
-                        type="button"
-                        onClick={(e) => handleResetTarget(e, item)}
-                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold cursor-pointer"
-                      >
-                        <RotateCcw className="w-3 h-3 text-[#FFB81C]" />
-                        <span>Reset ke Excel Asli</span>
-                      </button>
-                    )}
-                  </div>
-                  <div className="pt-1.5 border-t border-blue-200/70 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-600">
-                    <span>
-                      Realisasi Aktif: <strong className="font-mono text-slate-800">{formatBankingNumber(previewRealVal, unit, item.isPct)} {unit}</strong>
+              {/* Baseline Realisasi + Info Target Terkunci & Porsi Target */}
+              <div className="p-2.5 rounded-xl bg-blue-50/80 border border-blue-200/90 space-y-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
+                      {isMasterEditMode ? 'Realisasi Asli File Excel:' : 'Realisasi Master (Konseptor):'}
                     </span>
-                    {previewTargetVal > 0 && effectiveWorkdays > 0 && (
-                      <span>
-                        Porsi Target: <strong className="font-mono text-[#003D79]">{formatBankingNumber(dailyTargetPreview, unit, item.isPct)}/HK</strong>
+                    <strong className="font-mono text-sm text-slate-900">
+                      {formatBankingNumber(isMasterEditMode ? excelBaselineReal : masterRealBaseline, unit, item.isPct)} {unit}
+                    </strong>
+                    {!isMasterEditMode && isKonseptorRealEditedFromExcel && (
+                      <span className="ml-1.5 text-[10px] text-slate-400">
+                        (Excel: {formatBankingNumber(excelBaselineReal, unit, item.isPct)})
                       </span>
                     )}
                   </div>
+                  {((isMasterEditMode && isMasterRealChanged) || (!isMasterEditMode && item.isRealModified)) && (
+                    <button
+                      type="button"
+                      onClick={(e) => handleResetReal(e, item)}
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white hover:bg-amber-50 text-amber-900 border border-amber-300 text-[10px] font-bold cursor-pointer"
+                    >
+                      <RotateCcw className="w-3 h-3 text-[#FFB81C]" />
+                      <span>{isMasterEditMode ? 'Reset Realisasi ke Excel' : 'Pakai Realisasi Master'}</span>
+                    </button>
+                  )}
+                </div>
+                <div className="pt-1.5 border-t border-blue-200/70 flex flex-wrap items-center justify-between gap-2 text-[10px] text-slate-600">
+                  <span className="inline-flex items-center gap-1">
+                    <Lock className="w-3 h-3 text-slate-400 shrink-0" />
+                    <span>Target Resmi (Terkunci):</span>
+                    <strong className="font-mono text-[#003D79]">{formatBankingNumber(item.target, unit, item.isPct)} {unit}</strong>
+                  </span>
+                  {previewTargetVal > 0 && effectiveWorkdays > 0 && (
+                    <span>
+                      Porsi Target: <strong className="font-mono text-[#003D79]">{formatBankingNumber(dailyTargetPreview, unit, item.isPct)}/HK</strong>
+                    </span>
+                  )}
                 </div>
               </div>
-            )}
+            </div>
 
             {/* Live Formula Preview Box */}
             <div className="p-3.5 rounded-xl bg-white border border-blue-200 space-y-2">
@@ -1294,11 +1057,6 @@ export function MetricsTable({
                   <strong className="font-mono text-sm text-slate-900 block">
                     {formatBankingNumber(previewRealVal, unit, item.isPct)} {unit}
                   </strong>
-                  {isSimTargetEnabled && (item.isTargetModified || isTargetDirty) && (
-                    <span className="text-[10px] text-amber-800 font-semibold block mt-0.5">
-                      vs Target Sim: <strong className="font-mono">{formatBankingNumber(previewTargetVal, unit, item.isPct)}</strong>
-                    </span>
-                  )}
                 </div>
                 <div className="p-2 rounded-lg bg-blue-50/60">
                   <span className="text-slate-500 block text-[10px]">Pencapaian (Acv Baru):</span>
@@ -1363,7 +1121,7 @@ export function MetricsTable({
 
               {item.used && totalSimDelta < 0 && (
                 <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-300 text-[11px] text-rose-900 leading-relaxed font-medium">
-                  ⚠️ <strong>Total Skor turun {Math.abs(totalSimDelta).toFixed(2).replace('.', ',')} pt</strong> ({baseTotalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')} pt) karena Target yang dinaikkan memperbesar gap kekurangan. Jika ingin melihat skor cabang naik, gunakan tab <strong>"Simulasi Realisasi (Capaian)"</strong>.
+                  ⚠️ <strong>Total Skor turun {Math.abs(totalSimDelta).toFixed(2).replace('.', ',')} pt</strong> ({baseTotalScore.toFixed(2).replace('.', ',')} → {projectedTotal.toFixed(2).replace('.', ',')} pt) karena proyeksi Realisasi lebih rendah dari posisi Master awal.
                 </div>
               )}
 
@@ -1816,16 +1574,10 @@ export function MetricsTable({
 
                       <div className="border-x border-slate-200/80 px-2">
                         <div className="flex items-center justify-between gap-1">
-                          <span className="text-[10px] text-slate-400 block">Target</span>
-                          {isViewerSimMode && item.isTargetModified ? (
-                            <span className="text-[8px] font-bold px-1 rounded bg-amber-100 text-amber-900 border border-amber-300">
-                              Sim
-                            </span>
-                          ) : isMasterTargetEdited ? (
-                            <span className="text-[8px] font-bold px-1 rounded bg-blue-100 text-[#003D79] border border-blue-300">
-                              Master
-                            </span>
-                          ) : null}
+                          <span className="text-[10px] text-slate-400 inline-flex items-center gap-1" title="Target resmi terkunci">
+                            <span>Target</span>
+                            <Lock className="w-2.5 h-2.5 text-slate-400" />
+                          </span>
                         </div>
                         <span className="font-mono font-bold text-slate-900 block">
                           {item.target ? formatBankingNumber(item.target, unit, item.isPct) : '–'}
@@ -1998,6 +1750,7 @@ export function MetricsTable({
               <th scope="col" className="py-3 px-3 text-right min-w-[180px] bg-blue-50/50">
                 <div className="flex flex-col items-end">
                   <div className="flex items-center justify-end gap-1 text-[#003D79]">
+                    <Lock className="w-3 h-3 text-slate-400" title="Target resmi terkunci dari Excel" />
                     <span>Target &amp; Kejaran</span>
                     <InfoTooltip type="term" term="HK" align="right" iconSize="w-3 h-3" />
                   </div>
@@ -2453,23 +2206,8 @@ export function MetricsTable({
                       {/* 6. Target + Kejaran Harian + Jadwal HK */}
                       <td className="py-3 px-3 text-right font-mono bg-blue-50/20">
                         <div className="space-y-1">
-                          {/* Total Target Aktif */}
+                          {/* Total Target Aktif (Terkunci dari Excel) */}
                           <div className="flex items-center justify-end gap-1.5">
-                            {isViewerSimMode && item.isTargetModified ? (
-                              <span
-                                className="px-1.5 py-0.2 rounded font-sans font-bold text-[9px] border bg-amber-100 text-amber-900 border-amber-300"
-                                title="Target Simulasi Viewer (Draft Lokal — Master tidak berubah)"
-                              >
-                                Sim
-                              </span>
-                            ) : isMasterTargetEdited ? (
-                              <span
-                                className="px-1.5 py-0.2 rounded font-sans font-bold text-[9px] border bg-blue-100 text-[#003D79] border-blue-300"
-                                title="Target Master diubah dari Excel asli (lihat perbandingan di Panel Editor)"
-                              >
-                                Master
-                              </span>
-                            ) : null}
                             <span className={`font-extrabold text-xs sm:text-sm ${item.used ? 'text-slate-900' : 'text-slate-500'}`}>
                               {item.target ? formatBankingNumber(item.target, unit, item.isPct) : '–'}
                             </span>

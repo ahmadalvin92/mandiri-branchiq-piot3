@@ -379,16 +379,16 @@ export function App() {
   const isSuperadminUser = isSuperadmin(currentUser);
   const isKonseptor = isKonseptorOrAdmin(currentUser);
 
-  // Master Branch Data (incorporating permanent Master Target & Realisasi overrides saved by Michael/Superadmin)
+  // Master Branch Data (Target resmi terkunci dari Excel; hanya Master Realisasi & Strategi yang aktif)
   const masterBranchData = useMemo(() => {
-    return recalculateBranchWithOverrides(rawBranchData, dbState.masterTargets || {}, dbState.masterReals || {});
-  }, [rawBranchData, dbState.masterTargets, dbState.masterReals]);
+    return recalculateBranchWithOverrides(rawBranchData, {}, dbState.masterReals || {});
+  }, [rawBranchData, dbState.masterReals]);
 
   // Active Displayed Branch Data (strictly isolated: Master Mode ALWAYS shows masterBranchData cleanly)
   const currentBranchData = useMemo(() => {
     if (!isViewerSimMode) return masterBranchData;
-    return recalculateBranchWithOverrides(masterBranchData, viewerSimTargets, viewerSimReals, { isSimulationLayer: true });
-  }, [masterBranchData, isViewerSimMode, viewerSimTargets, viewerSimReals]);
+    return recalculateBranchWithOverrides(masterBranchData, {}, viewerSimReals, { isSimulationLayer: true });
+  }, [masterBranchData, isViewerSimMode, viewerSimReals]);
 
   // Timestand Effective Workdays Calculation
   const timestandSummary = useMemo(() => {
@@ -400,14 +400,13 @@ export function App() {
     );
   }, [dbState.timestandConfig, holidaysList]);
 
-  // Count how many Master Overrides exist for the current branch
+  // Count how many Master Overrides exist for the current branch (Target terkunci dari Excel)
   const masterOverridesCount = useMemo(() => {
     const code = String(rawBranchData.branchInfo?.code || '10125');
-    const tgtCount = Object.keys(dbState.masterTargets || {}).filter(k => k.startsWith(`${code}_`)).length;
     const realCount = Object.keys(dbState.masterReals || {}).filter(k => k.startsWith(`${code}_`)).length;
     const strCount = Object.keys(dbState.masterStrategies || {}).filter(k => k.startsWith(`b${code}~`) || k.startsWith('g~')).length;
-    return tgtCount + realCount + strCount;
-  }, [rawBranchData.branchInfo?.code, dbState.masterTargets, dbState.masterReals, dbState.masterStrategies]);
+    return realCount + strCount;
+  }, [rawBranchData.branchInfo?.code, dbState.masterReals, dbState.masterStrategies]);
 
   // ---------------- CMS USER MANAGEMENT HANDLERS (SUPERADMIN) ----------------
   const handleAddUser = (newUserObj) => {
@@ -455,29 +454,13 @@ export function App() {
   };
 
   // ---------------- MASTER TARGET & STRATEGY HANDLERS (MICHAEL / SUPERADMIN) ----------------
-  const handleSaveMasterTarget = (branchCode, rowId, targetValue) => {
-    if (!isKonseptor) return;
-    const key = `${branchCode}_${rowId}`;
-    updateAndPersistDb((prev) => ({
-      ...prev,
-      masterTargets: {
-        ...(prev.masterTargets || {}),
-        [key]: Number(targetValue)
-      }
-    }), { changed: ['masterTargets'], toastMsg: 'Target Master tersimpan ke Supabase & aktif untuk seluruh Viewer' });
+  // Target Terkunci permanen: tidak dapat diubah atau direset lewat UI
+  const handleSaveMasterTarget = () => {
+    return;
   };
 
-  const handleResetMasterTarget = (branchCode, rowId) => {
-    if (!isKonseptor) return;
-    const key = `${branchCode}_${rowId}`;
-    updateAndPersistDb((prev) => {
-      const nextTargets = { ...(prev.masterTargets || {}) };
-      delete nextTargets[key];
-      return {
-        ...prev,
-        masterTargets: nextTargets
-      };
-    }, { changed: ['masterTargets'], toastMsg: 'Target Master dikembalikan ke nilai asli Excel' });
+  const handleResetMasterTarget = () => {
+    return;
   };
 
   const handleSaveMasterReal = (branchCode, rowId, realValue) => {
@@ -547,10 +530,6 @@ export function App() {
     if (!isKonseptor) return;
     const code = String(rawBranchData.branchInfo?.code || '10125');
     updateAndPersistDb((prev) => {
-      const nextTargets = { ...(prev.masterTargets || {}) };
-      Object.keys(nextTargets).forEach((k) => {
-        if (k.startsWith(`${code}_`)) delete nextTargets[k];
-      });
       const nextReals = { ...(prev.masterReals || {}) };
       Object.keys(nextReals).forEach((k) => {
         if (k.startsWith(`${code}_`)) delete nextReals[k];
@@ -561,22 +540,16 @@ export function App() {
       });
       return {
         ...prev,
-        masterTargets: nextTargets,
         masterReals: nextReals,
         masterStrategies: nextStrategies
       };
-    }, { changed: ['masterTargets', 'masterReals', 'masterStrategies'], toastMsg: 'Seluruh override Master cabang direset ke template Excel' });
+    }, { changed: ['masterReals', 'masterStrategies'], toastMsg: 'Seluruh override Realisasi & Strategi Master cabang direset ke template Excel' });
   };
 
   // ---------------- VIEWER SIMULATION HANDLERS ----------------
-  const handleUpdateViewerSimTarget = (rowId, val) => {
-    setIsViewerSimMode(true);
-    setViewerSimTargets((prev) => {
-      const next = { ...prev };
-      if (val === undefined || val === null) delete next[rowId];
-      else next[rowId] = Number(val);
-      return next;
-    });
+  const handleUpdateViewerSimTarget = () => {
+    // Target terkunci permanen dan tidak dapat disimulasikan
+    return;
   };
 
   const handleUpdateViewerSimReal = (rowId, val) => {
@@ -642,7 +615,8 @@ export function App() {
     if (simObj.branchCode && String(simObj.branchCode) !== String(rawBranchData.branchInfo?.code)) {
       handleSelectBranch(String(simObj.branchCode));
     }
-    setViewerSimTargets(simObj.targets || {});
+    // Target terkunci permanen: abaikan field targets historis
+    setViewerSimTargets({});
     setViewerSimReals(simObj.reals || {});
     setViewerSimStrategies(simObj.strategies || {});
     setActiveSimulationId(simObj.id);
@@ -663,10 +637,6 @@ export function App() {
     if (!isKonseptor || !simObj) return;
     const code = String(simObj.branchCode || rawBranchData.branchInfo?.code || '10125');
     updateAndPersistDb((prev) => {
-      const nextTargets = { ...(prev.masterTargets || {}) };
-      Object.entries(simObj.targets || {}).forEach(([rowId, val]) => {
-        nextTargets[`${code}_${rowId}`] = Number(val);
-      });
       const nextReals = { ...(prev.masterReals || {}) };
       Object.entries(simObj.reals || {}).forEach(([rowId, val]) => {
         nextReals[`${code}_${rowId}`] = Number(val);
@@ -688,11 +658,10 @@ export function App() {
       });
       return {
         ...prev,
-        masterTargets: nextTargets,
         masterReals: nextReals,
         masterStrategies: nextStrategies
       };
-    }, { changed: ['masterTargets', 'masterReals', 'masterStrategies'], toastMsg: 'Simulasi berhasil diterapkan permanen ke Data Master!' });
+    }, { changed: ['masterReals', 'masterStrategies'], toastMsg: 'Simulasi Realisasi & Strategi berhasil diterapkan permanen ke Data Master!' });
     handleResetViewerSimDraft();
   };
 
@@ -1044,7 +1013,7 @@ export function App() {
                     </button>
                   </div>
                   <span className="text-[11px] sm:text-xs font-semibold text-emerald-950 truncate hidden md:inline">
-                    Edit Realisasi, Target &amp; Strategi tersimpan permanen ke Supabase &amp; tampil di semua Viewer
+                    Edit Realisasi &amp; Strategi tersimpan permanen ke Supabase &amp; tampil di semua Viewer (Target Terkunci)
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-auto text-[11px] sm:text-xs">
@@ -1075,7 +1044,7 @@ export function App() {
                     </button>
                   </div>
                   <span className="text-[11px] sm:text-xs font-semibold text-slate-700 truncate hidden md:inline">
-                    Menampilkan angka resmi Konseptor — pindah ke Mode Simulasi untuk uji Realisasi &amp; Target
+                    Menampilkan angka resmi Konseptor — pindah ke Mode Simulasi untuk uji proyeksi Realisasi (Target Terkunci)
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0 ml-auto text-[11px] sm:text-xs">

@@ -69,7 +69,6 @@ export function SimulationManagerBar({
   const activeSimObj = branchSimulations.find((s) => s.id === activeSimulationId) || null;
 
   const modifiedDraftCount =
-    Object.keys(viewerSimTargets).length +
     Object.keys(viewerSimReals).length +
     Object.keys(viewerSimStrategies).length;
 
@@ -105,7 +104,7 @@ export function SimulationManagerBar({
       createdByName: currentUser?.displayName || currentUser?.username || 'Viewer',
       createdByRole: ownerRole,
       isPrivate: Boolean(isKonseptor),
-      targets: viewerSimTargets,
+      targets: {},
       reals: viewerSimReals,
       strategies: viewerSimStrategies,
       baselineScore: masterTotalScore,
@@ -180,8 +179,8 @@ export function SimulationManagerBar({
                 ) : (
                   <span className="text-xs font-bold text-slate-800">
                     {isKonseptor
-                      ? 'Mode Edit Master Aktif — Anda dapat mengubah Realisasi, Target & Strategi secara permanen'
-                      : 'Mode Read-Only Data Master — Aktifkan Mode Simulasi untuk menguji proyeksi Realisasi, Target & Strategi Anda sendiri'}
+                      ? 'Mode Edit Master Aktif — Anda dapat mengubah Realisasi & Strategi secara permanen (Target Terkunci)'
+                      : 'Mode Read-Only Data Master — Aktifkan Mode Simulasi untuk menguji proyeksi Realisasi & Strategi Anda sendiri (Target Terkunci)'}
                   </span>
                 )}
               </div>
@@ -245,7 +244,7 @@ export function SimulationManagerBar({
               <span>
                 {isViewerSimMode
                   ? 'Keluar Mode Simulasi (Kembali ke Master)'
-                  : 'Mode Simulasi Realisasi & Target'}
+                  : 'Mode Simulasi Realisasi & Strategi'}
               </span>
             </button>
 
@@ -258,7 +257,7 @@ export function SimulationManagerBar({
                   className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#003D79] hover:bg-[#00254D] text-white text-xs font-extrabold shadow-xs transition-all cursor-pointer ${
                     modifiedDraftCount > 0 ? 'ring-2 ring-[#FFB81C]' : ''
                   }`}
-                  title="Simpan simulasi skenario target Anda untuk dipresentasikan ke Konseptor"
+                  title="Simpan simulasi skenario realisasi Anda untuk dipresentasikan ke Konseptor"
                 >
                   <Save className="w-3.5 h-3.5 text-[#FFB81C]" />
                   <span>Simpan Simulasi {modifiedDraftCount > 0 ? `(${modifiedDraftCount} Diubah)` : ''}</span>
@@ -308,7 +307,7 @@ export function SimulationManagerBar({
               <button
                 type="button"
                 onClick={() => {
-                  if (window.confirm('Kembalikan seluruh Realisasi, Target & Strategi cabang ini ke nilai asli template Excel?')) {
+                  if (window.confirm('Kembalikan seluruh Realisasi & Strategi cabang ini ke nilai asli template Excel?')) {
                     onResetAllMasterOverrides();
                   }
                 }}
@@ -350,7 +349,7 @@ export function SimulationManagerBar({
 
           {branchSimulations.length === 0 ? (
             <div className="py-6 text-center text-xs text-slate-400">
-              Belum ada simulasi yang disimpan untuk cabang ini. Aktifkan <strong>Mode Simulasi</strong>, ubah proyeksi Realisasi/Target/Strategi di Panel Editor tabel, lalu klik <strong>Simpan Simulasi</strong>.
+              Belum ada simulasi yang disimpan untuk cabang ini. Aktifkan <strong>Mode Simulasi</strong>, ubah proyeksi Realisasi/Strategi di Panel Editor tabel, lalu klik <strong>Simpan Simulasi</strong>.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -475,7 +474,7 @@ export function SimulationManagerBar({
                   required
                   value={simTitle}
                   onChange={(e) => setSimTitle(e.target.value)}
-                  placeholder="Contoh: Usulan Target DPK & Livin Akhir Bulan"
+                  placeholder="Contoh: Proyeksi Realisasi DPK & Livin Akhir Bulan"
                   className="w-full px-3 py-2 rounded-lg border border-slate-300 font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#003D79]/20"
                 />
               </div>

@@ -289,8 +289,8 @@ async function runBrowserE2EQC() {
     assert(!adminCheck.row12.includes('Target Asli Excel:'), 'Table row must not show cluttered Target Asli Excel');
     console.log(' ✅ PASS | Superadmin logged in, 18 Nov (#45), sticky Mode Master bar visible, no clutter');
 
-    // [B2] Superadmin opens Row 12 Editor -> edits Master Realisasi (450), Target (555) & Strategy, stays in Master Mode!
-    console.log('[B2] Verifying Superadmin Master Mode (Edit Realisasi Master + Edit Target Master + Strategy)...');
+    // [B2] Superadmin opens Row 12 Editor -> verifies Target is LOCKED, edits Master Realisasi (450) & Strategy, stays in Master Mode!
+    console.log('[B2] Verifying Superadmin Master Mode (Locked Target + Edit Realisasi Master + Strategy)...');
     await adminPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
       const btn = Array.from(row.querySelectorAll('button')).find(b => b.innerText.includes('Edit Master'));
@@ -303,38 +303,25 @@ async function runBrowserE2EQC() {
     const editorCheck = await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const btns = panel ? Array.from(panel.querySelectorAll('button')).map(b => b.innerText) : [];
+      const numInputs = panel ? panel.querySelectorAll('input[type="number"]').length : 0;
       return {
         text: panel?.innerText || '',
-        hasRealMasterTab: btns.some(t => t.includes('Edit Realisasi Master')),
-        hasTgtMasterTab: btns.some(t => t.includes('Edit Target Master'))
+        numInputs,
+        hasTargetTab: btns.some(t => t.includes('Edit Target Master') || t.includes('Simulasi Target'))
       };
     });
     assert(editorCheck.text.includes('MODE MASTER'), 'Editor header must display MODE MASTER');
-    assert(editorCheck.text.includes('1. Edit Angka Master & Rumus Skor'), 'Left panel must show 1. Edit Angka Master & Rumus Skor');
-    assert(editorCheck.hasRealMasterTab && editorCheck.hasTgtMasterTab, 'Master Editor must expose Edit Realisasi Master & Edit Target Master tabs');
+    assert(editorCheck.text.includes('1. Edit Realisasi Master & Rumus Skor'), 'Left panel must show 1. Edit Realisasi Master & Rumus Skor');
+    assert(editorCheck.text.includes('Target Resmi (Terkunci)'), 'Master Editor must show Target Resmi (Terkunci)');
+    assert(!editorCheck.hasTargetTab, 'BUG CHECK FAILED: Master Editor must NOT expose any Edit Target Master or Simulasi Target tab!');
+    assert.strictEqual(editorCheck.numInputs, 1, `Expected only 1 number input (Realisasi), got ${editorCheck.numInputs}`);
 
-    // Edit Master Realisasi = 450 on Tab 1 (default)
+    // Edit Master Realisasi = 450 + Strategy
     await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const numInput = panel.querySelector('input[type="number"]');
       const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
       setter.call(numInput, '450');
-      numInput.dispatchEvent(new Event('input', { bubbles: true }));
-      numInput.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-    await sleep(250);
-    // Switch to Edit Target Master tab -> edit Target = 555 + Strategy
-    await adminPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const tgtTab = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Edit Target Master'));
-      tgtTab.click();
-    });
-    await sleep(250);
-    await adminPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const numInput = panel.querySelector('input[type="number"]');
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-      setter.call(numInput, '555');
       numInput.dispatchEvent(new Event('input', { bubbles: true }));
       numInput.dispatchEvent(new Event('change', { bubbles: true }));
 
@@ -346,9 +333,9 @@ async function runBrowserE2EQC() {
     });
     await sleep(300);
 
-    // Ensure typing Realisasi/Target in Master Mode did NOT flip into Simulation Mode
+    // Ensure typing Realisasi in Master Mode did NOT flip into Simulation Mode
     const hasFloatingBarDuringType = await adminPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
-    assert(!hasFloatingBarDuringType, 'BUG CHECK FAILED: Typing Master Realisasi/Target flipped to Simulation Mode!');
+    assert(!hasFloatingBarDuringType, 'BUG CHECK FAILED: Typing Master Realisasi flipped to Simulation Mode!');
 
     // Click Simpan ke Master (Permanen)
     await adminPage.evaluate(() => {
@@ -363,19 +350,19 @@ async function runBrowserE2EQC() {
     assert(!hasFloatingBarAfterSave, 'BUG CHECK FAILED: Saving Master flipped to Simulation Mode!');
     const row12TxtAfterSave = await adminPage.evaluate(() => document.getElementById('metric-row-12').innerText);
     assert(
-      row12TxtAfterSave.includes('Master') && /450[,.]0/.test(row12TxtAfterSave) && /555[,.]0/.test(row12TxtAfterSave),
-      `Row 12 did not show Master Realisasi 450,0 & Target 555,0: ${row12TxtAfterSave}`
+      row12TxtAfterSave.includes('Master') && /450[,.]0/.test(row12TxtAfterSave),
+      `Row 12 did not show Master Realisasi 450,0: ${row12TxtAfterSave}`
     );
     assert(!/\bSim\b/.test(row12TxtAfterSave) && !row12TxtAfterSave.includes('Target Simulasi'), 'Row 12 falsely shows Sim in Master Mode!');
 
-    // Confirm exact values persisted in live Supabase (master_targets, master_strategies, & __sys_master_reals__)
-    const { data: supTgt1 } = await supabase.from('master_targets').select('*').eq('key', '10125_12').single();
+    // Confirm exact values persisted in live Supabase (no master_targets test key, master_strategies & __sys_master_reals__)
+    const { data: supTgt1 } = await supabase.from('master_targets').select('*').eq('key', '10125_12').maybeSingle();
     const { data: supStr1 } = await supabase.from('master_strategies').select('*').eq('key', 'b10125~12').single();
     const { data: supReals1 } = await supabase.from('master_strategies').select('*').eq('key', '__sys_master_reals__').single();
-    assert.strictEqual(Number(supTgt1?.target_value), 555, `Supabase target_value mismatch: ${JSON.stringify(supTgt1)}`);
+    assert.strictEqual(supTgt1, null, `Locked target 10125_12 should NOT be created in master_targets: ${JSON.stringify(supTgt1)}`);
     assert(supStr1?.strategy_text?.includes('QC Master Sync Strategy Test Line 1'), `Supabase strategy_text mismatch: ${JSON.stringify(supStr1)}`);
     assert.strictEqual(Number(supReals1?.tactical_actions?.['10125_12']), 450, `Supabase master_reals mismatch: ${JSON.stringify(supReals1?.tactical_actions)}`);
-    console.log(' ✅ PASS | Superadmin stayed in Master Mode, saved Real=450, Target=555 & Strategy to Supabase accurately');
+    console.log(' ✅ PASS | Superadmin stayed in Master Mode, Target locked, saved Real=450 & Strategy to Supabase');
 
     // [B3] Superadmin updates Timestand -> verify synced to Supabase
     console.log('[B3] Superadmin updates Timestand startDate -> verifying persistence...');
@@ -387,12 +374,12 @@ async function runBrowserE2EQC() {
     });
     await sleep(1200);
 
-    // [B4] Incognito Viewer logs in -> must receive 18 Nov snapshot, Master Real 450, Target 555, Strategy & Timestand!
-    console.log('[B4] Incognito Viewer (rian) logs in -> verifying Master Realisasi, Target, Strategy & 18 Nov snapshot sync...');
+    // [B4] Incognito Viewer logs in -> must receive 18 Nov snapshot, Master Real 450, visible Target, Strategy & Timestand!
+    console.log('[B4] Incognito Viewer (rian) logs in -> verifying Master Realisasi, locked Target visibility, Strategy & 18 Nov snapshot sync...');
     await viewerPage.goto(TARGET_URL, { waitUntil: 'networkidle2', timeout: 30000 });
     await loginAs(viewerPage, 'rian');
     await waitForText(viewerPage, '18 November 2026', 15000);
-    await waitForText(viewerPage, '555,0', 15000);
+    await waitForText(viewerPage, '450,0', 15000);
 
     const viewerRow12Text = await viewerPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
@@ -406,15 +393,15 @@ async function runBrowserE2EQC() {
     const viewerReadOnlyBar = await viewerPage.evaluate(() => document.querySelector('div[aria-label="Status Mode Read-Only"]')?.innerText || '');
     assert(viewerReadOnlyBar.includes('DATA MASTER (READ-ONLY)'), 'Sticky top Read-Only mode bar must be visible for Viewer');
     assert(
-      viewerRow12Text.includes('Master') && /450[,.]0/.test(viewerRow12Text) && /555[,.]0/.test(viewerRow12Text),
-      `Viewer missing Master Real 450,0 or Target 555,0: ${viewerRow12Text}`
+      viewerRow12Text.includes('Master') && /450[,.]0/.test(viewerRow12Text) && viewerRow12Text.includes('Jadwal'),
+      `Viewer missing Master Real 450,0 or visible Target/Jadwal: ${viewerRow12Text}`
     );
     assert(viewerRow12WithStrat.includes('QC Master Sync Strategy Test Line 1'), `Viewer missing Master Strategy: ${viewerRow12WithStrat}`);
     assert(viewerBodyText.includes('18 Nov 2026 – 30 Nov 2026'), 'Viewer missing synced Timestand 18 Nov – 30 Nov 2026');
-    console.log(' ✅ PASS | Viewer Read-Only sticky bar visible, received Master Real 450, Target 555, Strategy & Timestand');
+    console.log(' ✅ PASS | Viewer Read-Only sticky bar visible, received Master Real 450, locked Target visible, Strategy & Timestand');
 
-    // [B5] Live sync WITHOUT page reload in Viewer when Superadmin updates Master Real 450->475 & Target 555->560
-    console.log('[B5] Testing live sync WITHOUT reload: Superadmin edits Master Real 450->475 & Target 555->560...');
+    // [B5] Live sync WITHOUT page reload in Viewer when Superadmin updates Master Real 450->475
+    console.log('[B5] Testing live sync WITHOUT reload: Superadmin edits Master Real 450->475...');
     await adminPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
       const btn = Array.from(row.querySelectorAll('button')).find(b => b.innerText.includes('Edit Master'));
@@ -428,21 +415,6 @@ async function runBrowserE2EQC() {
       setter.call(numInput, '475');
       numInput.dispatchEvent(new Event('input', { bubbles: true }));
       numInput.dispatchEvent(new Event('change', { bubbles: true }));
-    });
-    await sleep(200);
-    await adminPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const tgtTab = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Edit Target Master'));
-      tgtTab.click();
-    });
-    await sleep(200);
-    await adminPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const numInput = panel.querySelector('input[type="number"]');
-      const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-      setter.call(numInput, '560');
-      numInput.dispatchEvent(new Event('input', { bubbles: true }));
-      numInput.dispatchEvent(new Event('change', { bubbles: true }));
       const saveBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Simpan ke Master (Permanen)'));
       saveBtn.click();
     });
@@ -451,15 +423,13 @@ async function runBrowserE2EQC() {
     // Bring focus to Viewer tab (simulating user switching tabs) without reloading!
     await viewerPage.bringToFront();
     await viewerPage.evaluate(() => window.dispatchEvent(new Event('focus')));
-    await waitForText(viewerPage, '560,0', 10000);
     await waitForText(viewerPage, '475,0', 10000);
-    console.log(' ✅ PASS | Viewer live-updated to Real 475,0 & Target 560,0 WITHOUT page reload');
+    console.log(' ✅ PASS | Viewer live-updated to Real 475,0 WITHOUT page reload');
 
     // [B6] Admin role (michael) verification
-    console.log('[B6] Testing Admin role (michael) in Master Mode...');
+    console.log('[B6] Testing Admin role (michael) in Master Mode (Target Locked)...');
     await michaelPage.goto(TARGET_URL, { waitUntil: 'networkidle2', timeout: 30000 });
     await loginAs(michaelPage, 'michael');
-    await waitForText(michaelPage, '560,0', 15000);
     await waitForText(michaelPage, '475,0', 15000);
     await michaelPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
@@ -467,12 +437,18 @@ async function runBrowserE2EQC() {
       btn.click();
     });
     await sleep(300);
-    const michaelSimBar = await michaelPage.evaluate(() => Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]')));
-    assert(!michaelSimBar, 'Admin michael entered simulation mode unexpectedly');
-    console.log(' ✅ PASS | Admin (michael) sees Master Real 475,0 + Target 560,0 and stays in Master Mode');
+    const michaelCheck = await michaelPage.evaluate(() => {
+      const simBar = Boolean(document.querySelector('aside[aria-label="Status Simulasi Berjalan"]'));
+      const panel = document.getElementById('metric-row-12')?.nextElementSibling;
+      const btns = panel ? Array.from(panel.querySelectorAll('button')).map(b => b.innerText) : [];
+      return { simBar, hasTgtTab: btns.some(t => t.includes('Edit Target Master') || t.includes('Simulasi Target')) };
+    });
+    assert(!michaelCheck.simBar, 'Admin michael entered simulation mode unexpectedly');
+    assert(!michaelCheck.hasTgtTab, 'Admin michael should NOT see any Target edit tab');
+    console.log(' ✅ PASS | Admin (michael) sees Master Real 475,0, Target locked, and stays in Master Mode');
 
-    // [B7] Superadmin Top-Bar Switch + Simulasi Realisasi & Target + Strict Per-Account Privacy!
-    console.log('[B7] Testing Superadmin top-bar switch, Simulasi Realisasi & Target, & strict privacy...');
+    // [B7] Superadmin Top-Bar Switch + Simulasi Realisasi ONLY (Target Locked) + Strict Per-Account Privacy!
+    console.log('[B7] Testing Superadmin top-bar switch, Simulasi Realisasi ONLY (Target Locked) & strict privacy...');
     await adminPage.bringToFront();
     await adminPage.evaluate(() => {
       const topBar = document.querySelector('div[aria-label="Status Mode Master"]');
@@ -499,39 +475,36 @@ async function runBrowserE2EQC() {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const panelText = panel?.innerText || '';
       const btns = panel ? Array.from(panel.querySelectorAll('button')).map(b => b.innerText) : [];
+      const numInputs = panel ? panel.querySelectorAll('input[type="number"]').length : 0;
       return {
         panelText,
-        hasRealTab: btns.some(t => t.includes('Simulasi Realisasi')),
-        hasTargetTab: btns.some(t => t.includes('Simulasi Target'))
+        numInputs,
+        hasTargetTab: btns.some(t => t.includes('Simulasi Target') || t.includes('Edit Target Master'))
       };
     });
     assert(simPanelInfo.panelText.includes('MODE SIMULASI PRIBADI'), 'Admin simulation panel header must show MODE SIMULASI PRIBADI');
-    assert(simPanelInfo.panelText.includes('1. Simulasi Angka & Rumus Skor'), 'Admin simulation editor must show 1. Simulasi Angka & Rumus Skor');
-    assert(simPanelInfo.hasRealTab && simPanelInfo.hasTargetTab, 'Superadmin in Simulation Mode MUST have both Simulasi Realisasi & Simulasi Target tabs');
+    assert(simPanelInfo.panelText.includes('1. Simulasi Realisasi & Rumus Skor'), 'Admin simulation editor must show 1. Simulasi Realisasi & Rumus Skor');
+    assert(simPanelInfo.panelText.includes('Target Resmi (Terkunci)'), 'Admin simulation editor must show Target Resmi (Terkunci)');
+    assert(!simPanelInfo.hasTargetTab, 'BUG CHECK FAILED: Superadmin Simulation Mode must NOT expose Simulasi Target or Edit Target Master!');
+    assert.strictEqual(simPanelInfo.numInputs, 1, `Expected only 1 number input in Admin simulation, got ${simPanelInfo.numInputs}`);
 
     await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const set100Btn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Set 100% Target'));
       set100Btn.click();
     });
-    await sleep(300);
-    await adminPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const tgtTabBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Target'));
-      tgtTabBtn.click();
-    });
-    await sleep(300);
+    await sleep(250);
     await adminPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const numInput = panel.querySelector('input[type="number"]');
       const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-      setter.call(numInput, '480');
+      setter.call(numInput, '520');
       numInput.dispatchEvent(new Event('input', { bubbles: true }));
       numInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
     await sleep(400);
     const adminSimRow = await adminPage.evaluate(() => document.getElementById('metric-row-12').innerText);
-    assert(/480[,.]0/.test(adminSimRow) && adminSimRow.includes('Sim'), `Superadmin row 12 should show simulated target 480,0: ${adminSimRow}`);
+    assert(/520[,.]0/.test(adminSimRow) && adminSimRow.includes('Sim'), `Superadmin row 12 should show simulated real 520,0: ${adminSimRow}`);
 
     // Anti-Overlap Check: Top Sticky Simulation Bar MUST show MODE SIMULASI & Mode Master button and MUST NOT overlap Panel bottom buttons!
     const overlapCheck = await adminPage.evaluate(() => {
@@ -575,9 +548,14 @@ async function runBrowserE2EQC() {
     });
     await sleep(1400);
 
-    // 1) Supabase Master Target MUST remain 560!
-    const { data: supTgtAfterAdminSim } = await supabase.from('master_targets').select('*').eq('key', '10125_12').single();
-    assert.strictEqual(Number(supTgtAfterAdminSim?.target_value), 560, 'Superadmin private simulation leaked to Master Target!');
+    // 1) Supabase Master Real MUST remain 475, no target key created, and saved sim has empty targets!
+    const { data: supRealsAfterAdminSim } = await supabase.from('master_strategies').select('*').eq('key', '__sys_master_reals__').single();
+    assert.strictEqual(Number(supRealsAfterAdminSim?.tactical_actions?.['10125_12']), 475, 'Superadmin private simulation leaked to Master Realisasi!');
+    const { data: supSimsRowAdmin } = await supabase.from('master_strategies').select('*').eq('key', '__sys_viewer_simulations__').single();
+    const savedSimsAdmin = Array.isArray(supSimsRowAdmin?.tactical_actions) ? supSimsRowAdmin.tactical_actions : JSON.parse(supSimsRowAdmin?.tactical_actions || '[]');
+    const adminQcSim = savedSimsAdmin.find(s => s.title === 'QC Superadmin Private Sim Test');
+    assert(adminQcSim && Number(adminQcSim.reals?.['12']) === 520, `Admin sim reals['12'] mismatch: ${JSON.stringify(adminQcSim)}`);
+    assert(Object.keys(adminQcSim.targets || {}).length === 0, `Locked targets leaked into Admin sim: ${JSON.stringify(adminQcSim.targets)}`);
 
     // 2) Superadmin owner DOES see it marked Privat (Akun Anda)
     await adminPage.evaluate(() => {
@@ -592,7 +570,7 @@ async function runBrowserE2EQC() {
       listBtn.click();
     });
 
-    // 3) Viewer (rian) MUST NOT see 480 nor QC Superadmin Private Sim Test!
+    // 3) Viewer (rian) MUST NOT see 520 nor QC Superadmin Private Sim Test!
     await viewerPage.bringToFront();
     await viewerPage.evaluate(() => window.dispatchEvent(new Event('focus')));
     await sleep(1200);
@@ -609,7 +587,7 @@ async function runBrowserE2EQC() {
       listBtn.click();
       return sec;
     });
-    assert(/560[,.]0/.test(viewerPrivacyCheck) && !/480[,.]0/.test(viewerPrivacyCheck), 'Viewer received Superadmin simulation instead of Master 560!');
+    assert(/475[,.]0/.test(viewerPrivacyCheck) && !/520[,.]0/.test(viewerPrivacyCheck), 'Viewer received Superadmin simulation instead of Master 475!');
     assert(!viewerListTxt.includes('QC Superadmin Private Sim Test'), 'PRIVACY BREACH: Viewer can see Superadmin private simulation!');
 
     // 4) Other Admin (michael) MUST NOT see QC Superadmin Private Sim Test!
@@ -642,11 +620,11 @@ async function runBrowserE2EQC() {
     const masterBarBack = await adminPage.evaluate(() => Boolean(document.querySelector('div[aria-label="Status Mode Master"]')));
     const row12RestoredToMaster = await adminPage.evaluate(() => document.getElementById('metric-row-12').innerText);
     assert(!simBarAfterExit && masterBarBack, 'BUG CHECK FAILED: Top-bar switcher did not return cleanly to Mode Master!');
-    assert(/560[,.]0/.test(row12RestoredToMaster) && !/480[,.]0/.test(row12RestoredToMaster), 'Row 12 did not revert to Master 560,0 on exit!');
-    console.log(' ✅ PASS | Superadmin Simulasi Realisasi+Target, top-bar switch, Timestand lock & 3-account privacy verified');
+    assert(/475[,.]0/.test(row12RestoredToMaster) && !/520[,.]0/.test(row12RestoredToMaster), 'Row 12 did not revert to Master 475,0 on exit!');
+    console.log(' ✅ PASS | Superadmin Simulasi Realisasi ONLY (Target Locked), top-bar switch, Timestand lock & 3-account privacy verified');
 
-    // [B8] Viewer 1-Click Direct Open Panel + Viewer Target Simulation & Master Isolation Test
-    console.log('[B8] Testing Viewer 1-click open, Simulasi Realisasi + Simulasi Target & Master isolation...');
+    // [B8] Viewer 1-Click Direct Open Panel + Realisasi Simulation (Target Locked) & Master Isolation Test
+    console.log('[B8] Testing Viewer 1-click open, Simulasi Realisasi (Target Locked) & Master isolation...');
     await viewerPage.bringToFront();
     // Viewer is currently still in Read-Only mode -> clicking Simulasi Capaian ONCE must open Panel Gambar 2 immediately!
     await viewerPage.evaluate(() => {
@@ -660,47 +638,34 @@ async function runBrowserE2EQC() {
       const panel = document.getElementById('metric-row-12')?.nextElementSibling;
       const text = panel?.innerText || '';
       const btns = panel ? Array.from(panel.querySelectorAll('button')).map(b => b.innerText) : [];
+      const numInputs = panel ? panel.querySelectorAll('input[type="number"]').length : 0;
       return {
-        opened: text.includes('1. Simulasi Angka & Rumus Skor'),
-        hasRealTab: btns.some(t => t.includes('Simulasi Realisasi')),
-        hasTgtTab: btns.some(t => t.includes('Simulasi Target'))
+        opened: text.includes('1. Simulasi Realisasi & Rumus Skor'),
+        hasLockedNotice: text.includes('Target Resmi (Terkunci)'),
+        numInputs,
+        hasTargetTab: btns.some(t => t.includes('Simulasi Target') || t.includes('Edit Target Master'))
       };
     });
-    assert(viewerPanelState.opened, 'Viewer 1-click Simulasi Capaian did not open Panel Gambar 2 on first click!');
-    assert(viewerPanelState.hasRealTab && viewerPanelState.hasTgtTab, 'Viewer Simulation Panel must expose both Simulasi Realisasi & Simulasi Target tabs');
+    assert(viewerPanelState.opened, 'Viewer 1-click Simulasi Capaian did not open Panel Editor on first click!');
+    assert(viewerPanelState.hasLockedNotice, 'Viewer Simulation Panel must clearly display Target Resmi (Terkunci)');
+    assert(!viewerPanelState.hasTargetTab, 'BUG CHECK FAILED: Viewer Simulation Panel must NOT expose Simulasi Target tab!');
+    assert.strictEqual(viewerPanelState.numInputs, 1, `Expected only 1 number input in Viewer simulation, got ${viewerPanelState.numInputs}`);
 
-    // 1) Click Set 100% Target on Realisasi tab
+    // Change Viewer simulated Realisasi to 510
     await viewerPage.evaluate(() => {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const set100Btn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Set 100% Target'));
-      set100Btn.click();
-    });
-    await sleep(300);
-
-    // 2) Switch to Simulasi Target tab & change Viewer simulated target to 500
-    await viewerPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const tgtTabBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Simulasi Target'));
-      tgtTabBtn.click();
-    });
-    await sleep(300);
-    await viewerPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      if (!panel.innerText.includes('Simulasi Target Viewer')) {
-        throw new Error('Simulasi Target Viewer notice missing after switching tab');
-      }
       const numInput = panel.querySelector('input[type="number"]');
       const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-      setter.call(numInput, '500');
+      setter.call(numInput, '510');
       numInput.dispatchEvent(new Event('input', { bubbles: true }));
       numInput.dispatchEvent(new Event('change', { bubbles: true }));
     });
     await sleep(400);
 
-    const viewerRowAfterTargetSim = await viewerPage.evaluate(() => document.getElementById('metric-row-12').innerText);
-    assert(/500[,.]0/.test(viewerRowAfterTargetSim) && viewerRowAfterTargetSim.includes('Sim'), `Viewer row 12 should reflect Target Simulasi 500,0 with Sim badge: ${viewerRowAfterTargetSim}`);
+    const viewerRowAfterRealSim = await viewerPage.evaluate(() => document.getElementById('metric-row-12').innerText);
+    assert(/510[,.]0/.test(viewerRowAfterRealSim) && viewerRowAfterRealSim.includes('Sim'), `Viewer row 12 should reflect Realisasi Simulasi 510,0 with Sim badge: ${viewerRowAfterRealSim}`);
 
-    // 3) Save Viewer simulation & verify Supabase Master stays 560 while Viewer Simulation stores targets["12"] === 500
+    // Save Viewer simulation & verify Supabase Master stays 475 while Viewer Simulation stores reals["12"] === 510 and empty targets
     await viewerPage.evaluate(() => {
       const saveSimBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('Simpan Simulasi ('));
       saveSimBtn.click();
@@ -716,16 +681,17 @@ async function runBrowserE2EQC() {
       modal.querySelector('button[type="submit"]').click();
     });
     await sleep(1400);
-    const { data: supTgtAfterSim } = await supabase.from('master_targets').select('*').eq('key', '10125_12').single();
-    assert.strictEqual(Number(supTgtAfterSim?.target_value), 560, 'Viewer target simulation mutated Master Target!');
+    const { data: supTgtAfterSim } = await supabase.from('master_targets').select('*').eq('key', '10125_12').maybeSingle();
+    assert.strictEqual(supTgtAfterSim, null, 'Locked target test key 10125_12 appeared in master_targets!');
     const { data: supRealsAfterSim } = await supabase.from('master_strategies').select('*').eq('key', '__sys_master_reals__').single();
     assert.strictEqual(Number(supRealsAfterSim?.tactical_actions?.['10125_12']), 475, 'Viewer real simulation mutated Master Realisasi!');
     const { data: supSimsRow } = await supabase.from('master_strategies').select('*').eq('key', '__sys_viewer_simulations__').single();
     const rawSims = supSimsRow?.tactical_actions;
     const savedSims = Array.isArray(rawSims) ? rawSims : JSON.parse(rawSims || '[]');
     const qcSim = savedSims.find(s => s.title === 'QC Viewer Sim Isolation Test');
-    assert(qcSim && Number(qcSim.targets?.['12']) === 500, `Viewer simulation did not save simulated target 500: ${JSON.stringify(qcSim)}`);
-    console.log(' ✅ PASS | Viewer 1-click opened panel, simulated Realisasi & Target=500, & Master stayed untouched (475 / 560)');
+    assert(qcSim && Number(qcSim.reals?.['12']) === 510, `Viewer simulation did not save simulated real 510: ${JSON.stringify(qcSim)}`);
+    assert(Object.keys(qcSim.targets || {}).length === 0, `Viewer simulation saved locked targets: ${JSON.stringify(qcSim.targets)}`);
+    console.log(' ✅ PASS | Viewer 1-click opened panel, simulated Realisasi=510 (Target locked) & Master stayed 475');
 
     // [B9] Regression checks: Ranking Modal, File Upload Modal order, Search Scroll, Mobile View, CMS
     console.log('[B9] Running UI Regression Suite (Leaderboard, Upload Order, CMS, Mobile Clean Cards)...');
@@ -790,7 +756,7 @@ async function runBrowserE2EQC() {
     console.log(' ✅ PASS | All UI regressions (Leaderboard, Upload Order, CMS, Clean Mobile) passed cleanly');
 
     // [B10] Non-Destructive Per-Row Reset & Verification (Preserving Real Production Edits!)
-    console.log('[B10] Resetting ONLY test row #12 (Real, Target, Strategy), timestand & QC test sims (preserving production rows)...');
+    console.log('[B10] Resetting ONLY test row #12 (Real, Strategy), timestand & QC test sims (preserving production rows)...');
     await adminPage.evaluate(() => {
       const row = document.getElementById('metric-row-12');
       const btn = Array.from(row.querySelectorAll('button')).find(b => b.innerText.includes('Edit Master'));
@@ -801,14 +767,6 @@ async function runBrowserE2EQC() {
       const panel = document.getElementById('metric-row-12').nextElementSibling;
       const resetRealBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Reset Realisasi ke Excel'));
       if (resetRealBtn) resetRealBtn.click();
-      const tgtTab = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Edit Target Master'));
-      if (tgtTab) tgtTab.click();
-    });
-    await sleep(300);
-    await adminPage.evaluate(() => {
-      const panel = document.getElementById('metric-row-12').nextElementSibling;
-      const resetTgtBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Reset ke Excel Asli'));
-      if (resetTgtBtn) resetTgtBtn.click();
       const resetStrBtn = Array.from(panel.querySelectorAll('button')).find(b => b.innerText.includes('Reset ke Strategi Bawaan'));
       if (resetStrBtn) resetStrBtn.click();
     });
